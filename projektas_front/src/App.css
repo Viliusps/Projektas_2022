@@ -27,7 +27,25 @@
 .App-link {
   color: #61dafb;
 }
-
+.MuiInputBase-input{
+  color:white !important;
+  text-align: center;
+  font-size: 40px !important;
+}
+.MuiButton-label{
+  color: white;
+  font-size: 30px;
+}
+.MuiButtonBase-root{
+  margin-top: 2em !important;
+  width: 12em;
+  height: 5em;
+  border-width: 3px !important;
+}
+.MuiInputBase-root{
+  width: 20em;
+  height: 5em;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
