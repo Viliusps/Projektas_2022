@@ -1,22 +1,24 @@
 import logo from './logo.svg';
 import './App.css';
+import { TextField } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+       <h1>Money deposit</h1>
+       <a>Select how much you want to deposit</a>
+       <TextField
+
+          class="TextField"
+          id="outlined-number"
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <Button variant="outlined">Deposit</Button>
       </header>
     </div>
   );
