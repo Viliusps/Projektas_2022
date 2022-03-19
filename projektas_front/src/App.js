@@ -1,26 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
-import { TextField } from '@material-ui/core';
-import { Button } from '@material-ui/core';
+import "./App.css";
+
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import Login from "./Pages/Login";
+import Registration from "./Pages/Registration";
+import Deposit from "./Pages/Deposit";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-       <h1>Money deposit</h1>
-       <a>Select how much you want to deposit</a>
-       <TextField
-
-          class="TextField"
-          id="outlined-number"
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        <Button variant="outlined">Deposit</Button>
-      </header>
-    </div>
+  return(
+    <Router>
+      <Routes>
+        <Route exact path="/" element={<Login/>}/>
+        <Route exact path="/registration" element={<Registration/>}/>
+        <Route exact path="/deposit" element={<Deposit/>}/>
+      </Routes>
+    </Router>
   );
 }
 
