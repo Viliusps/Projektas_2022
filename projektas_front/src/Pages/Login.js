@@ -1,4 +1,3 @@
-import logo from '../logo.svg';
 import '../App.css';
 import { TextField } from '@material-ui/core';
 import { Button } from '@material-ui/core';

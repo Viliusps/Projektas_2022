@@ -1,10 +1,9 @@
-import logo from '../logo.svg';
 import '../App.css';
 import { TextField } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 
 function App() {
-  var currentvalue = localStorage.getItem("Suma");
+  var currentvalue = localStorage.getItem("EUR");
   return (
     <div className="App">
       <header className="App-header">
@@ -27,18 +26,18 @@ function App() {
   );
 }
 function Save(){
-  var previousvalue = localStorage.getItem("Suma");
+  var previousvalue = localStorage.getItem("EUR");
   var value = document.getElementById("outlined-number").value;
   var currentvalue = parseInt(previousvalue) + parseInt(value);
   console.log(currentvalue);
   if(previousvalue==null)
-    localStorage.setItem("Suma", "0");
-  if(parseInt(value) < 0 || value == '') localStorage.setItem("Suma", previousvalue);
-  else localStorage.setItem("Suma", currentvalue);
+    localStorage.setItem("EUR", "0");
+  if(parseInt(value) < 0 || value == '') localStorage.setItem("EUR", previousvalue);
+  else localStorage.setItem("EUR", currentvalue);
   window.location.reload(false);
 }
 function Clear(){
-  localStorage.setItem("Suma", '0');
+  localStorage.setItem("EUR", '0');
   window.location.reload(false);
 }
 export default App;
