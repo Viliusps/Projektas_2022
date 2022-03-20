@@ -26,7 +26,11 @@ function App() {
     if(localStorage.getItem("EUR") == null) localStorage.setItem("EUR", 0);
     if(localStorage.getItem("ETH") == null) localStorage.setItem("ETH", 0);
     //Reiksmiu tvarka: btc, eur, eth
-    const prices = [37940, 1, 2645];
+    const prices=[];
+    prices.push(localStorage.getItem("BTCprice"));
+    prices.push(localStorage.getItem("EURprice"));
+    prices.push(localStorage.getItem("ETHprice"));
+
     const balances = [];
     balances.push(localStorage.getItem("BTC"));
     balances.push(localStorage.getItem("EUR"));
@@ -83,7 +87,6 @@ function App() {
         />
       <Button variant="outlined" id="trade" onClick={callFunction}>Trade</Button>
       <Button variant="outlined" id="clear" onClick={Clear}>Clear crypto</Button>
-
       </header>
     </div>
   );
