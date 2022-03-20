@@ -91,6 +91,16 @@
   }
 }
 
+.toprightcorner{
+  position: absolute;
+  top:70px;
+  right: 10px;
+  height: 200px;
+  width: 800px;
+  font-size: 32px;
+  text-align: right;
+}
+
 /* Style the header with a grey background and some padding */
 .header {
   overflow: hidden;
