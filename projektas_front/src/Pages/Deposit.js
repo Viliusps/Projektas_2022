@@ -5,7 +5,19 @@ import { Button } from '@material-ui/core';
 function App() {
   var currentvalue = localStorage.getItem("EUR");
   return (
-    <div className="App">
+    <div>
+    <div>
+    <div className="header" id="head">
+        <a href="#default" className="logo">Skete</a>
+        <div className="header-right">
+            <a className="active" href="#home">Home</a>
+            <a href="/deposit">Deposit</a>
+            <a href="/trade">Trade</a>
+            <a href="/portfolio">Portfolio</a>
+            <a onClick={Redirect}>Logout</a>
+        </div>
+    </div>
+    </div>
       <header className="App-header">
        <h2 className="Balance">Current balance: { currentvalue }</h2>
        <h1>Money deposit</h1>
@@ -39,5 +51,9 @@ function Save(){
 function Clear(){
   localStorage.setItem("EUR", '0');
   window.location.reload(false);
+}
+function Redirect()
+{
+    window.location.replace('/');
 }
 export default App;

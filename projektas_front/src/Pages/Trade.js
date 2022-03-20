@@ -27,11 +27,27 @@ function App() {
     if(localStorage.getItem("ETH") == null) localStorage.setItem("ETH", 0);
     //Reiksmiu tvarka: btc, eur, eth
     const prices = [37940, 1, 2645];
+    localStorage.setItem("BTCprice", prices[0]);
+    localStorage.setItem("EURprice", prices[1]);
+    localStorage.setItem("ETHprice", prices[2]);
     const balances = [];
     balances.push(localStorage.getItem("BTC"));
     balances.push(localStorage.getItem("EUR"));
     balances.push(localStorage.getItem("ETH"));
     return (
+    <div>
+    <div>
+    <div className="header" id="head">
+        <a href="#default" className="logo">Skete</a>
+        <div className="header-right">
+            <a className="active" href="#home">Home</a>
+            <a href="/deposit">Deposit</a>
+            <a href="/trade">Trade</a>
+            <a href="/portfolio">Portfolio</a>
+            <a onClick={Redirect}>Logout</a>
+        </div>
+    </div>
+    </div>
     <div className="App">
       <header className="App-header">
       <div className='Balance'>
@@ -86,6 +102,7 @@ function App() {
 
       </header>
     </div>
+    </div>
   );
 }
 
@@ -114,5 +131,9 @@ function Clear(){
   localStorage.setItem("BTC", 0);
   localStorage.setItem("ETH", 0);
   window.location.reload(false);
+}
+function Redirect()
+{
+    window.location.replace('/');
 }
 export default App;

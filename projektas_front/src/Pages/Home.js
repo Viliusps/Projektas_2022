@@ -1,15 +1,5 @@
 
 function App() {
-    const ColoredLine = ({ color }) => (
-        <hr
-            style={{
-                color: color,
-                backgroundColor: color,
-                height: 2,
-                border: 0
-            }}
-        />
-    );
     return (
         <div>
             <div className="header" id="head">
@@ -18,6 +8,7 @@ function App() {
                     <a className="active" href="#home">Home</a>
                     <a href="/deposit">Deposit</a>
                     <a href="/trade">Trade</a>
+                    <a href="/portfolio">Portfolio</a>
                     <a onClick={Redirect}>Logout</a>
                 </div>
             </div>
