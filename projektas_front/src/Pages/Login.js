@@ -52,7 +52,7 @@ function CheckInfo(){
 
   if(email==Email && password==Password)
   {
-    window.location.href='/deposit';
+    window.location.replace('/home');
   }
   else
   {
