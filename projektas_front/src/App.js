@@ -6,6 +6,7 @@ import Registration from "./Pages/Registration";
 import Deposit from "./Pages/Deposit";
 import Trade from "./Pages/Trade";
 import Home from "./Pages/Home";
+import Portfolio from "./Pages/Portfolio";
 
 function App() {
   return(
@@ -16,6 +17,7 @@ function App() {
         <Route exact path="/deposit" element={<Deposit/>}/>
         <Route exact path="/trade" element={<Trade/>}/>
         <Route exact path="/home" element={<Home/>}/>
+        <Route exact path="/portfolio" element={<Portfolio/>}/>
       </Routes>
     </Router>
   );

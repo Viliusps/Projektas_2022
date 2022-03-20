@@ -28,15 +28,26 @@
   font-size: 15px;
   color: red;
 }
-
+.MuiTable-root{
+  width: 40em !important;
+  text-decoration: white !important;
+}
+.MuiTableCell-root{
+  color: white !important;
+}
+.MuiPaper-root{
+  width: 40em !important;
+  background-color: #282c34 !important;
+  text-decoration: white !important;
+}
 .Balance{
-  position: absolute;
-  top: 0px;
+  position: absolute !important;
+  top: 70px;
   right: 0px;
 }
 .Market-choice{
   position: absolute !important;
-  top: 5px;
+  top: 80px;
   left: 0px;
 }
 
