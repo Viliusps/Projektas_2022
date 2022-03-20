@@ -29,6 +29,11 @@
   top: 0px;
   right: 0px;
 }
+.Market-choice{
+  position: absolute !important;
+  top: 5px;
+  left: 0px;
+}
 
 .App-link {
   color: #61dafb;
@@ -53,6 +58,13 @@
 .MuiInputBase-root{
   width: 20em;
   height: 5em;
+}
+.MuiFormLabel-root{
+  color: white !important;
+}
+.MuiInputBase-root{
+  border-width: 6px !important;
+  border-radius: 2em !important;
 }
 @keyframes App-logo-spin {
   from {
