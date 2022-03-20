@@ -24,6 +24,11 @@
   color: white;
 }
 
+#error {
+  font-size: 15px;
+  color: red;
+}
+
 .Balance{
   position: absolute;
   top: 0px;
