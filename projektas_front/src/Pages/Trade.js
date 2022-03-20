@@ -38,9 +38,9 @@ function App() {
     <div>
     <div>
     <div className="header" id="head">
-        <a href="#default" className="logo">Skete</a>
+        <a href="/home" className="logo">Skete</a>
         <div className="header-right">
-            <a className="active" href="#home">Home</a>
+            <a className="active" href="/home">Home</a>
             <a href="/deposit">Deposit</a>
             <a href="/trade">Trade</a>
             <a href="/portfolio">Portfolio</a>
@@ -51,9 +51,11 @@ function App() {
     <div className="App">
       <header className="App-header">
       <div className='Balance'>
-      <h2>Current EUR balance: { balances[1] }</h2>
-      <h2>Current BTC balance: { balances[0] }</h2>
-      <h2>Current ETH balance: { balances[2] }</h2>
+        <label>Current EUR balance: { balances[1] }</label>
+        <br></br>
+        <label>Current BTC balance: { balances[0] }</label>
+        <br></br>
+        <label>Current ETH balance: { balances[2] }</label>
       </div>
 
        <h1>Trade</h1>
