@@ -8,9 +8,9 @@ function App() {
     <div>
     <div>
     <div className="header" id="head">
-        <a href="#default" className="logo">Skete</a>
+        <a href="/home" className="logo">Skete</a>
         <div className="header-right">
-            <a className="active" href="#home">Home</a>
+            <a className="active" href="/home">Home</a>
             <a href="/deposit">Deposit</a>
             <a href="/trade">Trade</a>
             <a href="/portfolio">Portfolio</a>
@@ -19,7 +19,7 @@ function App() {
     </div>
     </div>
       <header className="App-header">
-       <h2 className="Balance">Current balance: { currentvalue }</h2>
+       <label className="Balance">Current balance: { currentvalue }</label>
        <h1>Money deposit</h1>
        <a>Select how much you want to deposit</a>
        <TextField
