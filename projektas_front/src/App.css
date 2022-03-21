@@ -28,6 +28,15 @@
   font-size: 15px;
   color: red;
 }
+.MuiMenuItem-root{
+  color: white !important;
+}
+.tableHeader{
+  font-size: 40px !important;
+}
+.tableElement{
+  font-size: 30px !important;
+}
 .MuiTable-root{
   width: 40em !important;
   text-decoration: white !important;
@@ -60,6 +69,9 @@
   color:white !important;
   text-align: center;
   font-size: 40px !important;
+  position: absolute;
+  top: 30%;
+
 }
 .MuiButton-label{
   color: white;

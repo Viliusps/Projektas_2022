@@ -43,13 +43,13 @@ function Save(){
   var currentvalue = parseInt(previousvalue) + parseInt(value);
   console.log(currentvalue);
   if(previousvalue==null)
-    localStorage.setItem("EUR", "0");
-  if(parseInt(value) < 0 || value == '') localStorage.setItem("EUR", previousvalue);
-  else localStorage.setItem("EUR", currentvalue);
+    localStorage.setItem("EUR", 0);
+  if(parseInt(value) < 0 || value == '') localStorage.setItem("EUR", previousvalue.toFixed(2));
+  else localStorage.setItem("EUR", currentvalue.toFixed(2));
   window.location.reload(false);
 }
 function Clear(){
-  localStorage.setItem("EUR", '0');
+  localStorage.setItem("EUR", 0);
   window.location.reload(false);
 }
 function Redirect()
