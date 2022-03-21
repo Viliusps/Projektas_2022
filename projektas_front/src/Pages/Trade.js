@@ -42,9 +42,9 @@ function App() {
     <div className="header" id="head">
         <a href="/home" className="logo">Skete</a>
         <div className="header-right">
-            <a className="active" href="/home">Home</a>
+            <a href="/home">Home</a>
             <a href="/deposit">Deposit</a>
-            <a href="/trade">Trade</a>
+            <a className="active" href="/trade">Trade</a>
             <a href="/portfolio">Portfolio</a>
             <a onClick={Redirect}>Logout</a>
         </div>
@@ -126,7 +126,7 @@ function CalculateValue(listofcurrencies, balances, prices){
       console.log("pasikeites antro balance", balances[market2]); //ka nori pirkti
       localStorage.setItem(listofcurrencies[market1], balances[market1].toFixed(2));
       localStorage.setItem(listofcurrencies[market2], balances[market2].toFixed(2));
-
+      document.getElementById('error').innerHTML = '';
       document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[market1]) +  " balance: " + String(balances[market1].toFixed(2)));
       document.getElementById('marketdisplay2').innerHTML = ("Current " + String(listofcurrencies[market2]) +  " balance: " + String(balances[market2].toFixed(2)));
     }
@@ -142,6 +142,7 @@ function Clear(){
 }
 function Redirect()
 {
+    localStorage.setItem("auth", false);
     window.location.replace('/');
 }
 export default App;

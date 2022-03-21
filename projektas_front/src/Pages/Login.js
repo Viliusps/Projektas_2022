@@ -52,7 +52,9 @@ function CheckInfo(){
 
   if(email==Email && password==Password)
   {
-    window.location.replace('/home');
+    localStorage.setItem("auth", true);
+    console.log(localStorage.getItem("auth"));
+    window.location.href=('/home');
   }
   else
   {

@@ -1,4 +1,3 @@
-
 function App() {
     return (
         <div>
@@ -46,6 +45,8 @@ window.onload = function()
 
 function Redirect()
 {
+    localStorage.setItem("auth", false);
     window.location.replace('/');
 }
+
 export default App;
