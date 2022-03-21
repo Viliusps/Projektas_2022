@@ -41,20 +41,20 @@ function App() {
       <Table sx={{ minWidth: 650}} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Asset</TableCell>
-            <TableCell>Amount</TableCell>
-            <TableCell>Value</TableCell>
+            <TableCell align="center" className='tableHeader'>Asset</TableCell>
+            <TableCell align="center" className='tableHeader'>Amount</TableCell>
+            <TableCell align="center" className='tableHeader'>Value</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
             <TableRow
               key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 }}}
             >
-              <TableCell>{row.asset}</TableCell>
-              <TableCell>{row.amount}</TableCell>
-              <TableCell>{row.value}</TableCell>
+              <TableCell align="center" className='tableElement'>{row.asset}</TableCell>
+              <TableCell align="center" className='tableElement'>{row.amount}</TableCell>
+              <TableCell align="center" className='tableElement'>{row.value}</TableCell>
             </TableRow>
           ))}
         </TableBody>

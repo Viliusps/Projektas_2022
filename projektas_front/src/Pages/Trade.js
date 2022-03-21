@@ -13,10 +13,12 @@ function App() {
     const handleChange = (event) => {
         setMarket(event.target.value);
         localStorage.setItem("Market1", event.target.value);
+        document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[event.target.value]) +  " balance: " + String(balances[event.target.value]));
     };
     const handleChange2 = (event) => {
       setMarket2(event.target.value);
       localStorage.setItem("Market2", event.target.value);
+      document.getElementById('marketdisplay2').innerHTML = ("Current " + String(listofcurrencies[event.target.value]) +  " balance: " + String(balances[event.target.value]));
     };
     const callFunction = (event) =>{
       CalculateValue(listofcurrencies, balances, prices);
@@ -51,11 +53,9 @@ function App() {
     <div className="App">
       <header className="App-header">
       <div className='Balance'>
-        <label>Current EUR balance: { balances[1] }</label>
+        <label id="marketdisplay1"></label>
         <br></br>
-        <label>Current BTC balance: { balances[0] }</label>
-        <br></br>
-        <label>Current ETH balance: { balances[2] }</label>
+        <label id="marketdisplay2"></label>
       </div>
 
        <h1>Trade</h1>
@@ -99,6 +99,7 @@ function App() {
           shrink: true,
           }}
         />
+        <label id="error"></label>
       <Button variant="outlined" id="trade" onClick={callFunction}>Trade</Button>
       <Button variant="outlined" id="clear" onClick={Clear}>Clear crypto</Button>
       </header>
@@ -121,12 +122,18 @@ function CalculateValue(listofcurrencies, balances, prices){
     if(parseInt(prices[market1]) * howmuch <= parseInt(balances[market2]) * parseInt(prices[market2])){
       balances[market1] = parseInt(balances[market1]) + howmuch;
       balances[market2] = parseInt(balances[market2]) - (parseInt(prices[market1])/parseInt(prices[market2]) * howmuch);
+      console.log("pasikeites pirmo balance", balances[market1]); //Su kuo nori pirkti
+      console.log("pasikeites antro balance", balances[market2]); //ka nori pirkti
+      localStorage.setItem(listofcurrencies[market1], balances[market1].toFixed(2));
+      localStorage.setItem(listofcurrencies[market2], balances[market2].toFixed(2));
+
+      document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[market1]) +  " balance: " + String(balances[market1].toFixed(2)));
+      document.getElementById('marketdisplay2').innerHTML = ("Current " + String(listofcurrencies[market2]) +  " balance: " + String(balances[market2].toFixed(2)));
     }
-    console.log("pasikeites pirmo balance", balances[market1]); //Su kuo nori pirkti
-    console.log("pasikeites antro balance", balances[market2]); //ka nori pirkti
-    localStorage.setItem(listofcurrencies[market1], balances[market1].toFixed(2));
-    localStorage.setItem(listofcurrencies[market2], balances[market2].toFixed(2));
-    window.location.reload(false);
+    else{
+      document.getElementById('error').innerHTML = 'Insufficient balance';
+    }
+
 }
 function Clear(){
   localStorage.setItem("BTC", 0);
