@@ -28,10 +28,10 @@ function App() {
     <div className="header" id="head">
         <a href="/home" className="logo">Skete</a>
         <div className="header-right">
-            <a className="active" href="/home">Home</a>
+            <a href="/home">Home</a>
             <a href="/deposit">Deposit</a>
             <a href="/trade">Trade</a>
-            <a href="/portfolio">Portfolio</a>
+            <a className="active" href="/portfolio">Portfolio</a>
             <a onClick={Redirect}>Logout</a>
         </div>
     </div>
@@ -69,6 +69,7 @@ function createData(asset, amount, value) {
   }
 function Redirect()
 {
+    localStorage.setItem("auth", false);
     window.location.replace('/');
 }
 export default App;
