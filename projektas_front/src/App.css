@@ -176,3 +176,9 @@ body{
   float: none;
     }
   }
+
+  .cryptocurrency-logo {
+    border-radius: 100%;
+    max-width: 30%;
+    height: auto;
+  }

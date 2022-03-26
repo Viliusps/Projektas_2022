@@ -8,6 +8,7 @@ import Trade from "./Pages/Trade";
 import Home from "./Pages/Home";
 import Portfolio from "./Pages/Portfolio";
 
+
 function App() {
   var Auth = localStorage.getItem("auth");
   var authent;
