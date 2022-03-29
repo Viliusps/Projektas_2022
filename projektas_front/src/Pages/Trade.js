@@ -6,14 +6,28 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { TextField } from '@material-ui/core';
 import { Button } from '@material-ui/core';
+import axios from 'axios'
+import {useState, useEffect} from 'react';
+import { ContactSupportOutlined } from '@material-ui/icons';
 
 function App() {
     const [market1, setMarket] = React.useState('');
     const [market2, setMarket2] = React.useState('');
+    const [coins, setCoins] = useState([]);
+
+    useEffect(() => {
+      axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false')
+      .then(input => {
+        setCoins(input.data)
+      }).catch(ex => console.log('Price error!'));
+    });
+
+    updateCryptoCurrencyDatabase(coins);
+
     const handleChange = (event) => {
         setMarket(event.target.value);
         localStorage.setItem("Market1", event.target.value);
-        document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[event.target.value]) +  " balance: " + String(balances[event.target.value]));
+        document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[event.target.value]) +  " balance: " +  String(balances[event.target.value]));
     };
     const handleChange2 = (event) => {
       setMarket2(event.target.value);
@@ -23,19 +37,12 @@ function App() {
     const callFunction = (event) =>{
       CalculateValue(listofcurrencies, balances, prices);
     }
-    var listofcurrencies = ["BTC", "EUR", "ETH"];
-    if(localStorage.getItem("BTC") == null) localStorage.setItem("BTC", 0);
-    if(localStorage.getItem("EUR") == null) localStorage.setItem("EUR", 0);
-    if(localStorage.getItem("ETH") == null) localStorage.setItem("ETH", 0);
-    //Reiksmiu tvarka: btc, eur, eth
-    const prices=[];
-    prices.push(localStorage.getItem("BTCprice"));
-    prices.push(localStorage.getItem("EURprice"));
-    prices.push(localStorage.getItem("ETHprice"));
-    const balances = [];
-    balances.push(localStorage.getItem("BTC"));
-    balances.push(localStorage.getItem("EUR"));
-    balances.push(localStorage.getItem("ETH"));
+
+    //Order of values - EUR is the first and then the rest 
+    const balances = updateBalances(coins);
+    const prices = updatePrices(coins);
+    const listofcurrencies = updateListOfCurrencies(coins);
+    
     return (
     <div>
     <div>
@@ -69,11 +76,15 @@ function App() {
           value={market1}
           onChange={handleChange}
         >
-          <MenuItem value={0}>BTC</MenuItem>
-          <MenuItem value={1}>EUR</MenuItem>
-          <MenuItem value={2}>ETH</MenuItem>
-        </Select>
+        <MenuItem value={0}>{"EUR"}</MenuItem>
+          {
+            coins.map(currency => {
+              return <MenuItem value={coins.lastIndexOf(currency) + 1}>{currency.symbol.toUpperCase()}</MenuItem>
+            })
+          }
+          </Select>
       </FormControl>
+
       <FormControl className='FormControl' required sx={{ m: 1, minWidth: 120 }}>
         <InputLabel id="market-choice2">With</InputLabel>
         <Select
@@ -83,10 +94,13 @@ function App() {
           value={market2}
           onChange={handleChange2}
         >
-          <MenuItem value={0}>BTC</MenuItem>
-          <MenuItem value={1}>EUR</MenuItem>
-          <MenuItem value={2}>ETH</MenuItem>
-        </Select>
+          <MenuItem value={0}>{"EUR"}</MenuItem>
+          {
+            coins.map(currency => {
+              return <MenuItem value={coins.lastIndexOf(currency) + 1}>{currency.symbol.toUpperCase()}</MenuItem>
+            })
+          }
+          </Select>
       </FormControl>
       </div>
       <a>Select how much you want to buy</a>
@@ -134,6 +148,43 @@ function CalculateValue(listofcurrencies, balances, prices){
       document.getElementById('error').innerHTML = 'Insufficient balance';
     }
 
+}
+
+  //adds cryptocurrencies to the local storage
+  function updateCryptoCurrencyDatabase(coins) {
+    for (let i = 0; i < coins.length; i++) {
+      let currentItem = localStorage.getItem(coins[i].symbol.toUpperCase());
+      if (currentItem === null) { //if the item does not exist
+        localStorage.setItem(coins[i].symbol.toUpperCase(), 0)
+      }
+    }
+  }
+
+function updateBalances(coins) {
+  const balances = [];
+  balances.push(localStorage.getItem("EUR"));
+  for (let i = 0; i < coins.length; i++) {
+    balances.push(localStorage.getItem(coins[i].symbol.toUpperCase()));
+  }
+  return balances;
+}
+
+function updatePrices(coins) {
+  const prices = [];
+  prices.push(1);
+  for (let i = 0; i < coins.length; i++) {
+    prices.push(coins[i].current_price);
+  }
+  return prices;
+}
+
+function updateListOfCurrencies(coins) {
+  const list = []
+  list.push("EUR");
+  for (let i = 0; i < coins.length; i++) {
+    list.push(coins[i].symbol.toUpperCase());
+  }
+  return list;
 }
 function Clear(){
   localStorage.setItem("BTC", 0);

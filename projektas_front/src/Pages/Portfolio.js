@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import axios from 'axios'
 import React, {useState, useEffect} from 'react';
 import Input from '@mui/material/Input';
+import { CellWifiSharp } from '@material-ui/icons';
 
 const ariaLabel = { 'aria-label': 'description' };
 
@@ -29,7 +30,7 @@ function App() {
   //adds cryptocurrency prices to the local storage, may transfer this function to another file in the future
   updateCryptoCurrencyDatabase(coins);
 
-  //For (if) search implementation
+  /* //For (if) search implementation
   const handleChange = change => {
     setSearch(change.target.value) 
   }
@@ -37,24 +38,9 @@ function App() {
   //For (if) search implementation
   const filteredCoins = coins.filter(coin => {
     coin.name.toLowerCase().includes(search.toLowerCase())
-  })
+  }) */
 
-  
-
-    const balances = [];
-    balances.push(localStorage.getItem("BTC"));
-    balances.push(localStorage.getItem("EUR"));
-    balances.push(localStorage.getItem("ETH"));
-    const prices=[];
-    prices.push(localStorage.getItem("BTCprice"));
-    prices.push(localStorage.getItem("EURprice"));
-    prices.push(localStorage.getItem("ETHprice"));
-    console.log(prices[0]);
-    const rows = [
-        createData('BTC', parseInt(balances[0]).toFixed(2), (parseInt(balances[0]) * parseInt(prices[0])).toFixed(2)),
-        createData('EUR', parseInt(balances[1]).toFixed(2), (parseInt(balances[1]) * parseInt(prices[1])).toFixed(2)),
-        createData('ETH', parseInt(balances[2]).toFixed(2), (parseInt(balances[2]) * parseInt(prices[2])).toFixed(2)),
-      ];
+  const portfolioSum = portfolioValuesSum(coins);
 
   return (
     <div>
@@ -71,10 +57,11 @@ function App() {
     </div>
     </div>
       <header className="App-header">
-      <form style={{marginLeft: '50%', marginBottom: '30px'}}>
-        {/* Useful if the user owns lots of cryptocurrencies */}
+        <h3>Your portfolio value: €{parseInt(portfolioSum).toFixed(2)}</h3>
+{/*       <form style={{marginLeft: '50%', marginBottom: '30px'}}>
+         Useful if the user owns lots of cryptocurrencies 
         <Input placeholder="Search" inputProps={ariaLabel} onChange={handleChange} defaultValue=""/>
-      </form>
+      </form> */}
       <TableContainer component={Paper} className="Table">
       <Table sx={{ minWidth: 700}} aria-label="simple table">
         <TableHead>
@@ -123,6 +110,23 @@ function updateCryptoCurrencyDatabase(coins) {
       localStorage.setItem(coins[i].symbol.toUpperCase(), 0)
     }
   }
+}
+
+
+function portfolioValuesSum(coins) {
+  var filtered = coins.filter(coin => localStorage.getItem(coin.symbol.toUpperCase()) > 0);
+  if (filtered.length == 0) {
+    return localStorage.getItem("EUR");
+  }
+  else {
+    let sum = 0;
+    for (let i = 0; i < filtered.length; i++) {
+      sum += filtered[i].current_price * localStorage.getItem(filtered[i].symbol.toUpperCase());
+    }
+    sum += localStorage.getItem("EUR");
+    return sum;
+  }
+
 }
 function Redirect()
 {
