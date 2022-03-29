@@ -18,6 +18,8 @@ function App() {
             <div className="App-header">
                 <div className="toprightcorner">
                     <label id="assets"></label>
+                    <br></br>
+                    <label id="change"></label>
                 </div>
             </div> 
         </div>
@@ -27,37 +29,35 @@ function App() {
 window.onload = function()
 {
     const ALLcoins = axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false%27').then(input => input.data);
-    
-    const balances = [];
-    balances.push(localStorage.getItem("BTC"));
-    balances.push(localStorage.getItem("EUR"));
-    balances.push(localStorage.getItem("ETH"));
 
     ALLcoins.then(function(coins) {
+
         var wallet=0;
         coins.forEach(coin => {
-            wallet+=parseInt(coin.current_price) * parseInt(localStorage.getItem(coin.symbol.toUpperCase()))
+            if(localStorage.getItem(coin.symbol.toUpperCase()) > 0)
+                wallet+=parseFloat(coin.current_price) * parseFloat(localStorage.getItem(coin.symbol.toUpperCase()))
         });
-        wallet+=parseInt(localStorage.getItem("EUR"));
+
+        if(localStorage.getItem("EUR") > 0)
+            wallet+=parseFloat(localStorage.getItem("EUR"));
+        
         localStorage.setItem("AssetValue", wallet)
-        document.getElementById('assets').innerHTML = "Your portfolio value: " + wallet + "€";
+        document.getElementById('assets').innerHTML = "Your portfolio value: " + wallet.toFixed(2) + "€";
+
+        var changeAvg=0;
+        var count=0;
+        coins.forEach(coin => {
+            if(localStorage.getItem(coin.symbol.toUpperCase()) > 0)
+            {
+                changeAvg+=parseFloat(coin.price_change_percentage_24h)*(parseFloat(localStorage.getItem(coin.symbol.toUpperCase()))*parseFloat(coin.current_price))
+                count+=parseFloat(localStorage.getItem(coin.symbol.toUpperCase()))*parseFloat(coin.current_price)
+            }      
+        });
+        var change=changeAvg/count;
+        if(count==0)
+            change=0;
+        document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
       });
-
-
-    //Reiksmiu tvarka: btc, eur, eth
-    const prices = [37940, 1, 2645];
-    //----------------------------
-    localStorage.setItem("BTCprice",prices[0]);
-    localStorage.setItem("EURprice",prices[1]);
-    localStorage.setItem("ETHprice",prices[2]);
-    //----------------------------
-    var sum=0;
-    for(let i=0; i<balances.length; i++)
-    {
-      sum+=balances[i]*prices[i];
-    }
-    /*localStorage.setItem("AssetValue", wallet);
-    document.getElementById('assets').innerHTML = "Your portfolio value: " + sum + "€";*/
 }
 
 function Redirect()

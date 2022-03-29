@@ -98,8 +98,8 @@ function App() {
               <TableCell align="center" className='tableElement'>{coin.name}</TableCell>
               <TableCell align="center" className='tableElement'>{coin.symbol.toUpperCase()}</TableCell>
               <TableCell align="center" className='tableHeader'>{localStorage.getItem(coin.symbol.toUpperCase())}</TableCell>
-              <TableCell align="center" className='tableHeader'>€{coin.current_price}</TableCell>
-              <TableCell align="center" className='tableElement'>€{parseFloat((coin.current_price * localStorage.getItem(coin.symbol.toUpperCase())))}</TableCell>
+              <TableCell align="center" className='tableHeader'>€{coin.current_price.toFixed(2)}</TableCell>
+              <TableCell align="center" className='tableElement'>€{(parseFloat((coin.current_price * localStorage.getItem(coin.symbol.toUpperCase())))).toFixed(2)}</TableCell>
             </TableRow>
           ))}
         </TableBody> }
