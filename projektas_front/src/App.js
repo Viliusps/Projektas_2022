@@ -16,7 +16,6 @@ function App() {
     authent=false;
     else
     authent=true;
-  console.log(authent);
   return(
     <Router>
       <Routes>
