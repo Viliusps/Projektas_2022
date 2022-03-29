@@ -19,6 +19,8 @@ function App() {
                 <div className="toprightcorner">
                     <label id="assets"></label>
                     <br></br>
+                    <label id="cryptoSum"></label>
+                    <br></br>
                     <label id="change"></label>
                 </div>
             </div> 
@@ -56,6 +58,7 @@ window.onload = function()
         var change=changeAvg/count;
         if(count==0)
             change=0;
+        document.getElementById('cryptoSum').innerHTML = "Crypto value: " + count.toFixed(2) + "€";
         document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
       });
 }
