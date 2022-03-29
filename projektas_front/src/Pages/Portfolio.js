@@ -85,6 +85,7 @@ function App() {
             <TableCell align="center" className='tableHeader'>Amount</TableCell>
             <TableCell align="center" className='tableHeader'>Current Price</TableCell>
             <TableCell align="center" className='tableHeader'>Value</TableCell>
+            <TableCell align="center" className='tableHeader'>24h price change</TableCell>
           </TableRow>
         </TableHead>
         { <TableBody>
@@ -100,6 +101,7 @@ function App() {
               <TableCell align="center" className='tableHeader'>{localStorage.getItem(coin.symbol.toUpperCase())}</TableCell>
               <TableCell align="center" className='tableHeader'>€{coin.current_price.toFixed(2)}</TableCell>
               <TableCell align="center" className='tableElement'>€{(parseFloat((coin.current_price * localStorage.getItem(coin.symbol.toUpperCase())))).toFixed(2)}</TableCell>
+              <TableCell align="center" className='tableHeader'>{coin.price_change_percentage_24h.toFixed(2)}%</TableCell>
             </TableRow>
           ))}
         </TableBody> }
