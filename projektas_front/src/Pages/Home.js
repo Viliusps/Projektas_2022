@@ -1,3 +1,7 @@
+import '../App.css';
+import axios from 'axios'
+import React, {useState, useEffect} from 'react';
+
 function App() {
     return (
         <div>
@@ -22,11 +26,24 @@ function App() {
 
 window.onload = function()
 {
+    const ALLcoins = axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false%27').then(input => input.data);
+    
     const balances = [];
     balances.push(localStorage.getItem("BTC"));
     balances.push(localStorage.getItem("EUR"));
     balances.push(localStorage.getItem("ETH"));
-    
+
+    ALLcoins.then(function(coins) {
+        var wallet=0;
+        coins.forEach(coin => {
+            wallet+=parseInt(coin.current_price) * parseInt(localStorage.getItem(coin.symbol.toUpperCase()))
+        });
+        wallet+=parseInt(localStorage.getItem("EUR"));
+        localStorage.setItem("AssetValue", wallet)
+        document.getElementById('assets').innerHTML = "Your portfolio value: " + wallet + "€";
+      });
+
+
     //Reiksmiu tvarka: btc, eur, eth
     const prices = [37940, 1, 2645];
     //----------------------------
@@ -39,8 +56,8 @@ window.onload = function()
     {
       sum+=balances[i]*prices[i];
     }
-    localStorage.setItem("AssetValue", sum);
-    document.getElementById('assets').innerHTML = "Your portfolio value: " + sum + "€";
+    /*localStorage.setItem("AssetValue", wallet);
+    document.getElementById('assets').innerHTML = "Your portfolio value: " + sum + "€";*/
 }
 
 function Redirect()
