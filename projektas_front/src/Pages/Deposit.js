@@ -3,7 +3,10 @@ import { TextField } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 
 function App() {
-  var currentvalue = localStorage.getItem("EUR");
+  //localStorage.clear();
+  var currentvalue;
+  if(localStorage.getItem("EUR") > 0) currentvalue = localStorage.getItem("EUR");
+  else currentvalue = 0;
   return (
     <div>
     <div>
@@ -19,7 +22,7 @@ function App() {
     </div>
     </div>
       <header className="App-header">
-       <label className="Balance">Current balance: { currentvalue }</label>
+       <label className="Balance">Current balance: { parseFloat(currentvalue).toFixed(2) } €</label>
        <h1>Money deposit</h1>
        <a>Select how much you want to deposit</a>
        <TextField
@@ -38,13 +41,30 @@ function App() {
   );
 }
 function Save(){
-  var previousvalue = localStorage.getItem("EUR");
-  var value = document.getElementById("outlined-number").value;
-  var currentvalue = parseInt(previousvalue) + parseInt(value);
-  console.log(currentvalue);
-  if(previousvalue==null)
+
+  
+  if(document.getElementById("outlined-number").value > 0)
+  {
+      var value = parseFloat(document.getElementById("outlined-number").value);
+  }
+  else
+  {
+    var value = 0;
+  }
+  if(localStorage.getItem("EUR") > 0)
+  {
+      var previousvalue = parseFloat(localStorage.getItem("EUR"));
+  }
+  else
+  {
+    previousvalue = 0;
     localStorage.setItem("EUR", 0);
-  if(parseInt(value) < 0 || value == '') localStorage.setItem("EUR", previousvalue.toFixed(2));
+  }
+  console.log("VERTE" + value);
+  var currentvalue = parseFloat(previousvalue) + parseFloat(value);
+  console.log(currentvalue);
+
+  if(parseFloat(value) < 0 || value == 0) localStorage.setItem("EUR", previousvalue.toFixed(2));
   else localStorage.setItem("EUR", currentvalue.toFixed(2));
   window.location.reload(false);
 }
