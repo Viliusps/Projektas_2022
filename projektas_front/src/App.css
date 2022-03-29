@@ -47,6 +47,7 @@ body{
 }
 .MuiTableCell-root{
   color: white !important;
+  font-size: 0.8em !important;
 }
 .MuiPaper-root{
   width: 40em !important;
