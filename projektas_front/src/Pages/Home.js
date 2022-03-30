@@ -35,8 +35,6 @@ window.onload = function()
     //Trade langui reikalinga
     localStorage.setItem("Market1", -1);
     localStorage.setItem("Market2", -1);
-    AppTrade.handleChange("-1");
-    AppTrade.handleChange2("-1");
     //--------------------------------
     const ALLcoins = axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false%27').then(input => input.data);
     ALLcoins.then(function(coins) {
