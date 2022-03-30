@@ -102,8 +102,8 @@ function App() {
               <TableCell align="center" className='tableElement'><img src={coin.image} className="cryptocurrency-logo"/></TableCell>
               <TableCell align="center" className='tableElement'>{coin.name}</TableCell>
               <TableCell align="center" className='tableElement'>{coin.symbol.toUpperCase()}</TableCell>
-              <TableCell align="center" className='tableHeader'>{localStorage.getItem(coin.symbol.toUpperCase())}</TableCell>
-              <TableCell align="center" className='tableHeader'>€{coin.current_price.toFixed(2)}</TableCell>
+              <TableCell align="center" className='tableHeader'>{parseFloat(localStorage.getItem(coin.symbol.toUpperCase())).toFixed(2)}</TableCell>
+              <TableCell align="center" className='tableHeader'>€{parseFloat(coin.current_price).toFixed(2)}</TableCell>
               <TableCell align="center" className='tableElement'>€{(parseFloat((coin.current_price * localStorage.getItem(coin.symbol.toUpperCase())))).toFixed(2)}</TableCell>
               <TableCell align="center" className='tableHeader'>{coin.price_change_percentage_24h.toFixed(2)}%</TableCell>
             </TableRow>
