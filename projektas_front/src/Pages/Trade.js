@@ -10,7 +10,9 @@ import axios from 'axios'
 import {useState, useEffect} from 'react';
 import { ContactSupportOutlined } from '@material-ui/icons';
 
-function App() {
+
+
+export default function AppTrade() {
     const [market1, setMarket] = React.useState('');
     const [market2, setMarket2] = React.useState('');
     const [coins, setCoins] = useState([]);
@@ -25,6 +27,7 @@ function App() {
     updateCryptoCurrencyDatabase(coins);
 
     const handleChange = (event) => {
+      console.log("Pakeiciamas i " + event.target.value);
         setMarket(event.target.value);
         localStorage.setItem("Market1", event.target.value);
         document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[event.target.value]) +  " balance: " +  String(balances[event.target.value]));
@@ -123,29 +126,28 @@ function App() {
 }
 
 function CalculateValue(listofcurrencies, balances, prices){
+  if(parseInt(localStorage.getItem("Market1")) >= 0 && parseInt(localStorage.getItem("Market2")) >= 0)
+  {
     const market1 = parseInt(localStorage.getItem("Market1"));
     const market2 = parseInt(localStorage.getItem("Market2"));
-    console.log("selected market1", market1); //Su kuo nori pirkti
-    console.log("selected market2", market2); //ka nori pirkti
-    console.log("pirmo balance", balances[market1]); //Su kuo nori pirkti
-    console.log("antro balance", balances[market2]); //ka nori pirkti
-    console.log("pirmo price", prices[market1]); //Su kuo nori pirkti
-    console.log("antro price", prices[market2]); //ka nori pirkti
-    var howmuch = parseInt(document.getElementById("outlined-number").value);
-    console.log("Kiek nori pirkti", howmuch);
-    if(parseInt(prices[market1]) * howmuch <= parseInt(balances[market2]) * parseInt(prices[market2])){
-      balances[market1] = parseInt(balances[market1]) + howmuch;
-      balances[market2] = parseInt(balances[market2]) - (parseInt(prices[market1])/parseInt(prices[market2]) * howmuch);
-      console.log("pasikeites pirmo balance", balances[market1]); //Su kuo nori pirkti
-      console.log("pasikeites antro balance", balances[market2]); //ka nori pirkti
-      localStorage.setItem(listofcurrencies[market1], balances[market1].toFixed(2));
-      localStorage.setItem(listofcurrencies[market2], balances[market2].toFixed(2));
+    var howmuch = parseFloat(document.getElementById("outlined-number").value);
+    if(parseFloat(prices[market1]) * howmuch <= parseFloat(balances[market2]) * parseFloat(prices[market2])){
+      balances[market1] = parseFloat(balances[market1]) + howmuch;
+      balances[market2] = parseFloat(balances[market2]) - (parseFloat(prices[market1])/parseFloat(prices[market2]) * howmuch);
+      localStorage.setItem(listofcurrencies[market1], balances[market1]);
+      localStorage.setItem(listofcurrencies[market2], balances[market2]);
       document.getElementById('error').innerHTML = '';
-      document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[market1]) +  " balance: " + String(balances[market1].toFixed(2)));
-      document.getElementById('marketdisplay2').innerHTML = ("Current " + String(listofcurrencies[market2]) +  " balance: " + String(balances[market2].toFixed(2)));
+      console.log(parseFloat(balances[market2]));
+      document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[market1]) +  " balance: " + String(parseFloat(balances[market1]).toFixed(2)));
+      document.getElementById('marketdisplay2').innerHTML = ("Current " + String(listofcurrencies[market2]) +  " balance: " + String(parseFloat(balances[market2]).toFixed(2)));
     }
     else{
       document.getElementById('error').innerHTML = 'Insufficient balance';
+    }
+  }
+
+    else{
+      document.getElementById('error').innerHTML = 'You have not selected a currency';
     }
 
 }
@@ -196,4 +198,3 @@ function Redirect()
     localStorage.setItem("auth", false);
     window.location.replace('/');
 }
-export default App;
