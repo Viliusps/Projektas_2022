@@ -31,9 +31,7 @@ function App() {
 window.onload = function()
 {
     const ALLcoins = axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false%27').then(input => input.data);
-
     ALLcoins.then(function(coins) {
-
         var wallet=0;
         coins.forEach(coin => {
             if(localStorage.getItem(coin.symbol.toUpperCase()) > 0)
@@ -58,7 +56,7 @@ window.onload = function()
         var change=changeAvg/count;
         if(count==0)
             change=0;
-        document.getElementById('cryptoSum').innerHTML = "Crypto value: " + count.toFixed(2) + "€";
+        document.getElementById('cryptoSum').innerHTML = "Assets value: " + count.toFixed(2) + "€";
         document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
       });
 }
