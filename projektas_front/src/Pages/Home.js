@@ -1,6 +1,8 @@
 import '../App.css';
 import axios from 'axios'
 import React, {useState, useEffect} from 'react';
+import { TramRounded } from '@material-ui/icons';
+import AppTrade from './Trade.js';
 
 function App() {
     return (
@@ -30,6 +32,12 @@ function App() {
 
 window.onload = function()
 {
+    //Trade langui reikalinga
+    localStorage.setItem("Market1", -1);
+    localStorage.setItem("Market2", -1);
+    AppTrade.handleChange("-1");
+    AppTrade.handleChange2("-1");
+    //--------------------------------
     const ALLcoins = axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false%27').then(input => input.data);
     ALLcoins.then(function(coins) {
         var wallet=0;
