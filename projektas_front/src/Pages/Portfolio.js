@@ -40,6 +40,13 @@ function App() {
   }) */
 
   const portfolioSum = portfolioValuesSum(coins);
+  var portfolioString=""
+  if (portfolioSum == 0) {
+    portfolioString = "Your portfolio is empty";
+  }
+  else {
+    portfolioString = "Your portfolio value: €" + parseInt(portfolioSum).toFixed(2);
+  }
 
   return (
     <div>
@@ -56,7 +63,7 @@ function App() {
     </div>
     </div>
       <header className="App-header">
-        <h3>Your portfolio value: €{parseInt(portfolioSum).toFixed(2)}</h3>
+        <h3>{portfolioString}</h3>
 {/*       <form style={{marginLeft: '50%', marginBottom: '30px'}}>
          Useful if the user owns lots of cryptocurrencies 
         <Input placeholder="Search" inputProps={ariaLabel} onChange={handleChange} defaultValue=""/>
@@ -75,6 +82,15 @@ function App() {
           </TableRow>
         </TableHead>
         { <TableBody>
+          <TableRow>
+           <TableCell align="center" className='tableHeader'><img src="https://cdn.icon-icons.com/icons2/1369/PNG/512/-euro-symbol_90430.png" className="cryptocurrency-logo"/></TableCell>
+            <TableCell align="center" className='tableHeader'>Euro</TableCell>
+            <TableCell align="center" className='tableHeader'>EUR</TableCell>
+            <TableCell align="center" className='tableHeader'>{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</TableCell>
+            <TableCell align="center" className='tableHeader'>1</TableCell>
+            <TableCell align="center" className='tableHeader'>€{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</TableCell>
+            <TableCell align="center" className='tableHeader'></TableCell>
+          </TableRow>
           {coins.filter(coin => (localStorage.getItem(coin.symbol.toUpperCase()) > 0)).map(coin => ( //Leaves only those cryptocurrencies that the user owns
             <TableRow
               key={coin.id}
@@ -120,9 +136,9 @@ function portfolioValuesSum(coins) {
   else {
     let sum = 0;
     for (let i = 0; i < filtered.length; i++) {
-      sum += filtered[i].current_price * localStorage.getItem(filtered[i].symbol.toUpperCase());
+      sum += parseFloat(filtered[i].current_price * localStorage.getItem(filtered[i].symbol.toUpperCase()));
     }
-    sum += localStorage.getItem("EUR");
+    sum += parseFloat(localStorage.getItem("EUR"));
     return sum;
   }
 
