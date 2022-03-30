@@ -50,7 +50,7 @@ window.onload = function()
             wallet+=parseFloat(localStorage.getItem("EUR"));
         
         localStorage.setItem("AssetValue", wallet)
-        document.getElementById('assets').innerHTML = "Your portfolio value: " + wallet.toFixed(2) + "€";
+        document.getElementById('assets').innerHTML = "Your portfolio value: " + "€" + wallet.toFixed(2);
 
         var changeAvg=0;
         var count=0;
@@ -64,7 +64,7 @@ window.onload = function()
         var change=changeAvg/count;
         if(count==0)
             change=0;
-        document.getElementById('cryptoSum').innerHTML = "Assets value: " + count.toFixed(2) + "€";
+        document.getElementById('cryptoSum').innerHTML = "Assets value: " + "€" + count.toFixed(2);
         document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
       });
 }
