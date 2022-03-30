@@ -40,6 +40,17 @@ function App() {
   }) */
 
   const portfolioSum = portfolioValuesSum(coins);
+<<<<<<< Updated upstream
+=======
+  var portfolioString="";
+  if (portfolioSum == 0) {
+    portfolioString = "Your portfolio is empty";
+  }
+  else {
+    portfolioString = "Your portfolio value: €" + parseInt(portfolioSum).toFixed(2);
+
+  }
+>>>>>>> Stashed changes
 
   return (
     <div>
@@ -61,7 +72,7 @@ function App() {
          Useful if the user owns lots of cryptocurrencies 
         <Input placeholder="Search" inputProps={ariaLabel} onChange={handleChange} defaultValue=""/>
       </form> */}
-      <TableContainer component={Paper} className="Table">
+      <TableContainer id="table" component={Paper} className="Table">
       <Table sx={{ minWidth: 700}} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -75,6 +86,21 @@ function App() {
           </TableRow>
         </TableHead>
         { <TableBody>
+<<<<<<< Updated upstream
+=======
+          <TableRow id="euro-row"
+            sx={{ '&:last-child td, &:last-child th': { border: 0 }}}
+            hover
+          >
+           <TableCell align="center" className='tableHeader'><img src="https://cdn.icon-icons.com/icons2/1369/PNG/512/-euro-symbol_90430.png" className="cryptocurrency-logo"/></TableCell>
+            <TableCell align="center" className='tableHeader'>Euro</TableCell>
+            <TableCell align="center" className='tableHeader'>EUR</TableCell>
+            <TableCell align="center" className='tableHeader'>{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</TableCell>
+            <TableCell align="center" className='tableHeader'>1</TableCell>
+            <TableCell align="center" className='tableHeader'>€{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</TableCell>
+            <TableCell align="center" className='tableHeader'></TableCell>
+          </TableRow>
+>>>>>>> Stashed changes
           {coins.filter(coin => (localStorage.getItem(coin.symbol.toUpperCase()) > 0)).map(coin => ( //Leaves only those cryptocurrencies that the user owns
             <TableRow
               key={coin.id}
@@ -93,6 +119,7 @@ function App() {
         </TableBody> }
       </Table>
           </TableContainer>
+      {displayTable(portfolioSum)}
     </header>
     </div>
   );
@@ -100,6 +127,18 @@ function App() {
 function createData(asset, amount, value) {
     return {asset, amount, value };
   }
+
+function displayTable(portfolioSum) {
+  if (parseInt(portfolioSum) == 0) {
+    if (document.getElementById("table") != null)
+      document.getElementById("table").style.display = "none";
+  }
+
+  if (parseFloat(localStorage.getItem("EUR")) == 0) {
+    if (document.getElementById("euro-row") != null)
+      document.getElementById("euro-row").style.display = "none";
+  }
+}
 
   //adds cryptocurrency prices to the local storage
 function updateCryptoCurrencyDatabase(coins) {
