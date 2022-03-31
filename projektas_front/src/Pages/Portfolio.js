@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from 'axios'
 import React, {useState, useEffect} from 'react';
+import logo from '../euro-symbol.png';
 //import Input from '@mui/material/Input';
 
 //const ariaLabel = { 'aria-label': 'description' };
@@ -15,7 +16,6 @@ import React, {useState, useEffect} from 'react';
 function App() {
 
   const [coins, setCoins] = useState([]);
-  const [search, setSearch] = useState('');
 
   //gets updated cryptocurrency prices from CoinGecko
   useEffect(() => {
@@ -42,7 +42,7 @@ function App() {
   const portfolioSum = portfolioValuesSum(coins);
   var portfolioString=""
   var portfolioString="";
-  if (portfolioSum == 0) {
+  if (portfolioSum === 0) {
     portfolioString = "Your portfolio is empty";
   }
   else {
@@ -87,7 +87,8 @@ function App() {
             sx={{ '&:last-child td, &:last-child th': { border: 0 }}}
             hover
           >
-           <TableCell align="center" className='tableHeader'><img src="https://cdn.icon-icons.com/icons2/1369/PNG/512/-euro-symbol_90430.png" className="cryptocurrency-logo"/></TableCell>
+            {/*Symbol link:  "https://cdn.icon-icons.com/icons2/1369/PNG/512/-euro-symbol_90430.png" */}
+           <TableCell align="center" className='tableHeader'><img src={logo} alt="Euro logo" className="cryptocurrency-logo"/></TableCell>
             <TableCell align="center" className='tableHeader'>Euro</TableCell>
             <TableCell align="center" className='tableHeader'>EUR</TableCell>
             <TableCell align="center" className='tableHeader'>{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</TableCell>
@@ -101,7 +102,7 @@ function App() {
               sx={{ '&:last-child td, &:last-child th': { border: 0 }}}
               hover
             >
-              <TableCell align="center" className='tableElement'><img src={coin.image} className="cryptocurrency-logo"/></TableCell>
+              <TableCell align="center" className='tableElement'><img src={coin.image} alt="Cryptocurrency logo" className="cryptocurrency-logo"/></TableCell>
               <TableCell align="center" className='tableElement'>{coin.name}</TableCell>
               <TableCell align="center" className='tableElement'>{coin.symbol.toUpperCase()}</TableCell>
               <TableCell align="center" className='tableHeader'>{parseFloat(localStorage.getItem(coin.symbol.toUpperCase())).toFixed(2)}</TableCell>
@@ -118,17 +119,14 @@ function App() {
     </div>
   );
 }
-function createData(asset, amount, value) {
-    return {asset, amount, value };
-  }
 
 function displayTable(portfolioSum) {
-  if (parseInt(portfolioSum) == 0) {
+  if (parseInt(portfolioSum) === 0) {
     if (document.getElementById("table") != null)
       document.getElementById("table").style.display = "none";
   }
 
-  if (parseFloat(localStorage.getItem("EUR")) == 0) {
+  if (parseFloat(localStorage.getItem("EUR")) === 0) {
     if (document.getElementById("euro-row") != null)
       document.getElementById("euro-row").style.display = "none";
   }
@@ -147,8 +145,10 @@ function updateCryptoCurrencyDatabase(coins) {
 
 function portfolioValuesSum(coins) {
   var filtered = coins.filter(coin => localStorage.getItem(coin.symbol.toUpperCase()) > 0);
-  if (filtered.length == 0) {
-    return localStorage.getItem("EUR");
+  if (filtered.length === 0) {
+    if (localStorage.getItem("EUR") !== null)
+      return localStorage.getItem("EUR");
+    else return 0;
   }
   else {
     let sum = 0;
