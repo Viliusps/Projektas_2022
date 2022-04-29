@@ -106,6 +106,22 @@ INSERT INTO `users` (`Id`, `Email`, `Password`) VALUES
 (1, 'test@gmail.com', 'password'),
 (2, 'test2@GMAIL.com', 'vilkas');
 
+
+
+--
+-- Table structure for table `trade_histories`
+--
+
+CREATE TABLE `trade_histories` (
+  `Id` int(11) NOT NULL,
+  `fk_Bought_currency` int(11) NOT NULL,
+  `fk_Bought_with_currency` int(11) NOT NULL,
+  `Amount` int(11) NOT NULL,
+  `Date` date NOT NULL,
+  `Price_of_first` int(20) NOT NULL,
+  `Price_of_second` int(20) NOT NULL,
+  `fk_portfolio` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 --
 -- Indexes for dumped tables
 --
@@ -136,7 +152,15 @@ ALTER TABLE `portfolios`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`Id`);
-
+  
+--
+-- Indexes for table `trade_histories`
+--
+ALTER TABLE `trade_histories`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `Has2` (`fk_portfolio`),
+  ADD KEY `Has3` (`fk_Bought_currency`),
+  ADD KEY `Has4` (`fk_Bought_with_currency`);
 --
 -- AUTO_INCREMENT for dumped tables
 --
@@ -164,6 +188,12 @@ ALTER TABLE `portfolios`
 --
 ALTER TABLE `users`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  
+--
+-- AUTO_INCREMENT for table `trade_histories`
+--
+ ALTER TABLE `trade_histories`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -176,6 +206,14 @@ ALTER TABLE `amounts`
   ADD CONSTRAINT `Has1` FOREIGN KEY (`fk_portfolio`) REFERENCES `portfolios` (`Id`),
   ADD CONSTRAINT `Is_included_in` FOREIGN KEY (`fk_crypto`) REFERENCES `cryptos` (`Id`);
 
+--
+-- Constraints for table `trade_histories`
+--
+ALTER TABLE `trade_histories`
+  ADD CONSTRAINT `Has2` FOREIGN KEY (`fk_portfolio`) REFERENCES `portfolios` (`Id`),
+  ADD CONSTRAINT `Has3` FOREIGN KEY (`fk_Bought_currency`) REFERENCES `cryptos` (`Id`),
+  ADD CONSTRAINT `Has4` FOREIGN KEY (`fk_Bought_with_currency`) REFERENCES `cryptos` (`Id`);
+  
 --
 -- Constraints for table `portfolios`
 --
