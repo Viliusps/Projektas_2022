@@ -19,7 +19,7 @@ import $ from 'jquery';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ContactSupportOutlined } from '@material-ui/icons';
 
-
+//Bugas 193 line
 
 export default function AppTrade() {
     const [market1, setMarket] = React.useState('');
@@ -52,6 +52,7 @@ export default function AppTrade() {
     };
     const callFunction = (event) =>{
       CalculateValue(listofcurrencies, balances, prices);
+      SaveHistory(listofcurrencies, balances, prices);
     }
 
 
@@ -288,6 +289,9 @@ function Clear(){
   localStorage.setItem("BTC", 0);
   localStorage.setItem("ETH", 0);
   window.location.reload(false);
+}
+function SaveHistory(listofcurrencies, balances, prices){
+
 }
 function Redirect()
 {
