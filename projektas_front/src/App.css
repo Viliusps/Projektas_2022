@@ -66,6 +66,11 @@ body{
   left: 0px;
 }
 
+.history{
+  position: absolute !important;
+  bottom: 10px;
+  right: 10px;
+}
 .App-link {
   color: #61dafb;
 }

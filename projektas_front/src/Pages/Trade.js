@@ -10,7 +10,7 @@ import axios from 'axios'
 import {useState, useEffect} from 'react';
 import { ContactSupportOutlined } from '@material-ui/icons';
 
-
+//Bugas 193 line
 
 export default function AppTrade() {
     const [market1, setMarket] = React.useState('');
@@ -39,6 +39,7 @@ export default function AppTrade() {
     };
     const callFunction = (event) =>{
       CalculateValue(listofcurrencies, balances, prices);
+      SaveHistory(listofcurrencies, balances, prices);
     }
 
     //Order of values - EUR is the first and then the rest 
@@ -119,6 +120,7 @@ export default function AppTrade() {
         <label id="error"></label>
       <Button variant="outlined" id="trade" onClick={callFunction}>Trade</Button>
       <Button variant="outlined" id="clear" onClick={Clear}>Clear crypto</Button>
+      <Button variant="outlined" id="history" style={{position: 'absolute', bottom: 70, right: 10}} href="/tradehistory">History</Button>
       </header>
     </div>
     </div>
@@ -188,10 +190,14 @@ function updateListOfCurrencies(coins) {
   }
   return list;
 }
+// Reikia pataisyt nes dabar tik du crypto nunullina, bet cia is karto su database
 function Clear(){
   localStorage.setItem("BTC", 0);
   localStorage.setItem("ETH", 0);
   window.location.reload(false);
+}
+function SaveHistory(listofcurrencies, balances, prices){
+
 }
 function Redirect()
 {
