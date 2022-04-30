@@ -183,3 +183,9 @@ body{
     max-width: 30%;
     height: auto;
   }
+
+  #select-buy-form {
+    margin-bottom: 2%;
+    margin-left: 67%;
+    text-align: center;
+  }

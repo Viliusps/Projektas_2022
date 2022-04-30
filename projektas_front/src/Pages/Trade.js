@@ -3,7 +3,7 @@ import '../App.css';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+//import Select from '@mui/material/Select';
 import { TextField } from '@material-ui/core';
 //import { Button } from '@material-ui/core';
 import axios from 'axios';
@@ -15,10 +15,8 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Col'
 import Col from 'react-bootstrap/Row'
-import DropdownButton from 'react-bootstrap/DropdownButton'
-import Dropdown from 'react-bootstrap/Dropdown'
+import $ from 'jquery';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Stack from 'react-bootstrap/Stack'
 import { ContactSupportOutlined } from '@material-ui/icons';
 
 
@@ -41,7 +39,11 @@ export default function AppTrade() {
       console.log("Pakeiciamas i " + event.target.value);
         setMarket(event.target.value);
         localStorage.setItem("Market1", event.target.value);
-        document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[event.target.value]) +  " balance: " +  String(balances[event.target.value]));
+        //document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[event.target.value]) +  " balance: " +  String(balances[event.target.value]));
+        let values = document.getElementsByClassName('payment-currency-input');
+        for (let i = 0;  i < values.length; i++) {
+          values[i].innerHTML =  event.target.value;
+        }
     };
     const handleChange2 = (event) => {
       setMarket2(event.target.value);
@@ -52,10 +54,13 @@ export default function AppTrade() {
       CalculateValue(listofcurrencies, balances, prices);
     }
 
+
     //Order of values - EUR is the first and then the rest 
     const balances = updateBalances(coins);
     const prices = updatePrices(coins);
     const listofcurrencies = updateListOfCurrencies(coins);
+
+    CalculateValue();
     
     return (
     <div>
@@ -73,7 +78,74 @@ export default function AppTrade() {
     </div>
     <div className="App">
       <header className="App-header">
-      {/* <div className='Balance'>
+    <div>
+    <Form>
+      <Container>
+        <Row md={4} id="select-buy-form">
+        <div>
+          <h5>Pay with</h5>
+          <Form.Select
+          onChange={handleChange}
+          >
+            <option value="EUR">EUR</option>
+            {coins.map(coin => (
+              <option value={coin.symbol.toUpperCase()}>{coin.symbol.toUpperCase()}</option>
+            ))
+          }
+          </Form.Select>
+          <Button variant="primary" size="lg">Buy</Button>
+      </div>
+        </Row>
+      </Container>
+    <Container fluid="md">
+        <Row>
+      <Table bordered hover responsive variant="dark">
+        <thead>
+          <tr>
+            <th>Logo</th>
+            <th>Cryptocurrency</th>
+            <th>Current Price</th>
+            <th>Current Holdings</th>
+            <th>Buying Budget</th>
+            <th>Selection</th>
+          </tr>
+        </thead>
+    <tbody>
+      {coins.map((coin, index) => (
+        <tr>
+          <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo"/></th>
+          <th>{coin.name}</th>
+          <th>€{parseFloat(coin.current_price).toFixed(2)}</th>
+          <th>{parseFloat(localStorage.getItem(coin.symbol.toUpperCase())).toFixed(2)}</th>
+          <th> 
+             <InputGroup className="mb-3">
+            <Form.Control aria-label="amount" id={index + 1} className="payment-amount"/>
+            <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
+            </InputGroup>
+  </th>
+        <th>  
+        <Form.Check 
+          type="switch"
+          id= {index + 1}
+          value={coin.symbol.toUpperCase()}/>
+          </th>
+        </tr>
+        ))}
+      <tr>
+      </tr>
+    </tbody>
+      </Table>
+      </Row>
+      </Container>
+      </Form>
+      </div>
+       </header>
+    </div>
+    </div>
+  );
+}
+
+{/* <div className='Balance'>
         <label id="marketdisplay1"></label>
         <br></br>
         <label id="marketdisplay2"></label>
@@ -129,68 +201,13 @@ export default function AppTrade() {
         />
         <label id="error"></label>
       <Button variant="outlined" id="trade" onClick={callFunction}>Trade</Button>
-      <Button variant="outlined" id="clear" onClick={Clear}>Clear crypto</Button> */}
-    <Container fluid="md">
-      <Row md={4}>
-        <Col><DropdownButton title="Pay with">
-        <Dropdown.Item eventKey="1">EUR</Dropdown.Item>
-        <Dropdown.Item eventKey="2">BTC</Dropdown.Item>
-          </DropdownButton></Col>
-        <Col><Button variant="success">BUY</Button></Col>
-      </Row>
-      <Row>
-      <Table bordered hover responsive variant="dark">
-        <thead>
-          <tr>
-            <th>Logo</th>
-            <th>Cryptocurrency</th>
-            <th>Current Price</th>
-            <th>Current Holdings</th>
-            <th>Amount To Buy</th>
-            <th>Selection</th>
-          </tr>
-        </thead>
-    <tbody>
-      {coins.map((coin, index) => (
-        <tr>
-          <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo"/></th>
-          <th>{coin.name}</th>
-          <th>€{parseFloat(coin.current_price).toFixed(2)}</th>
-          <th>{parseFloat(localStorage.getItem(coin.symbol.toUpperCase())).toFixed(2)}</th>
-          <th> 
-            <Form>
-             <InputGroup className="mb-3">
-            <InputGroup.Text>€</InputGroup.Text>
-            <Form.Control aria-label="euros"/>
-            </InputGroup>
-            </Form>
-  </th>
-        <th>  
-        <Form>
-        <Form.Check 
-          type="switch"
-          id= {index + 1}/>
-          </Form>
-          </th>
-        </tr>
-        ))}
-      <tr>
-      </tr>
-    </tbody>
-      </Table>
-      </Row>
-      </Container>
+      <Button variant="outlined" id="clear" onClick={Clear}>Clear crypto</Button>
+        */}
 
-
-      </header>
-    </div>
-    </div>
-  );
-}
-
-function CalculateValue(listofcurrencies, balances, prices){
+/* function CalculateValue(listofcurrencies, balances, prices){
   if(parseInt(localStorage.getItem("Market1")) >= 0 && parseInt(localStorage.getItem("Market2")) >= 0)
   {
+
     const market1 = parseInt(localStorage.getItem("Market1"));
     const market2 = parseInt(localStorage.getItem("Market2"));
     var howmuch = parseFloat(document.getElementById("outlined-number").value);
@@ -213,6 +230,14 @@ function CalculateValue(listofcurrencies, balances, prices){
       document.getElementById('error').innerHTML = 'You have not selected a currency';
     }
 
+} */
+
+
+function CalculateValue(){
+  let selections = document.querySelectorAll('input[type=checkbox]:checked');
+  let amounts = document.getElementsByClassName('payment-amount');
+  for (let i = 0; i < selections.length; i++) {
+  }
 }
 
   //adds cryptocurrencies to the local storage
@@ -250,6 +275,14 @@ function updateListOfCurrencies(coins) {
     list.push(coins[i].symbol.toUpperCase());
   }
   return list;
+}
+
+function formSelectOptions(coins) {
+  const options = [];
+  for (let i = 0; i < options.length; i++) {
+    options.push(coins[i]);
+  }
+  return options;
 }
 function Clear(){
   localStorage.setItem("BTC", 0);
