@@ -4,25 +4,25 @@ import db from "../config/database.js";
 const { DataTypes } = Sequelize;
  
 const TradeHistory = db.define('trade_histories',{
-    bought_currency:{
-        type: DataTypes.STRING
-    },
-    bought_with_currency:{
-        type: DataTypes.STRING
-    },
-    amount:{
+    fk_Bought_currency:{
         type: DataTypes.DOUBLE
     },
-    date:{
+    fk_Bought_with_currency:{
+        type: DataTypes.DOUBLE
+    },
+    Amount:{
+        type: DataTypes.DOUBLE
+    },
+    Date:{
         type: DataTypes.DATE
     },
-    price_of_first:{
+    Price_of_first:{
         type: DataTypes.DOUBLE
     },
-    price_of_second:{
+    Price_of_second:{
         type: DataTypes.DOUBLE
     },
-    fk_portfolio:{
+    fk_Portfolio:{
         type: DataTypes.DOUBLE
     }
 },{
