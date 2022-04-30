@@ -5,9 +5,20 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { TextField } from '@material-ui/core';
-import { Button } from '@material-ui/core';
-import axios from 'axios'
+//import { Button } from '@material-ui/core';
+import axios from 'axios';
 import {useState, useEffect} from 'react';
+import Table from 'react-bootstrap/Table';
+import Container from 'react-bootstrap/Container'
+import InputGroup from 'react-bootstrap/InputGroup'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import Row from 'react-bootstrap/Col'
+import Col from 'react-bootstrap/Row'
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Stack from 'react-bootstrap/Stack'
 import { ContactSupportOutlined } from '@material-ui/icons';
 
 
@@ -18,7 +29,7 @@ export default function AppTrade() {
     const [coins, setCoins] = useState([]);
 
     useEffect(() => {
-      axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false')
+      axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=100&page=1&sparkline=false')
       .then(input => {
         setCoins(input.data)
       }).catch(ex => console.log('Price error!'));
@@ -62,7 +73,7 @@ export default function AppTrade() {
     </div>
     <div className="App">
       <header className="App-header">
-      <div className='Balance'>
+      {/* <div className='Balance'>
         <label id="marketdisplay1"></label>
         <br></br>
         <label id="marketdisplay2"></label>
@@ -118,7 +129,59 @@ export default function AppTrade() {
         />
         <label id="error"></label>
       <Button variant="outlined" id="trade" onClick={callFunction}>Trade</Button>
-      <Button variant="outlined" id="clear" onClick={Clear}>Clear crypto</Button>
+      <Button variant="outlined" id="clear" onClick={Clear}>Clear crypto</Button> */}
+    <Container fluid="md">
+      <Row md={4}>
+        <Col><DropdownButton title="Pay with">
+        <Dropdown.Item eventKey="1">EUR</Dropdown.Item>
+        <Dropdown.Item eventKey="2">BTC</Dropdown.Item>
+          </DropdownButton></Col>
+        <Col><Button variant="success">BUY</Button></Col>
+      </Row>
+      <Row>
+      <Table bordered hover responsive variant="dark">
+        <thead>
+          <tr>
+            <th>Logo</th>
+            <th>Cryptocurrency</th>
+            <th>Current Price</th>
+            <th>Current Holdings</th>
+            <th>Amount To Buy</th>
+            <th>Selection</th>
+          </tr>
+        </thead>
+    <tbody>
+      {coins.map((coin, index) => (
+        <tr>
+          <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo"/></th>
+          <th>{coin.name}</th>
+          <th>€{parseFloat(coin.current_price).toFixed(2)}</th>
+          <th>{parseFloat(localStorage.getItem(coin.symbol.toUpperCase())).toFixed(2)}</th>
+          <th> 
+            <Form>
+             <InputGroup className="mb-3">
+            <InputGroup.Text>€</InputGroup.Text>
+            <Form.Control aria-label="euros"/>
+            </InputGroup>
+            </Form>
+  </th>
+        <th>  
+        <Form>
+        <Form.Check 
+          type="switch"
+          id= {index + 1}/>
+          </Form>
+          </th>
+        </tr>
+        ))}
+      <tr>
+      </tr>
+    </tbody>
+      </Table>
+      </Row>
+      </Container>
+
+
       </header>
     </div>
     </div>
