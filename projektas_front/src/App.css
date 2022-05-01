@@ -188,3 +188,16 @@ body{
     max-width: 30%;
     height: auto;
   }
+<<<<<<< Updated upstream
+=======
+
+  #select-buy-form {
+    margin-bottom: 2%;
+    margin-left: 67%;
+    text-align: center;
+  }
+
+  .custom-table-error {
+    color: red;
+  }
+>>>>>>> Stashed changes
