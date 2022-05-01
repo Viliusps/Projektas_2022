@@ -5,11 +5,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { TextField } from '@material-ui/core';
-import { Button } from '@material-ui/core';
 import axios from 'axios'
 import {useState, useEffect} from 'react';
-<<<<<<< Updated upstream
-=======
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container'
 import InputGroup from 'react-bootstrap/InputGroup'
@@ -20,7 +17,6 @@ import Col from 'react-bootstrap/Row'
 import $ from 'jquery';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import euroLogo from '../euro-symbol.png';
->>>>>>> Stashed changes
 import { ContactSupportOutlined } from '@material-ui/icons';
 
 //Bugas 193 line
@@ -31,11 +27,7 @@ export default function AppTrade() {
     const [coins, setCoins] = useState([]);
 
     useEffect(() => {
-<<<<<<< Updated upstream
-      axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false')
-=======
       axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false')
->>>>>>> Stashed changes
       .then(input => {
         setCoins(input.data)
       }).catch(ex => console.log('Price error!'));
@@ -44,17 +36,10 @@ export default function AppTrade() {
     updateCryptoCurrencyDatabase(coins);
 
     const handleChange = (event) => {
-<<<<<<< Updated upstream
-      console.log("Pakeiciamas i " + event.target.value);
-        setMarket(event.target.value);
-        localStorage.setItem("Market1", event.target.value);
-        document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[event.target.value]) +  " balance: " +  String(balances[event.target.value]));
-=======
         let values = document.getElementsByClassName('payment-currency-input');
         for (let i = 0;  i < values.length; i++) {
           values[i].innerHTML =  event.target.value;
         }
->>>>>>> Stashed changes
     };
     const handleCheckmarkChange = (event) => {
       let last_th = document.querySelector(`[id='row${event.target.id}']`).lastChild;
@@ -72,10 +57,6 @@ export default function AppTrade() {
     const balances = updateBalances(coins);
     const prices = updatePrices(coins);
     const listofcurrencies = updateListOfCurrencies(coins);
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     
     return (
     <div>
@@ -93,9 +74,6 @@ export default function AppTrade() {
     </div>
     <div className="App">
       <header className="App-header">
-<<<<<<< Updated upstream
-      <div className='Balance'>
-=======
     <div>
     <Form>
       <Container>
@@ -188,7 +166,6 @@ export default function AppTrade() {
 }
 
 {/* <div className='Balance'>
->>>>>>> Stashed changes
         <label id="marketdisplay1"></label>
         <br></br>
         <label id="marketdisplay2"></label>
@@ -277,9 +254,7 @@ function CalculateValue(listofcurrencies, balances, prices){
       document.getElementById('error').innerHTML = 'You have not selected a currency';
     }
 
-<<<<<<< Updated upstream
-=======
-} */
+} */}
 
 
 function CalculateValue(coins){
@@ -311,7 +286,6 @@ function CalculateValue(coins){
       document.querySelector(`[id='row${selections[i].id}']`).insertAdjacentHTML("beforeend", `<h5 class="remove custom-table-error">Error! Not enough money.</h5>`);
     }
   }
->>>>>>> Stashed changes
 }
 
   //adds cryptocurrencies to the local storage
@@ -350,9 +324,6 @@ function updateListOfCurrencies(coins) {
   }
   return list;
 }
-<<<<<<< Updated upstream
-// Reikia pataisyt nes dabar tik du crypto nunullina, bet cia is karto su database
-=======
 
 function findCoinPriceBySymbol(coins, symbol) {
   for (let i = 0; i < coins.length; i++) {
@@ -371,7 +342,6 @@ function getItemFromArrayById(array, id) {
   }
   return -1;
 }
->>>>>>> Stashed changes
 function Clear(){
   localStorage.setItem("BTC", 0);
   localStorage.setItem("ETH", 0);
