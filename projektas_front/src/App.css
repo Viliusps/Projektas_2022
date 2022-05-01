@@ -194,3 +194,7 @@ body{
     margin-left: 67%;
     text-align: center;
   }
+
+  .custom-table-error {
+    color: red;
+  }

@@ -5,8 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 //import Select from '@mui/material/Select';
 import { TextField } from '@material-ui/core';
-//import { Button } from '@material-ui/core';
-import axios from 'axios';
+import axios from 'axios'
 import {useState, useEffect} from 'react';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container'
@@ -17,6 +16,7 @@ import Row from 'react-bootstrap/Col'
 import Col from 'react-bootstrap/Row'
 import $ from 'jquery';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import euroLogo from '../euro-symbol.png';
 import { ContactSupportOutlined } from '@material-ui/icons';
 
 //Bugas 193 line
@@ -27,7 +27,7 @@ export default function AppTrade() {
     const [coins, setCoins] = useState([]);
 
     useEffect(() => {
-      axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=100&page=1&sparkline=false')
+      axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false')
       .then(input => {
         setCoins(input.data)
       }).catch(ex => console.log('Price error!'));
@@ -36,22 +36,20 @@ export default function AppTrade() {
     updateCryptoCurrencyDatabase(coins);
 
     const handleChange = (event) => {
-      console.log("Pakeiciamas i " + event.target.value);
-        setMarket(event.target.value);
-        localStorage.setItem("Market1", event.target.value);
-        //document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[event.target.value]) +  " balance: " +  String(balances[event.target.value]));
         let values = document.getElementsByClassName('payment-currency-input');
         for (let i = 0;  i < values.length; i++) {
           values[i].innerHTML =  event.target.value;
         }
     };
-    const handleChange2 = (event) => {
-      setMarket2(event.target.value);
-      localStorage.setItem("Market2", event.target.value);
-      document.getElementById('marketdisplay2').innerHTML = ("Current " + String(listofcurrencies[event.target.value]) +  " balance: " + String(balances[event.target.value]));
+    const handleCheckmarkChange = (event) => {
+      let last_th = document.querySelector(`[id='row${event.target.id}']`).lastChild;
+      if (last_th.className == "remove custom-table-error") {
+        last_th.parentNode.removeChild(last_th);
+      }
+     
     };
     const callFunction = (event) =>{
-      CalculateValue(listofcurrencies, balances, prices);
+      CalculateValue(coins);
       SaveHistory(listofcurrencies, balances, prices);
     }
 
@@ -87,6 +85,7 @@ export default function AppTrade() {
           <h5>Pay with</h5>
           <Form.Select
           onChange={handleChange}
+          id="paymentCurrency"
           >
             <option value="EUR">EUR</option>
             {coins.map(coin => (
@@ -94,7 +93,7 @@ export default function AppTrade() {
             ))
           }
           </Form.Select>
-          <Button variant="primary" size="lg">Buy</Button>
+          <Button variant="primary" size="lg" onClick={callFunction}>Buy</Button>
       </div>
         </Row>
       </Container>
@@ -112,23 +111,46 @@ export default function AppTrade() {
           </tr>
         </thead>
     <tbody>
+    <tr className="row1" id={'row' + (1)}>
+          <th><img src={euroLogo} alt="cryptocurrency logo" className="cryptocurrency-logo"/></th>
+          <th>Euro</th>
+          <th>€1</th>
+          <th>{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</th>
+          <th> 
+             <InputGroup className="mb-3">
+            <Form.Control aria-label="amount" id={1} className="payment-amount"/>
+            <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
+            </InputGroup>
+          </th>
+        <th>  
+        <Form.Check 
+          type="switch"
+          id= {1}
+          value="EUR"
+          className="check"
+          onChange={handleCheckmarkChange}
+          />
+          </th>
+        </tr>
       {coins.map((coin, index) => (
-        <tr>
+        <tr className="row1" id={'row' + (index + 2)}>
           <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo"/></th>
           <th>{coin.name}</th>
           <th>€{parseFloat(coin.current_price).toFixed(2)}</th>
           <th>{parseFloat(localStorage.getItem(coin.symbol.toUpperCase())).toFixed(2)}</th>
           <th> 
              <InputGroup className="mb-3">
-            <Form.Control aria-label="amount" id={index + 1} className="payment-amount"/>
+            <Form.Control aria-label="amount" id={index + 2} className="payment-amount"/>
             <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
             </InputGroup>
-  </th>
+          </th>
         <th>  
         <Form.Check 
           type="switch"
-          id= {index + 1}
-          value={coin.symbol.toUpperCase()}/>
+          id= {index + 2}
+          value={coin.symbol.toUpperCase()}
+          className="check"
+          onChange={handleCheckmarkChange}/>
           </th>
         </tr>
         ))}
@@ -203,7 +225,7 @@ export default function AppTrade() {
         <label id="error"></label>
       <Button variant="outlined" id="trade" onClick={callFunction}>Trade</Button>
       <Button variant="outlined" id="clear" onClick={Clear}>Clear crypto</Button>
-        */}
+        */
 
 /* function CalculateValue(listofcurrencies, balances, prices){
   if(parseInt(localStorage.getItem("Market1")) >= 0 && parseInt(localStorage.getItem("Market2")) >= 0)
@@ -231,13 +253,37 @@ export default function AppTrade() {
       document.getElementById('error').innerHTML = 'You have not selected a currency';
     }
 
-} */
+} */}
 
 
-function CalculateValue(){
+function CalculateValue(coins){
+  const elements = document.getElementsByClassName("remove custom-table-error");
+    while(elements.length > 0){
+        elements[0].parentNode.removeChild(elements[0]);
+    }
   let selections = document.querySelectorAll('input[type=checkbox]:checked');
   let amounts = document.getElementsByClassName('payment-amount');
+  let paymentCurrencySymbol = document.getElementById('paymentCurrency').value;
   for (let i = 0; i < selections.length; i++) {
+    let setAmount = parseFloat(getItemFromArrayById(amounts, selections[i].id).value);
+    let currentAmount = parseFloat(localStorage.getItem(selections[i].value.toUpperCase()));
+    if (selections[i].value.toUpperCase() == "EUR") {
+      if (localStorage.getItem(paymentCurrencySymbol) >= setAmount && setAmount !== -1) {
+        let boughtAmount = setAmount * parseFloat(findCoinPriceBySymbol(coins, paymentCurrencySymbol)) / 1;
+        localStorage.setItem("EUR", currentAmount + boughtAmount);
+        localStorage.setItem(paymentCurrencySymbol, parseFloat(localStorage.getItem(paymentCurrencySymbol)) - setAmount);
+      }
+      selections[i].checked = false;
+    }
+    else if(localStorage.getItem(paymentCurrencySymbol) >= setAmount && setAmount !== -1) {
+      let boughtAmount = setAmount / parseFloat(findCoinPriceBySymbol(coins, selections[i].value.toUpperCase()));
+      localStorage.setItem(selections[i].value.toUpperCase(), currentAmount + boughtAmount);
+      localStorage.setItem(paymentCurrencySymbol, parseFloat(localStorage.getItem(paymentCurrencySymbol)) - setAmount);
+      selections[i].checked = false;
+    }
+    else {
+      document.querySelector(`[id='row${selections[i].id}']`).insertAdjacentHTML("beforeend", `<h5 class="remove custom-table-error">Error! Not enough money.</h5>`);
+    }
   }
 }
 
@@ -278,12 +324,22 @@ function updateListOfCurrencies(coins) {
   return list;
 }
 
-function formSelectOptions(coins) {
-  const options = [];
-  for (let i = 0; i < options.length; i++) {
-    options.push(coins[i]);
+function findCoinPriceBySymbol(coins, symbol) {
+  for (let i = 0; i < coins.length; i++) {
+    if (coins[i].symbol.toUpperCase() === symbol.toUpperCase()) {
+      return coins[i].current_price;
+    }
   }
-  return options;
+  return -1;
+}
+
+function getItemFromArrayById(array, id) {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].id === id) {
+      return array[i];
+    }
+  }
+  return -1;
 }
 function Clear(){
   localStorage.setItem("BTC", 0);
