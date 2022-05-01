@@ -22,8 +22,6 @@ import { ContactSupportOutlined } from '@material-ui/icons';
 //Bugas 193 line
 
 export default function AppTrade() {
-    const [market1, setMarket] = React.useState('');
-    const [market2, setMarket2] = React.useState('');
     const [coins, setCoins] = useState([]);
 
     useEffect(() => {
@@ -37,10 +35,31 @@ export default function AppTrade() {
 
     const handleChange = (event) => {
         let values = document.getElementsByClassName('payment-currency-input');
-        for (let i = 0;  i < values.length; i++) {
-          values[i].innerHTML =  event.target.value;
+        if (document.getElementsByClassName('payment-currency-input')[0].checked) {
+          for (let i = 0;  i < values.length; i++) {
+            values[i].innerHTML = event.target.value;
+          }
         }
+        document.getElementsByClassName('form-check-input')[0].checked = false;
     };
+
+    const handleCheckbox = (event) => {
+      let checkbox = document.getElementsByClassName('form-check-input');
+      if (checkbox[0].checked) {
+        let paymentCurrencySymbol = document.getElementById('paymentCurrency').value;
+        let values = document.getElementsByClassName('payment-currency-input');
+        for (let i = 0;  i < values.length; i++) {
+          values[i].innerHTML =  paymentCurrencySymbol;
+        }
+      }
+      else {
+        let values = document.getElementsByClassName('payment-currency-input');
+        for (let i = 0;  i < values.length; i++) {
+          values[i].innerHTML =  "EUR";
+        }
+      }
+  };
+
     const handleCheckmarkChange = (event) => {
       let last_th = document.querySelector(`[id='row${event.target.id}']`).lastChild;
       if (last_th.className == "remove custom-table-error") {
@@ -77,7 +96,7 @@ export default function AppTrade() {
     <div>
     <Form>
       <Container>
-        <Row md={4} id="select-buy-form">
+        <Row md={5} id="select-buy-form">
         <div>
           <h5>Pay with</h5>
           <Form.Select
@@ -90,6 +109,7 @@ export default function AppTrade() {
             ))
           }
           </Form.Select>
+          <h5>Write the trading budget in the selected currency <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onClick={handleCheckbox}/></h5>
           <Button variant="primary" size="lg" onClick={callFunction}>Buy</Button>
       </div>
         </Row>
@@ -115,7 +135,7 @@ export default function AppTrade() {
           <th>{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</th>
           <th> 
              <InputGroup className="mb-3">
-            <Form.Control aria-label="amount" id={1} className="payment-amount"/>
+            <Form.Control aria-label="amount" id={1} className="payment-amount" type="number"/>
             <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
             </InputGroup>
           </th>
@@ -262,28 +282,51 @@ function CalculateValue(coins){
     while(elements.length > 0){
         elements[0].parentNode.removeChild(elements[0]);
     }
-  let selections = document.querySelectorAll('input[type=checkbox]:checked');
+  let selections = document.querySelectorAll('.check input[type=checkbox]:checked');
   let amounts = document.getElementsByClassName('payment-amount');
+  let isChecked = document.querySelector('input[id=flexCheckChecked]').checked;
   let paymentCurrencySymbol = document.getElementById('paymentCurrency').value;
   for (let i = 0; i < selections.length; i++) {
-    let setAmount = parseFloat(getItemFromArrayById(amounts, selections[i].id).value);
+    let setBudget = parseFloat(getItemFromArrayById(amounts, selections[i].id).value);
     let currentAmount = parseFloat(localStorage.getItem(selections[i].value.toUpperCase()));
     if (selections[i].value.toUpperCase() == "EUR") {
-      if (localStorage.getItem(paymentCurrencySymbol) >= setAmount && setAmount !== -1) {
-        let boughtAmount = setAmount * parseFloat(findCoinPriceBySymbol(coins, paymentCurrencySymbol)) / 1;
-        localStorage.setItem("EUR", currentAmount + boughtAmount);
-        localStorage.setItem(paymentCurrencySymbol, parseFloat(localStorage.getItem(paymentCurrencySymbol)) - setAmount);
+      if (isChecked && localStorage.getItem(paymentCurrencySymbol) >= setBudget && setBudget !== -1 || !isChecked && localStorage.getItem(paymentCurrencySymbol) * parseFloat(findCoinPriceBySymbol(coins, paymentCurrencySymbol)) >= setBudget && setBudget !== -1) {
+        let boughtAmount;
+        if (isChecked) {
+          boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, paymentCurrencySymbol)) / 1;
+          localStorage.setItem("EUR", currentAmount + boughtAmount);
+          localStorage.setItem(paymentCurrencySymbol, parseFloat(localStorage.getItem(paymentCurrencySymbol)) - setBudget);
+        }
+        else {
+          boughtAmount = setBudget;
+          localStorage.setItem("EUR", currentAmount + boughtAmount);
+          localStorage.setItem("EUR", parseFloat(localStorage.getItem("EUR")) - (setBudget / findCoinPriceBySymbol(coins, paymentCurrencySymbol)));
+        }
+        selections[i].checked = false;
+        document.querySelector(`input.payment-amount.form-control[id='${selections[i].id}']`).value = "";
+      }
+      else {
+        console.log(selections[i].id);
+        document.querySelector(`[id=row${selections[i].id}]`).insertAdjacentHTML("beforeend", `<h5 class="remove custom-table-error">Error! Not enough money.</h5>`);
+      }
+    }
+    else if(isChecked && localStorage.getItem(paymentCurrencySymbol) >= setBudget && setBudget !== -1 || !isChecked && localStorage.getItem(paymentCurrencySymbol) >= setBudget) {
+      let boughtAmount;
+      if (isChecked) {
+        boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, paymentCurrencySymbol)) / parseFloat(findCoinPriceBySymbol(coins, selections[i].value.toUpperCase()));
+        localStorage.setItem(selections[i].value.toUpperCase(), currentAmount + boughtAmount);
+        localStorage.setItem(paymentCurrencySymbol, parseFloat(localStorage.getItem(paymentCurrencySymbol)) - setBudget);
+      }
+      else {
+        boughtAmount = setBudget / parseFloat(findCoinPriceBySymbol(coins, selections[i].value.toUpperCase()));
+        localStorage.setItem(selections[i].value.toUpperCase(), currentAmount + boughtAmount);
+        localStorage.setItem(paymentCurrencySymbol, parseFloat(localStorage.getItem(paymentCurrencySymbol)) - parseFloat((setBudget / findCoinPriceBySymbol(coins, paymentCurrencySymbol))));
       }
       selections[i].checked = false;
-    }
-    else if(localStorage.getItem(paymentCurrencySymbol) >= setAmount && setAmount !== -1) {
-      let boughtAmount = setAmount / parseFloat(findCoinPriceBySymbol(coins, selections[i].value.toUpperCase()));
-      localStorage.setItem(selections[i].value.toUpperCase(), currentAmount + boughtAmount);
-      localStorage.setItem(paymentCurrencySymbol, parseFloat(localStorage.getItem(paymentCurrencySymbol)) - setAmount);
-      selections[i].checked = false;
+      document.querySelector(`input.payment-amount.form-control[id='${selections[i].id}']`).value = "";
     }
     else {
-      document.querySelector(`[id='row${selections[i].id}']`).insertAdjacentHTML("beforeend", `<h5 class="remove custom-table-error">Error! Not enough money.</h5>`);
+      document.querySelector(`[id=row${selections[i].id}]`).insertAdjacentHTML("beforeend", `<h5 class="remove custom-table-error">Error! Not enough money.</h5>`);
     }
   }
 }
@@ -331,7 +374,7 @@ function findCoinPriceBySymbol(coins, symbol) {
       return coins[i].current_price;
     }
   }
-  return -1;
+  return 1;
 }
 
 function getItemFromArrayById(array, id) {
