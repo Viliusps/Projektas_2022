@@ -40,12 +40,14 @@ function App() {
   }) */
 
   const portfolioSum = portfolioValuesSum(coins);
+  var portfolioString=""
   var portfolioString="";
   if (portfolioSum === 0) {
     portfolioString = "Your portfolio is empty";
   }
   else {
     portfolioString = "Your portfolio value: €" + parseInt(portfolioSum).toFixed(2);
+
   }
   return (
     <div>
