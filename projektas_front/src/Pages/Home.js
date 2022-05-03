@@ -14,7 +14,7 @@ function App() {
                     <a href="/deposit">Deposit</a>
                     <a href="/trade">Trade</a>
                     <a href="/portfolio">Portfolio</a>
-                    <a onClick={Redirect}>Logout</a>
+                    <a onClick={Redirect} href="#">Logout</a>
                 </div>
             </div>
             <div className="App-header">
