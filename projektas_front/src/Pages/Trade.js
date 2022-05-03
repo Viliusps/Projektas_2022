@@ -156,7 +156,7 @@ export default function AppTrade() {
           <th>{parseFloat(localStorage.getItem(coin.symbol.toUpperCase())).toFixed(2)}</th>
           <th> 
              <InputGroup className="mb-3">
-            <Form.Control aria-label="amount" id={index + 2} className="payment-amount"/>
+            <Form.Control aria-label="amount" id={index + 2} className="payment-amount" type="number"/>
             <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
             </InputGroup>
           </th>
