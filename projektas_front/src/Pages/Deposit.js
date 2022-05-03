@@ -17,7 +17,7 @@ function App() {
             <a className="active" href="/deposit">Deposit</a>
             <a href="/trade">Trade</a>
             <a href="/portfolio">Portfolio</a>
-            <a onClick={Redirect}>Logout</a>
+            <a onClick={Redirect} href="#">Logout</a>
         </div>
     </div>
     </div>

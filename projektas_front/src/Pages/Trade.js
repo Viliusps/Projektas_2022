@@ -14,7 +14,6 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Col'
 import Col from 'react-bootstrap/Row'
-import $ from 'jquery';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import euroLogo from '../euro-symbol.png';
 import { ContactSupportOutlined } from '@material-ui/icons';
@@ -87,7 +86,7 @@ export default function AppTrade() {
             <a href="/deposit">Deposit</a>
             <a className="active" href="/trade">Trade</a>
             <a href="/portfolio">Portfolio</a>
-            <a onClick={Redirect}>Logout</a>
+            <a onClick={Redirect} href="#" >Logout</a>
         </div>
     </div>
     </div>
