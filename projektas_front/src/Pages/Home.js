@@ -67,6 +67,7 @@ window.onload = function()
       });
 }
 
+//Visuose paages turi buti!
 function Redirect()
 {
     localStorage.setItem("auth", false);

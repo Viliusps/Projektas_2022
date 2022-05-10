@@ -3,9 +3,22 @@ import { TextField } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Email } from '@material-ui/icons';
+import React, { useEffect, useState } from "react";
+import axios from 'axios';
 
 function App() {
   const navigate = useNavigate();
+
+  const [users, setUser] = useState([]);
+
+    useEffect(() => {
+        getUsers();
+    }, []);
+
+    const getUsers = async () => {
+        const response = await axios.get('http://localhost:5000/users');
+        setUser(response.data);
+    }
 
   return (
     <div className="App">
@@ -31,7 +44,7 @@ function App() {
           />
           <br></br>
           <label id="error"></label>
-        <Button variant="outlined" onClick={CheckInfo}>Login</Button>
+        <Button variant="outlined" onClick={()=>CheckInfo(users)}>Login</Button>
         <br></br>
         <Button variant="outlined" onClick={() => {navigate('/registration')}}>Registration</Button>
       </header>
@@ -39,20 +52,20 @@ function App() {
   );
 }
 
-function CheckInfo(){
-  if (localStorage && 'Email' in localStorage) {
-    var Email = localStorage.getItem("Email");
-  }
-  if (localStorage && 'Password' in localStorage) {
-    var Password = localStorage.getItem("Password");
-  }
-
+function CheckInfo(users){
   var email=document.getElementById("email").value;
   var password=document.getElementById("password").value;
 
-  if(email==Email && password==Password)
+  var exists = false;
+  users.forEach((el)=>{
+    console.log(el.id);
+    if(el.email == email && el.password==password)
+      exists=true;
+  })
+  if(exists)
   {
     localStorage.setItem("auth", true);
+    localStorage.setItem("user",email);
     console.log(localStorage.getItem("auth"));
     window.location.href=('/home');
   }
