@@ -3,8 +3,10 @@ import axios from 'axios'
 import React, {useState, useEffect} from 'react';
 import { TramRounded } from '@material-ui/icons';
 import AppTrade from './Trade.js';
+import logo from '../Bitcoin-Logo.png';
 
 function App() {
+
     return (
         <div>
             <div className="header" id="head">
@@ -13,6 +15,7 @@ function App() {
                     <a className="active" href="/home">Home</a>
                     <a href="/deposit">Deposit</a>
                     <a href="/trade">Trade</a>
+                    <a href="/tradehistory">Trade History</a>
                     <a href="/portfolio">Portfolio</a>
                     <a onClick={Redirect} href="#">Logout</a>
                 </div>
@@ -25,6 +28,7 @@ function App() {
                     <br></br>
                     <label id="change"></label>
                 </div>
+                <img className = "App-logo" src={logo}></img>
             </div> 
         </div>
     )
@@ -32,6 +36,7 @@ function App() {
 
 window.onload = function()
 {
+    
     //Trade langui reikalinga
     localStorage.setItem("Market1", -1);
     localStorage.setItem("Market2", -1);
@@ -65,7 +70,11 @@ window.onload = function()
         document.getElementById('cryptoSum').innerHTML = "Assets value: " + "€" + count.toFixed(2);
         document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
       });
+
+      
 }
+
+
 
 //Visuose paages turi buti!
 function Redirect()

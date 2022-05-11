@@ -19,7 +19,7 @@ function App() {
 
   //gets updated cryptocurrency prices from CoinGecko
   useEffect(() => {
-    axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false')
+    axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false')
     .then(input => {
       setCoins(input.data)
     }).catch(ex => console.log('Price error!'));
@@ -58,6 +58,7 @@ function App() {
             <a href="/home">Home</a>
             <a href="/deposit">Deposit</a>
             <a href="/trade">Trade</a>
+            <a href="/tradehistory">Trade History</a>
             <a className="active" href="/portfolio">Portfolio</a>
             <a onClick={Redirect} href="#" >Logout</a>
         </div>
