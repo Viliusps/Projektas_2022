@@ -37,7 +37,8 @@ function App() {
             <div className="header-right">
                 <a href="/home">Home</a>
                 <a href="/deposit">Deposit</a>
-                <a className="active" href="/trade">Trade</a>
+                <a href="/trade">Trade</a>
+                <a className="active" href="/tradehistory">Trade History</a>
                 <a href="/portfolio">Portfolio</a>
                 <a onClick={Redirect} href="#">Logout</a>
             </div>
