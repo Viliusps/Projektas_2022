@@ -57,15 +57,19 @@ function CheckInfo(users){
   var password=document.getElementById("password").value;
 
   var exists = false;
+  var id;
   users.forEach((el)=>{
     console.log(el.id);
     if(el.email == email && el.password==password)
+    {
       exists=true;
+      id=el.id;
+    }
   })
   if(exists)
   {
     localStorage.setItem("auth", true);
-    localStorage.setItem("user",email);
+    localStorage.setItem("userID", id);
     console.log(localStorage.getItem("auth"));
     window.location.href=('/home');
   }
