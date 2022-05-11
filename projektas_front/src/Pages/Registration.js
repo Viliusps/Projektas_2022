@@ -4,9 +4,10 @@ import { Button } from '@material-ui/core';
 import { Link, Navigate, useNavigate, useRoutes } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import { SettingsInputCompositeTwoTone } from '@material-ui/icons';
 
 function App() {
-  const navigate = useNavigate();;
+  const navigate = useNavigate();
   
   const [users, setUser] = useState([]);
 
@@ -16,7 +17,7 @@ function App() {
 
     const getUsers = async () => {
         const response = await axios.get('http://localhost:5000/users');
-        setUser(response.data);
+        setUser(response.data); 
     }
 
   return (
@@ -56,7 +57,6 @@ function App() {
           />
           <br></br>
           <label id="error"></label>
-          <label id="succesful"></label>
           <Button variant="outlined" onClick={()=>SaveValues(users)}>Sign-up</Button>
           <Button variant="outlined" onClick={() => {navigate('/')}}>Back</Button>
           <br></br>
@@ -75,11 +75,10 @@ function SaveValues(users){
 
   var exists=false;
   users.forEach((el)=>{
-    console.log(el.id);
+    console.log(el.email);
     if(el.email == email)
     exists=true;
   })
-
   if(exists)
   {
     document.getElementById('error').innerHTML = 'This user is already registered';
@@ -98,13 +97,13 @@ function SaveValues(users){
   }
   else
   {
-    document.getElementById('succesful').innerHTML = 'Succesfully registered';
-    console.log(email);
-    console.log(password);
+    
     axios.post('http://localhost:5000/users',{
       email: email,
       password: password
     });
+    window.location.reload();
+    alert("Succesfully registered");
   }
 }
 
