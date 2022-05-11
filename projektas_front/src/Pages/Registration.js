@@ -71,8 +71,6 @@ function SaveValues(users){
   var password=document.getElementById("password").value;
   var Repassword=document.getElementById("repassword").value;
   document.getElementById('error').innerHTML = '';
-  document.getElementById('succesful').innerHTML = '';
-
   var exists=false;
   users.forEach((el)=>{
     console.log(el.email);

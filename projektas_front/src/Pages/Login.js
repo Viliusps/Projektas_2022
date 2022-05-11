@@ -132,7 +132,7 @@ function CheckInfo(users){
     localStorage.setItem("auth", true);
     localStorage.setItem("userID", id);
     console.log(localStorage.getItem("auth"));
-   // window.location.href=('/home');
+    window.location.href=('/home');
   }
   else
   {
