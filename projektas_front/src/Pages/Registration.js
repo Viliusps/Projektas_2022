@@ -1,11 +1,24 @@
 import '../App.css';
 import { TextField } from '@material-ui/core';
 import { Button } from '@material-ui/core';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useRoutes } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
+import { SettingsInputCompositeTwoTone } from '@material-ui/icons';
 
 function App() {
   const navigate = useNavigate();
+  
+  const [users, setUser] = useState([]);
+
+    useEffect(() => {
+        getUsers();
+    }, []);
+
+    const getUsers = async () => {
+        const response = await axios.get('http://localhost:5000/users');
+        setUser(response.data); 
+    }
 
   return (
     <form>
@@ -44,8 +57,7 @@ function App() {
           />
           <br></br>
           <label id="error"></label>
-          <label id="succesful"></label>
-          <Button variant="outlined" onClick={SaveValues}>Sign-up</Button>
+          <Button variant="outlined" onClick={()=>SaveValues(users)}>Sign-up</Button>
           <Button variant="outlined" onClick={() => {navigate('/')}}>Back</Button>
           <br></br>
         </header>
@@ -54,13 +66,18 @@ function App() {
   );
 }
 
-function SaveValues(){
+function SaveValues(users){
   var email=document.getElementById("email").value;
   var password=document.getElementById("password").value;
   var Repassword=document.getElementById("repassword").value;
   document.getElementById('error').innerHTML = '';
-  document.getElementById('succesful').innerHTML = '';
-  if(email==localStorage.getItem("Email"))
+  var exists=false;
+  users.forEach((el)=>{
+    console.log(el.email);
+    if(el.email == email)
+    exists=true;
+  })
+  if(exists)
   {
     document.getElementById('error').innerHTML = 'This user is already registered';
   }
@@ -78,9 +95,13 @@ function SaveValues(){
   }
   else
   {
-    document.getElementById('succesful').innerHTML = 'Succesfully registered';
-    localStorage.setItem("Email",email)
-    localStorage.setItem("Password",password);
+    
+    axios.post('http://localhost:5000/users',{
+      email: email,
+      password: password
+    });
+    window.location.reload();
+    alert("Succesfully registered");
   }
 }
 
