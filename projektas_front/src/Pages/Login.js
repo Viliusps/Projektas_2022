@@ -66,6 +66,7 @@ function App() {
 
 function CheckPortfolio(portfolios, cryptos)
 {
+
       var userid = localStorage.getItem("userID");
       var portfolioid;
       var exists = false;
@@ -88,6 +89,7 @@ function CheckPortfolio(portfolios, cryptos)
 }
 
 function CheckInfo(users){
+  localStorage.clear();
   var email=document.getElementById("email").value;
   var password=document.getElementById("password").value;
   var id;
