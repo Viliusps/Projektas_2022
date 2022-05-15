@@ -29,14 +29,6 @@ function App() {
   });
 }
 
-
-
-
-
-
-
-
-
   //------------------------------------------------
   //localStorage.clear();
   var currentvalue=0;

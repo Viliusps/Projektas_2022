@@ -39,14 +39,8 @@ function App() {
 
         var exist=false;
         amounts.forEach((el)=>{
-            console.log("is local storage " + portfolioid);
-            console.log("ciklo elementas" + el.fk_portfolio);
-            console.log("el fk crtypto" + el.fk_crypto);
-            console.log("tipas" + typeof(el.fk_crypto));
-            console.log();
             if(el.fk_portfolio==portfolioid && el.fk_crypto == 6)
             {
-                console.log(exist);
                 exist=true;
             }
         })
@@ -58,7 +52,6 @@ function App() {
                 if(el.name == "EUR") finalcrypto = el.id;
             })
             
-            console.log("test");
             axios.post('http://localhost:5000/amounts',{
                 amount: 0,
                 fk_crypto: finalcrypto,
@@ -87,10 +80,6 @@ function App() {
                         {
                             sum += el.amount * ell.current_price;
                             assetsum += el.amount * ell.current_price;
-                            console.log(ell.symbol);
-                            console.log(el.amount);
-                            console.log("Tarpas");
-                            console.log(connecteduserportfolio);
                         }
                         
 
@@ -111,20 +100,23 @@ function App() {
 
         var changeAvg=0;
         var count=0;
-        prices.forEach(coin => {
-            amounts.forEach((el)=>{
-                if(el.fk_portfolio == localStorage.getItem("UserPortfolio") && el.fk_crypto != 6)
+
+        amounts.forEach(el => {
+            prices.forEach(coin=>{
+                
+                if(el.fk_portfolio == localStorage.getItem("UserPortfolio") && el.fk_crypto != 6 && GetCryptoNameById(cryptos,el.fk_crypto).toLowerCase()==coin.symbol)
                 {
-                    changeAvg+=parseFloat(coin.price_change_percentage_24h)*(parseFloat(localStorage.getItem(coin.symbol.toUpperCase()))*parseFloat(coin.current_price))
-                    count+=parseFloat(localStorage.getItem(coin.symbol.toUpperCase()))*parseFloat(coin.current_price)
+                    console.log("suveikia");
+                    changeAvg+=parseFloat(coin.price_change_percentage_24h)*(parseFloat(el.amount)*parseFloat(coin.current_price));
+                    count+=parseFloat(el.amount)*parseFloat(coin.current_price)
                 }
             })
-                  
-        });
-        var change=changeAvg/count;
-        if(count==0)
-            change=0;
-        //document.getElementById('cryptoSum').innerHTML = "Assets value: " + "€" + count.toFixed(2);
+        })
+        console.log(count);
+        var change=0;
+        if(count!=0)
+            var change=changeAvg/count;
+        
         document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
         
         
