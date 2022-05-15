@@ -9,22 +9,44 @@ import Paper from '@mui/material/Paper';
 import axios from 'axios'
 import React, {useState, useEffect} from 'react';
 import logo from '../euro-symbol.png';
+import { ReplayOutlined, SignalCellularConnectedNoInternet0BarSharp } from '@material-ui/icons';
 //import Input from '@mui/material/Input';
 
 //const ariaLabel = { 'aria-label': 'description' };
 
 function App() {
+    const [coins, setCoins] = useState([]);
+    const [amounts, setAmounts] = useState([]);
+    const [portfolios, setPortfolios] = useState([]);
+    const [cryptos, setCryptos] = useState([]);
 
-  const [coins, setCoins] = useState([]);
+    useEffect(() => {
+        getDatabaseData();
+    }, []);
 
-  useEffect(() => {
-    getCoins();
-}, []);
+    const getDatabaseData = () => {
+        let endpoints = [
+        'http://localhost:5000/amounts',
+        'http://localhost:5000/portfolios',
+        'http://localhost:5000/cryptos',
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false%27'
+        ];
+        
+    axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: portfolios}, {data: cryptos}, {data: coins}] )=> {
+      amounts.forEach(el => {
 
-const getCoins = async () => {
-  const response = await axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false%27');
-  setCoins(response.data);
-}
+        if(el.fk_portfolio == localStorage.getItem("UserPortfolio"))
+        {
+          localStorage.setItem(GetCryptoNameById(cryptos, el.fk_crypto), el.amount);
+        }
+      })
+
+      setAmounts(amounts)
+      setPortfolios(portfolios)
+      setCryptos(cryptos)
+      setCoins(coins)
+    });
+  }
   //adds cryptocurrency prices to the local storage, may transfer this function to another file in the future
  // updateCryptoCurrencyDatabase(coins);
 
@@ -32,7 +54,6 @@ const getCoins = async () => {
   const handleChange = change => {
     setSearch(change.target.value) 
   }
-
   //For (if) search implementation
   const filteredCoins = coins.filter(coin => {
     coin.name.toLowerCase().includes(search.toLowerCase())
@@ -48,7 +69,6 @@ const getCoins = async () => {
     portfolioString = "Your portfolio value: €" + parseInt(portfolioSum).toFixed(2);
 
   }
-
   return (
     <div>
     <div>
@@ -66,7 +86,7 @@ const getCoins = async () => {
     </div>
       <header className="App-header">
         <h3>{portfolioString}</h3>
-{/*       <form style={{marginLeft: '50%', marginBottom: '30px'}}>
+        {/*<form style={{marginLeft: '50%', marginBottom: '30px'}}>
          Useful if the user owns lots of cryptocurrencies 
         <Input placeholder="Search" inputProps={ariaLabel} onChange={handleChange} defaultValue=""/>
       </form> */}
@@ -90,8 +110,7 @@ const getCoins = async () => {
           >
             {/*Symbol link:  "https://cdn.icon-icons.com/icons2/1369/PNG/512/-euro-symbol_90430.png" */}
            <TableCell align="center" className='tableHeader'><img src={logo} alt="Euro logo" className="cryptocurrency-logo"/></TableCell>
-           {GetData()}
-           { console.log("asasdd")}
+           { console.log("table")}
             <TableCell align="center" className='tableHeader'>Euro</TableCell>
             <TableCell align="center" className='tableHeader'>EUR</TableCell>
             <TableCell align="center" className='tableHeader'>{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</TableCell>
@@ -99,7 +118,7 @@ const getCoins = async () => {
             <TableCell align="center" className='tableHeader'>€{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</TableCell>
             <TableCell align="center" className='tableHeader'></TableCell>
           </TableRow>
-          {/*coins.filter(coin => (localStorage.getItem(coin.symbol.toUpperCase()) > 0)).map(coin => ( //Leaves only those cryptocurrencies that the user owns
+          {coins.filter(coin => (localStorage.getItem(coin.symbol.toUpperCase()) > 0)).map(coin => ( //Leaves only those cryptocurrencies that the user owns
             <TableRow
               key={coin.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 }}}
@@ -113,48 +132,15 @@ const getCoins = async () => {
               <TableCell align="center" className='tableElement'>€{(parseFloat((coin.current_price * localStorage.getItem(coin.symbol.toUpperCase())))).toFixed(2)}</TableCell>
               <TableCell align="center" className='tableHeader'>{coin.price_change_percentage_24h.toFixed(2)}%</TableCell>
             </TableRow>
-        ))*/}
+        ))}
         </TableBody> }
       </Table>
           </TableContainer>
+      
       {displayTable(portfolioSum)}
     </header>
     </div>
   );
-}
-
-function GetData()
-{
-    const [amounts, setAmounts] = useState([]);
-    const [portfolios, setPortfolios] = useState([]);
-    const [cryptos, setCryptos] = useState([]);
-    
-    useEffect(() => {
-        getDatabaseData();
-    }, []);
-    const getDatabaseData = () => {
-        let endpoints = [
-        'http://localhost:5000/amounts',
-        'http://localhost:5000/portfolios',
-        'http://localhost:5000/cryptos'
-        ];
-      
-    axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: portfolios}, {data: cryptos}] )=> {
-      setAmounts(amounts)
-      setPortfolios(portfolios)
-      setCryptos(cryptos)
-      console.log("asd");
-      amounts.forEach(el => {
-            
-          if(el.fk_portfolio == localStorage.getItem("UserPortfolio"))
-          {
-            console.log(el.fk_crypto, " ", el.amount);
-            localStorage.setItem(GetCryptoNameById(cryptos, el.fk_crypto), el.amount);
-          }
-    })
-
-    });
-  }
 }
 
 function displayTable(portfolioSum) {
