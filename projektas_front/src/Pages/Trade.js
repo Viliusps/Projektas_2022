@@ -22,15 +22,29 @@ import { ContactSupportOutlined } from '@material-ui/icons';
 
 export default function AppTrade() {
     const [coins, setCoins] = useState([]);
+    const [databaseCurrencies, setCurrencies] = useState([]);
+    const [databaseAmounts, setAmounts] = useState([]);
 
     useEffect(() => {
-      axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false')
-      .then(input => {
-        setCoins(input.data)
-      }).catch(ex => console.log('Price error!'));
-    });
+      getDatabaseData();
+    }, []);
 
-    updateCryptoCurrencyDatabase(coins);
+
+
+    const getDatabaseData = () => {
+      let endpoints = [
+        'http://localhost:5000/amounts',
+        'http://localhost:5000/cryptos',
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=80&page=1&sparkline=false'
+      ];
+
+    axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: currencies}, {data: coins}]) => {
+      setCoins(coins);
+      setAmounts(amounts);
+      setCurrencies(currencies);
+    })
+  };
+
 
     const handleChange = (event) => {
         let values = document.getElementsByClassName('payment-currency-input');
@@ -67,14 +81,9 @@ export default function AppTrade() {
      
     };
     const callFunction = (event) =>{
-      CalculateValue(coins);
-      SaveHistory(listofcurrencies, balances, prices);
+      CalculateValue(coins, databaseCurrencies, databaseAmounts);
+      //SaveHistory(listofcurrencies, balances, prices);
     }
-
-    //Order of values - EUR is the first and then the rest 
-    const balances = updateBalances(coins);
-    const prices = updatePrices(coins);
-    const listofcurrencies = updateListOfCurrencies(coins);
     
     return (
     <div>
@@ -103,9 +112,8 @@ export default function AppTrade() {
           onChange={handleChange}
           id="paymentCurrency"
           >
-            <option value="EUR">EUR</option>
-            {coins.map(coin => (
-              <option value={coin.symbol.toUpperCase()}>{coin.symbol.toUpperCase()}</option>
+            {databaseCurrencies.map(currency => (
+              <option value={currency.id}>{currency.name}</option>
             ))
           }
           </Form.Select>
@@ -128,49 +136,56 @@ export default function AppTrade() {
           </tr>
         </thead>
     <tbody>
-    <tr className="row1" id={'row' + (1)}>
-          <th><img src={euroLogo} alt="cryptocurrency logo" className="cryptocurrency-logo"/></th>
-          <th>Euro</th>
-          <th>€1</th>
-          <th>{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</th>
-          <th> 
-             <InputGroup className="mb-3">
-            <Form.Control aria-label="amount" id={1} className="payment-amount" type="number"/>
-            <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
-            </InputGroup>
-          </th>
-        <th>  
-        <Form.Check 
-          type="switch"
-          id= {1}
-          value="EUR"
-          className="check"
-          onChange={handleCheckmarkChange}
-          />
-          </th>
-        </tr>
-      {coins.map((coin, index) => (
-        <tr className="row1" id={'row' + (index + 2)}>
-          <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo"/></th>
-          <th>{coin.name}</th>
-          <th>€{parseFloat(coin.current_price).toFixed(2)}</th>
-          <th>{parseFloat(localStorage.getItem(coin.symbol.toUpperCase())).toFixed(2)}</th>
-          <th> 
-             <InputGroup className="mb-3">
-            <Form.Control aria-label="amount" id={index + 2} className="payment-amount" type="number"/>
-            <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
-            </InputGroup>
-          </th>
-        <th>  
-        <Form.Check 
-          type="switch"
-          id= {index + 2}
-          value={coin.symbol.toUpperCase()}
-          className="check"
-          onChange={handleCheckmarkChange}/>
-          </th>
-        </tr>
-        ))}
+                        {databaseCurrencies.map(function (currency, index) {
+                          if (currency.name !== "EUR") {
+                            let coin = coins.find(coin => coin.symbol.toUpperCase() === currency.name.toUpperCase());
+                            console.log(coin);
+                            return (<tr className="row1" id={'row' + currency.id}>
+                              <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
+                              <th>{coin.name}</th>
+                              <th>€{parseFloat(coin.current_price).toFixed(2)}</th>
+                              <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, localStorage.getItem("loggedInUserPortfolio"), currency)).toFixed(2)}</th>
+                              <th>
+                                <InputGroup className="mb-3">
+                                  <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
+                                  <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
+                                </InputGroup>
+                              </th>
+                              <th>
+                                <Form.Check
+                                  type="switch"
+                                  id={currency.id}
+                                  value={currency.id}
+                                  className="check"
+                                  onChange={handleCheckmarkChange} />
+                              </th>
+                            </tr>)
+                          }
+                          else {
+                            return (<tr className="row1" id={'row' + currency.id}>
+                              <th><img src={euroLogo} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
+                              <th>Euro</th>
+                              <th>€1</th>
+                              <th>{findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, localStorage.getItem("loggedInUserPortfolio"), currency).toFixed(2)}</th>
+                              <th>
+                                <InputGroup className="mb-3">
+                                  <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
+                                  <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
+                                </InputGroup>
+                              </th>
+                              <th>
+                                <Form.Check
+                                  type="switch"
+                                  id={currency.id}
+                                  value={currency.id}
+                                  className="check"
+                                  onChange={handleCheckmarkChange}
+                                />
+                              </th>
+                            </tr>)
+                          }
+                        }
+                        )}
       <tr>
       </tr>
     </tbody>
@@ -277,7 +292,7 @@ function CalculateValue(listofcurrencies, balances, prices){
 } */}
 
 
-function CalculateValue(coins){
+function CalculateValue(coins, databaseCurrencies, databaseAmounts){
   const elements = document.getElementsByClassName("remove custom-table-error");
     while(elements.length > 0){
         elements[0].parentNode.removeChild(elements[0]);
@@ -285,22 +300,25 @@ function CalculateValue(coins){
   let selections = document.querySelectorAll('.check input[type=checkbox]:checked');
   let amounts = document.getElementsByClassName('payment-amount');
   let isChecked = document.querySelector('input[id=flexCheckChecked]').checked;
-  let paymentCurrencySymbol = document.getElementById('paymentCurrency').value;
+  let paymentCurrencyId = document.getElementById('paymentCurrency').value;
+  let paymentCurrencyAmount = parseFloat(findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, paymentCurrencyId));
+  let portfolioId = localStorage.getItem("loggedInUserPortfolio");
   for (let i = 0; i < selections.length; i++) {
     let setBudget = parseFloat(getItemFromArrayById(amounts, selections[i].id).value);
-    let currentAmount = parseFloat(localStorage.getItem(selections[i].value.toUpperCase()));
-    if (selections[i].value.toUpperCase() == "EUR") {
-      if (isChecked && localStorage.getItem(paymentCurrencySymbol) >= setBudget && setBudget !== -1 || !isChecked && localStorage.getItem(paymentCurrencySymbol) * parseFloat(findCoinPriceBySymbol(coins, paymentCurrencySymbol)) >= setBudget && setBudget !== -1) {
+    let currentAmount = parseFloat(findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, selections[i].id));
+    let currentSymbol = databaseCurrencies.find(currency => currency.id === parseInt(selections[i].value));
+    if (currentSymbol == "EUR") {
+      if ((isChecked && paymentCurrencyAmount >= setBudget && setBudget !== -1) || (!isChecked && paymentCurrencyAmount * parseFloat(findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)) >= setBudget && setBudget !== -1)) {
         let boughtAmount;
         if (isChecked) {
-          boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, paymentCurrencySymbol)) / 1;
-          localStorage.setItem("EUR", currentAmount + boughtAmount);
-          localStorage.setItem(paymentCurrencySymbol, parseFloat(localStorage.getItem(paymentCurrencySymbol)) - setBudget);
+          boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)) / 1;
+          updateAmount(databaseAmounts, portfolioId, selections[i].value, boughtAmount);
+          updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, paymentCurrencyAmount - setBudget);
         }
         else {
           boughtAmount = setBudget;
-          localStorage.setItem("EUR", currentAmount + boughtAmount);
-          localStorage.setItem("EUR", parseFloat(localStorage.getItem("EUR")) - (setBudget / findCoinPriceBySymbol(coins, paymentCurrencySymbol)));
+          updateAmount(databaseAmounts, portfolioId, selections[i].value, currentAmount + boughtAmount);
+          updateAmount(databaseAmounts, portfolioId, selections[i].value, currentAmount - (setBudget / findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)));
         }
         selections[i].checked = false;
         document.querySelector(`input.payment-amount.form-control[id='${selections[i].id}']`).value = "";
@@ -310,17 +328,17 @@ function CalculateValue(coins){
         document.querySelector(`[id=row${selections[i].id}]`).insertAdjacentHTML("beforeend", `<h5 class="remove custom-table-error">Error! Not enough money.</h5>`);
       }
     }
-    else if(isChecked && localStorage.getItem(paymentCurrencySymbol) >= setBudget && setBudget !== -1 || !isChecked && localStorage.getItem(paymentCurrencySymbol) >= setBudget) {
+    else if((isChecked && paymentCurrencyAmount >= setBudget && setBudget !== -1) || (!isChecked && paymentCurrencyAmount >= setBudget)) {
       let boughtAmount;
       if (isChecked) {
-        boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, paymentCurrencySymbol)) / parseFloat(findCoinPriceBySymbol(coins, selections[i].value.toUpperCase()));
-        localStorage.setItem(selections[i].value.toUpperCase(), currentAmount + boughtAmount);
-        localStorage.setItem(paymentCurrencySymbol, parseFloat(localStorage.getItem(paymentCurrencySymbol)) - setBudget);
+        boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)) / parseFloat(findCoinPriceBySymbol(coins, currentSymbol));
+        updateAmount(databaseAmounts, portfolioId, selections[i].id, currentAmount + boughtAmount);
+        updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, paymentCurrencyAmount - setBudget);
       }
       else {
-        boughtAmount = setBudget / parseFloat(findCoinPriceBySymbol(coins, selections[i].value.toUpperCase()));
-        localStorage.setItem(selections[i].value.toUpperCase(), currentAmount + boughtAmount);
-        localStorage.setItem(paymentCurrencySymbol, parseFloat(localStorage.getItem(paymentCurrencySymbol)) - parseFloat((setBudget / findCoinPriceBySymbol(coins, paymentCurrencySymbol))));
+        boughtAmount = setBudget / parseFloat(findCoinPriceBySymbol(coins, currentSymbol));
+        updateAmount(databaseAmounts, portfolioId, selections[i].id, currentAmount + boughtAmount);
+        updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, paymentCurrencyAmount - parseFloat(setBudget / findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)));
       }
       selections[i].checked = false;
       document.querySelector(`input.payment-amount.form-control[id='${selections[i].id}']`).value = "";
@@ -331,42 +349,56 @@ function CalculateValue(coins){
   }
 }
 
-  //adds cryptocurrencies to the local storage
-  function updateCryptoCurrencyDatabase(coins) {
-    for (let i = 0; i < coins.length; i++) {
-      let currentItem = localStorage.getItem(coins[i].symbol.toUpperCase());
-      if (currentItem === null) { //if the item does not exist
-        localStorage.setItem(coins[i].symbol.toUpperCase(), 0)
-      }
-    }
-  }
 
-function updateBalances(coins) {
-  const balances = [];
-  balances.push(localStorage.getItem("EUR"));
-  for (let i = 0; i < coins.length; i++) {
-    balances.push(localStorage.getItem(coins[i].symbol.toUpperCase()));
-  }
-  return balances;
+function findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, cryptoId) {
+  return databaseAmounts.find(amount => amount.fk_portfolio === portfolioId && amount.fk_crypto === cryptoId);
 }
 
-function updatePrices(coins) {
-  const prices = [];
-  prices.push(1);
-  for (let i = 0; i < coins.length; i++) {
-    prices.push(coins[i].current_price);
-  }
-  return prices;
+function findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, portfolioId, currency) {
+  console.log(currency);
+  return databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(currency.id)).amount;
 }
 
-function updateListOfCurrencies(coins) {
-  const list = []
-  list.push("EUR");
-  for (let i = 0; i < coins.length; i++) {
-    list.push(coins[i].symbol.toUpperCase());
-  }
-  return list;
+function setLocalStorageAmounts(databaseCurrencies, databaseAmounts) {
+  databaseCurrencies.forEach(currency => {
+    console.log(currency);
+    let currentAmount = findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, localStorage.getItem("loggedInUserPortfolio"), currency.name.toUpperCase());
+    localStorage.setItem(currency.name.toUpperCase(), currentAmount);
+  })
 }
+
+function updateAmount(databaseAmounts, portfolioId, cryptoId, amountToUpdate) {
+  let amount = databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(cryptoId));
+  axios.patch(`http://localhost:5000/amounts/${amount.id}`,
+            { 
+              amount: parseFloat(amountToUpdate).toFixed(2)
+            }
+        ).then((response) => {
+          console.log(response);
+        }).catch((error) => {
+          console.log(error + " klaida!");
+        })
+}
+
+
+function pushTradeHistory(boughtCurrency, boughtWithCurrency, boughtAmount, coins) {
+  let firstPrice = findCoinPriceBySymbol(coins, boughtCurrency.name);
+  let secondPrice = findCoinPriceBySymbol(coins, boughtWithCurrency.name);
+  var today = new Date();
+  axios.post('http://localhost:5000/tradehistories', {
+    fk_Bought_currency: boughtCurrency.id,
+    fk_Bought_with_currency: boughtWithCurrency.id,
+    Amount: boughtAmount,
+    Date: today.getFullYear() + '-' + (today.getMonth() + 1) + ' ' + today.getDate(),
+    Price_of_first: firstPrice,
+    Price_of_second: secondPrice,
+    fk_portfolio: localStorage.getItem("loggedInUserPortfolio")
+  });
+}
+
+
+
+
 
 function findCoinPriceBySymbol(coins, symbol) {
   for (let i = 0; i < coins.length; i++) {

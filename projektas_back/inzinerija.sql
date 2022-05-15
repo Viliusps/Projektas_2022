@@ -61,12 +61,12 @@ CREATE TABLE `cryptos` (
 -- Dumping data for table `cryptos`
 --
 
-INSERT INTO `cryptos` (`Id`, `Name`, `createdAt`, `updatedAt`) VALUES
+/* INSERT INTO `cryptos` (`Id`, `Name`, `createdAt`, `updatedAt`) VALUES
 (1, 'ETH', 2022-04-29, 2022-04-29),
 (2, 'BTC', 2022-04-29, 2022-04-29),
 (3, 'ADA', 2022-04-29, 2022-04-29),
 (4, 'DOT', 2022-04-29, 2022-04-29),
-(5, 'SOL', 2022-04-29, 2022-04-29);
+(5, 'SOL', 2022-04-29, 2022-04-29); */
 
 -- --------------------------------------------------------
 
@@ -185,7 +185,7 @@ ALTER TABLE `amounts`
 -- AUTO_INCREMENT for table `cryptos`
 --
 ALTER TABLE `cryptos`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT for table `portfolios`

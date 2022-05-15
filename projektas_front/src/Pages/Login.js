@@ -2,35 +2,37 @@ import '../App.css';
 import { TextField } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { Email } from '@material-ui/icons';
+import { Email, SettingsBackupRestoreSharp } from '@material-ui/icons';
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 
 function App() {
   const navigate = useNavigate();
-
   const [users, setUser] = useState([]);
   const [portfolios, setPortfolios] = useState([]);
   const [cryptos, setCryptos] = useState([]);
+  const [databaseAmounts, setAmounts] = useState([]);
 
     useEffect(() => {
-        getUsers();
-        getPortfolio();
-        getCrypto();
+      getDatabaseData();
     }, []);
 
-    const getUsers = async () => {
-        const response = await axios.get('http://localhost:5000/users');
-        setUser(response.data);
+    const getDatabaseData = () => {
+      let endpoints = [
+        'http://localhost:5000/users',
+        'http://localhost:5000/portfolios',
+        'http://localhost:5000/cryptos',
+        'http://localhost:5000/amounts'
+      ]
+
+      axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: users}, {data: portfolios}, {data: currencies}, {data: amounts}]) => {
+        setAmounts(amounts);
+        setCryptos(currencies);
+        setUser(users);
+        setPortfolios(portfolios);
+      })
     }
-    const getPortfolio = async () => {
-      const response = await axios.get('http://localhost:5000/portfolios');
-      setPortfolios(response.data);
-  }
-  const getCrypto = async () => {
-    const response = await axios.get('http://localhost:5000/cryptos');
-    setCryptos(response.data);
-}
+
 
   return (
     <div className="App">
@@ -67,11 +69,12 @@ function App() {
 function CheckPortfolio(portfolios, cryptos)
 {
 
+    console.log("as");
       var userid = localStorage.getItem("userID");
       var portfolioid;
       var exists = false;
       portfolios.forEach((el)=>{
-        if(el.fk_user == userid) 
+        if(el.fk_user == userid && !exists) 
         {
             portfolioid = el.id;
             exists = true;
