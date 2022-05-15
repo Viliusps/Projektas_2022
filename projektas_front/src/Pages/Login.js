@@ -87,15 +87,6 @@ function CheckPortfolio(portfolios, cryptos)
     }
 }
 
-function GetCryptoByName(name, cryptos)
-{
-  var finalcrypto = '';
-  cryptos.forEach((el)=>{
-    if(el.name == name) finalcrypto = el.id;
-})
-  
-return finalcrypto;
-}
 function CheckInfo(users){
   var email=document.getElementById("email").value;
   var password=document.getElementById("password").value;

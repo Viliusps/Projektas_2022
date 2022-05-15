@@ -6,7 +6,58 @@ import AppTrade from './Trade.js';
 import logo from '../Bitcoin-Logo.png';
 
 function App() {
+    
+    const [amounts, setAmounts] = useState([]);
+    const [portfolios, setPortfolios] = useState([]);
+    const [cryptos, setCryptos] = useState([]);
+    useEffect(() => {
+        getDatabaseData();
+    }, []);
+    const getDatabaseData = () => {
+        let endpoints = [
+        'http://localhost:5000/amounts',
+        'http://localhost:5000/portfolios',
+        'http://localhost:5000/cryptos'
+        ];
 
+    axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: portfolios}, {data: cryptos}] )=> {
+        setAmounts(amounts)
+        setPortfolios(portfolios)
+        setCryptos(cryptos)
+
+        var userid=localStorage.getItem("userID");
+        var portfolioid;
+        portfolios.forEach((el)=>{
+            if(el.fk_user==userid)
+            {
+                portfolioid=el.id;
+            }
+        })
+
+        var exist=false;
+        amounts.forEach((el)=>{
+            if(el.fk_portfolio==portfolioid)
+            {
+                exist=true;
+            }
+        })
+
+        if(!exist)
+        {
+            var finalcrypto;
+            cryptos.forEach((el)=>{
+                if(el.name == "EUR") finalcrypto = el.id;
+            })
+            
+            console.log("test");
+            axios.post('http://localhost:5000/amounts',{
+                amount: 0,
+                fk_crypto: finalcrypto,
+                fk_portfolio: portfolioid
+            });
+        }
+    });
+  }
     return (
         <div>
             <div className="header" id="head">
@@ -31,12 +82,11 @@ function App() {
                 <img className = "App-logo" src={logo}></img>
             </div> 
         </div>
-    )
+    ) 
 }
 
 window.onload = function()
 {
-    
     //Trade langui reikalinga
     localStorage.setItem("Market1", -1);
     localStorage.setItem("Market2", -1);
