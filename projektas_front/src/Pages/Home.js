@@ -4,8 +4,30 @@ import React, {useState, useEffect} from 'react';
 import { TramRounded } from '@material-ui/icons';
 import AppTrade from './Trade.js';
 import logo from '../Bitcoin-Logo.png';
+import CryptoList from './dbtest';
 
 function App() {
+
+    const [amounts, setAmounts] = useState([]);
+    const [portfolios, setPortfolios] = useState([]);
+    const [cryptos, setCryptos] = useState([]);
+    useEffect(() => {
+        getDatabaseData();
+    }, []);
+    const getDatabaseData = () => {
+        let endpoints = [
+        'http://localhost:5000/amounts',
+        'http://localhost:5000/portfolios',
+        'http://localhost:5000/cryptos'
+        ];
+        axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: portfolios}, {data: cryptos}] )=> {
+            setAmounts(amounts)
+            setPortfolios(portfolios)
+            setCryptos(cryptos)
+    });
+    setAmountsToZero(amounts, portfolios, cryptos);
+}
+
 
     return (
         <div>
@@ -41,6 +63,8 @@ window.onload = function()
     localStorage.setItem("Market1", -1);
     localStorage.setItem("Market2", -1);
     //--------------------------------
+    
+    
     const ALLcoins = axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false%27').then(input => input.data);
     ALLcoins.then(function(coins) {
         var wallet=0;
@@ -73,6 +97,38 @@ window.onload = function()
 
       
 }
+
+function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencies) {
+    let userId = parseInt(localStorage.getItem("userID"));
+    if (userId === null || databaseAmounts.length > 0) return;
+  
+  
+    databasePortfolios.forEach(portfolio => {
+        if (parseInt(portfolio.fk_user) === userId) {
+            databaseCurrencies.forEach(currency => {
+              if (!existsInArray(databaseAmounts, portfolio.id, currency.id)) {
+                axios.post('http://localhost:5000/amounts', {
+                    amount: 0,
+                    fk_crypto: currency.id,
+                    fk_portfolio: portfolio.id
+                }).then((response) => {
+                  console.log(response)});
+              }
+            });
+        }
+    });
+  }
+
+
+  function existsInArray(array, portfolioId, currencyId) {
+    array.forEach(element => {
+      if (parseInt(element.fk_crypto) === parseInt(currencyId) && parseInt(element.fk_portfolio) === parseInt(portfolioId)) {
+        return true;
+      }
+    })
+    return false;
+  }
+
 
 
 
