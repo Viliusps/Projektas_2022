@@ -149,7 +149,7 @@ function App() {
     ) 
 }
 
-window.onload = function(amounts)
+window.onload = function()
 {
     //Trade langui reikalinga
     localStorage.setItem("Market1", -1);
@@ -168,8 +168,6 @@ window.onload = function(amounts)
         
         localStorage.setItem("AssetValue", wallet)
         //document.getElementById('assets').innerHTML = "Your portfolio value: " + "€" + wallet.toFixed(2);
-
-        
       });
 
       

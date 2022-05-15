@@ -93,7 +93,7 @@ function Save(amounts, portfolios, cryptos){
   var previousvalue = 0;
   amounts.forEach((el)=>{
     cryptos.forEach((ell)=>{
-      if(ell.name=="EUR" && el.fk_portfolio == localStorage.getItem("UserPortfolio"))
+      if(ell.name=="EUR" && el.fk_crypto==6 && el.fk_portfolio == localStorage.getItem("UserPortfolio"))
       {
           previousvalue += el.amount;
       }
@@ -105,14 +105,8 @@ if(currentvalue != previousvalue)
 {
   console.log(localStorage.getItem("UserPortfolio"));
   amounts.forEach((el)=>{
-    console.log("is local storage " + localStorage.getItem("UserPortfolio"));
-    console.log("ciklo elementas" + el.fk_portfolio);
-    console.log("el fk crtypto" + el.fk_crypto);
-    console.log("tipas" + typeof(el.fk_crypto));
-    console.log();
     if(el.fk_portfolio == localStorage.getItem("UserPortfolio") && el.fk_crypto == 6.0)
     {
-      console.log("patch");
         axios.patch('http://localhost:5000/amounts/' + el.id,{
           amount: currentvalue
       })
@@ -120,7 +114,6 @@ if(currentvalue != previousvalue)
   })
 
 }
-  console.log("VERTE" + value);
   var currentvalue = parseFloat(previousvalue) + parseFloat(value);
   console.log(currentvalue);
 
