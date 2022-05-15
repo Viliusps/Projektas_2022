@@ -25,7 +25,6 @@ export const getPortfolioById = async (req, res) => {
 export const createPortfolio = async (req, res) => {
     try {
         await Portfolio.create(req.body);
-        console.log(res.body);
         res.json({
             "message": "Portfolio Created"
         });

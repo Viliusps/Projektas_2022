@@ -1,50 +1,12 @@
 import '../App.css';
 import { TextField } from '@material-ui/core';
 import { Button } from '@material-ui/core';
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
-import { ContactSupportOutlined } from '@material-ui/icons';
 
 function App() {
-  const [amounts, setAmounts] = useState([]);
-  const [portfolios, setPortfolios] = useState([]);
-  const [cryptos, setCryptos] = useState([]);
-  const [prices, setPrices] = useState([]);
-  useEffect(() => {
-      getDatabaseData();
-  }, []);
-  const getDatabaseData = () => {
-      let endpoints = [
-      'http://localhost:5000/amounts',
-      'http://localhost:5000/portfolios',
-      'http://localhost:5000/cryptos',
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false%27'
-      ];
-
-  axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: portfolios}, {data: cryptos}, {data: prices}] )=> {
-      setAmounts(amounts)
-      setPortfolios(portfolios)
-      setCryptos(cryptos)
-      setPrices(prices)
-  });
-}
-
-  //------------------------------------------------
   //localStorage.clear();
-  var currentvalue=0;
-  amounts.forEach((el)=>{
-    cryptos.forEach((ell)=>{
-      if(ell.name=="EUR" && el.fk_crypto == ell.id && el.fk_portfolio == localStorage.getItem("UserPortfolio"))
-      {
-        currentvalue += el.amount;
-      }
-    })
-})
-console.log(localStorage.getItem("UserPortfolio"));
-
-
-
-
+  var currentvalue;
+  if(localStorage.getItem("EUR") > 0) currentvalue = localStorage.getItem("EUR");
+  else currentvalue = 0;
   return (
     <div>
     <div>
@@ -73,13 +35,13 @@ console.log(localStorage.getItem("UserPortfolio"));
             shrink: true,
           }}
         />
-        <Button variant="outlined" id="save" onClick={()=>Save(amounts, portfolios, cryptos)}>Deposit</Button>
-        <Button variant="outlined" id="clear" onClick={()=>Clear(amounts)}>Clear balance</Button>
+        <Button variant="outlined" id="save" onClick={Save}>Deposit</Button>
+        <Button variant="outlined" id="clear" onClick={Clear}>Clear balance</Button>
       </header>
     </div>
   );
 }
-function Save(amounts, portfolios, cryptos){
+function Save(){
 
   
   if(document.getElementById("outlined-number").value > 0)
@@ -90,30 +52,16 @@ function Save(amounts, portfolios, cryptos){
   {
     var value = 0;
   }
-  var previousvalue = 0;
-  amounts.forEach((el)=>{
-    cryptos.forEach((ell)=>{
-      if(ell.name=="EUR" && el.fk_crypto==6 && el.fk_portfolio == localStorage.getItem("UserPortfolio"))
-      {
-          previousvalue += el.amount;
-      }
-    })
-})
-
-var currentvalue = previousvalue + value;
-if(currentvalue != previousvalue)
-{
-  console.log(localStorage.getItem("UserPortfolio"));
-  amounts.forEach((el)=>{
-    if(el.fk_portfolio == localStorage.getItem("UserPortfolio") && el.fk_crypto == 6.0)
-    {
-        axios.patch('http://localhost:5000/amounts/' + el.id,{
-          amount: currentvalue
-      })
-    }
-  })
-
-}
+  if(localStorage.getItem("EUR") > 0)
+  {
+      var previousvalue = parseFloat(localStorage.getItem("EUR"));
+  }
+  else
+  {
+    previousvalue = 0;
+    localStorage.setItem("EUR", 0);
+  }
+  console.log("VERTE" + value);
   var currentvalue = parseFloat(previousvalue) + parseFloat(value);
   console.log(currentvalue);
 
@@ -121,16 +69,8 @@ if(currentvalue != previousvalue)
   else localStorage.setItem("EUR", currentvalue.toFixed(2));
   window.location.reload(false);
 }
-function Clear(amounts){
-
-  amounts.forEach((el)=>{
-    if(el.fk_portfolio == localStorage.getItem("UserPortfolio") && el.fk_crypto == 6)
-    {
-      axios.patch('http://localhost:5000/amounts/' + el.id,{
-        amount: 0
-    })
-    }
-  })
+function Clear(){
+  localStorage.setItem("EUR", 0);
   window.location.reload(false);
 }
 function Redirect()
