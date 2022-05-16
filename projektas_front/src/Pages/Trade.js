@@ -59,10 +59,10 @@ export default function AppTrade() {
     const handleCheckbox = (event) => {
       let checkbox = document.getElementsByClassName('form-check-input');
       if (checkbox[0].checked) {
-        let paymentCurrencySymbol = document.getElementById('paymentCurrency').value;
+        let paymentCurrencyId = document.getElementById('paymentCurrency').value;
         let values = document.getElementsByClassName('payment-currency-input');
         for (let i = 0;  i < values.length; i++) {
-          values[i].innerHTML =  paymentCurrencySymbol;
+          values[i].innerHTML =  databaseCurrencies[paymentCurrencyId - 1].name;
         }
       }
       else {
@@ -82,7 +82,6 @@ export default function AppTrade() {
     };
     const callFunction = (event) =>{
       CalculateValue(coins, databaseCurrencies, databaseAmounts);
-      //SaveHistory(listofcurrencies, balances, prices);
     }
     
     return (
@@ -314,11 +313,13 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts){
           boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)) / 1;
           updateAmount(databaseAmounts, portfolioId, selections[i].value, boughtAmount);
           updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, paymentCurrencyAmount - setBudget);
+          pushTradeHistory(databaseCurrencies[selections[i].value - 1], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
         }
         else {
           boughtAmount = setBudget;
           updateAmount(databaseAmounts, portfolioId, selections[i].value, currentAmount + boughtAmount);
           updateAmount(databaseAmounts, portfolioId, selections[i].value, currentAmount - (setBudget / findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)));
+          pushTradeHistory(databaseCurrencies[selections[i].value - 1], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
         }
         selections[i].checked = false;
         document.querySelector(`input.payment-amount.form-control[id='${selections[i].id}']`).value = "";
@@ -334,11 +335,13 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts){
         boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)) / parseFloat(findCoinPriceBySymbol(coins, currentSymbol));
         updateAmount(databaseAmounts, portfolioId, selections[i].id, currentAmount + boughtAmount);
         updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, paymentCurrencyAmount - setBudget);
+        pushTradeHistory(databaseCurrencies[selections[i].value - 1], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
       }
       else {
         boughtAmount = setBudget / parseFloat(findCoinPriceBySymbol(coins, currentSymbol));
         updateAmount(databaseAmounts, portfolioId, selections[i].id, currentAmount + boughtAmount);
         updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, paymentCurrencyAmount - parseFloat(setBudget / findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)));
+        pushTradeHistory(databaseCurrencies[selections[i].value - 1], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
       }
       selections[i].checked = false;
       document.querySelector(`input.payment-amount.form-control[id='${selections[i].id}']`).value = "";
