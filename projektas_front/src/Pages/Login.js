@@ -7,11 +7,6 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 
 function App() {
-
-  //Patikrina ar yra portfolio
-
-
-
   const navigate = useNavigate();
   const [users, setUser] = useState([]);
   const [portfolios, setPortfolios] = useState([]);

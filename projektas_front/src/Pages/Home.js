@@ -26,9 +26,7 @@ function App() {
             setCryptos(cryptos)
     });
     setAmountsToZero(amounts, portfolios, cryptos);
-}
-
-
+  }
     return (
         <div>
             <div className="header" id="head">
@@ -128,6 +126,38 @@ function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencie
     })
     return false;
   }
+
+function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencies) {
+    let userId = parseInt(localStorage.getItem("userID"));
+    if (userId === null || databaseAmounts.length > 0) return;
+  
+  
+    databasePortfolios.forEach(portfolio => {
+        if (parseInt(portfolio.fk_user) === userId) {
+            databaseCurrencies.forEach(currency => {
+              if (!existsInArray(databaseAmounts, portfolio.id, currency.id)) {
+                axios.post('http://localhost:5000/amounts', {
+                    amount: 0,
+                    fk_crypto: currency.id,
+                    fk_portfolio: portfolio.id
+                }).then((response) => {
+                  console.log(response)});
+              }
+            });
+        }
+    });
+  }
+
+
+  function existsInArray(array, portfolioId, currencyId) {
+    array.forEach(element => {
+      if (parseInt(element.fk_crypto) === parseInt(currencyId) && parseInt(element.fk_portfolio) === parseInt(portfolioId)) {
+        return true;
+      }
+    })
+    return false;
+  }
+
 
 
 
