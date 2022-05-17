@@ -324,6 +324,7 @@ function findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, cryptoId
 function findAmountByPortfolioAndCryptoSymbol( databaseAmounts, portfolioId, currency) {
   let amount = databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(currency.id));
   return amount !== undefined ? amount.amount : 0;
+}
 
 
 function updateAmount(databaseAmounts, portfolioId, cryptoId, amountToUpdate) {
