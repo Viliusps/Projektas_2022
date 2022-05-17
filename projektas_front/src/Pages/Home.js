@@ -10,10 +10,22 @@ import MenuItem from '@mui/material/MenuItem';
 import settings_logo from '../settingslogo.png';
 import logout_logo from '../logout.png';
 import more_logo from '../more.jpg';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 function App() {
     const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [chosenportfolio, setChosen] = React.useState('');
+
+  const handleChange = (event) => {
+
+    setChosen(event.target.value);
+    ChangePortfolio(event.target.value);
+    
+  };
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -42,16 +54,22 @@ function App() {
         setCryptos(cryptos)
         setPrices(prices)
         setAmountsToZero(amounts, portfolios, cryptos)
-
+        if(localStorage.getItem("ChosenPortfolio") === null)
+        {
+            SetDefaultPortfolio(portfolios);
+        }
+        /*else if(localStorage.getItem("ChosenPortfolio").value === undefined)
+        {
+            SetDefaultPortfolio(portfolios);
+        }*/
         var userid=localStorage.getItem("userID");
-        var portfolioid;
-        portfolios.forEach((el)=>{
+        /*portfolios.forEach((el)=>{
             if(el.fk_user==userid)
             {
                 portfolioid=el.id;
             }
-        })
-
+        })*/
+        var portfolioid = localStorage.getItem("ChosenPortfolio");
         var exist=false;
         amounts.forEach((el)=>{
             if(el.fk_portfolio==portfolioid && el.fk_crypto == 6)
@@ -76,22 +94,24 @@ function App() {
             });*/
             document.getElementById('assets').innerHTML = "Your portfolio value: " + "€0.00";
             document.getElementById('cryptoSum').innerHTML = "Assets value: " + "€0.00";
-            localStorage.setItem("UserPortfolio", portfolioid);
+            localStorage.setItem("ChosenPortfolio", portfolioid);
         }
         else{
-            portfolios.forEach((el)=>{
-                if(el.fk_user==localStorage.getItem("userID"))
+            /*portfolios.forEach((el)=>{
+                if(el.fk_user==localStorage.getItem("userID") && el.name == "Default")
                 {
-                    localStorage.setItem("UserPortfolio", el.id);
+                    localStorage.setItem("ChosenPortfolio", el.id);
                 }
-            })
-            var connecteduserportfolio = localStorage.getItem("UserPortfolio");
+            })*/
+            var connectedChosenPortfolio = localStorage.getItem("ChosenPortfolio");
             var cryptoname;
             var sum=0;
             var assetsum=0;
+            console.log("Kumpis pumpis:" + connectedChosenPortfolio);
             amounts.forEach((el)=>{
-                if(el.fk_portfolio==connecteduserportfolio)
+                if(el.fk_portfolio==connectedChosenPortfolio)
                 {
+                    console.log("bananas");
                     cryptoname = GetCryptoNameById(cryptos, el.fk_crypto).toLowerCase();
                     console.log("CRYPTONAME" + cryptoname);
                     prices.forEach((ell)=>{
@@ -121,7 +141,7 @@ function App() {
         amounts.forEach(el => {
             prices.forEach(coin=>{
                 
-                if(el.fk_portfolio == localStorage.getItem("UserPortfolio") && el.fk_crypto != 6 && GetCryptoNameById(cryptos,el.fk_crypto).toLowerCase()==coin.symbol)
+                if(el.fk_portfolio == localStorage.getItem("ChosenPortfolio") && el.fk_crypto != 6 && GetCryptoNameById(cryptos,el.fk_crypto).toLowerCase()==coin.symbol)
                 {
                     changeAvg+=parseFloat(coin.price_change_percentage_24h)*(parseFloat(el.amount)*parseFloat(coin.current_price));
                     count+=parseFloat(el.amount)*parseFloat(coin.current_price)
@@ -133,14 +153,33 @@ function App() {
             var change=changeAvg/count;
         
         document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
-        setAmountsToZero(amounts, portfolios, cryptos);
     });
+
 
   }
     return (
         <div>
             <div className="header" id="head">
                 <a href="/home" className="logo">Skete</a>
+                <p className="ChoosePortfolio"><Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Chosen portfolio</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={ localStorage.getItem("ChosenPortfolio")}
+              label="Portfolio"
+              onChange={(handleChange)}
+            >
+              { portfolios.filter(portfolio => (portfolio.fk_user == localStorage.getItem("userID"))).map((portfolio) => (
+                
+                <MenuItem value={portfolio.id}>{portfolio.name}</MenuItem>
+
+                    )) }
+            </Select>
+          </FormControl>
+        </Box>
+        </p>
                 <div className="header-right">
                     <a className="active" href="/home">Home</a>
                     <a href="/deposit">Deposit</a>
@@ -215,8 +254,21 @@ function GetCryptoNameById(cryptos, id)
         if(el.id == id) finalcrypto = el.name;
     })
     return finalcrypto;
-}
-
+}/*
+function GetPortfolio(portfolios)
+{
+    console.log("veikia gaidys");
+    if(localStorage.getItem("ChosenPortfolio") != null && localStorage.getItem("ChosenPortfolio").value != undefined)
+    {
+        console.log("veikia sabaka" + localStorage.getItem("ChosenPortfolio").value);
+        return localStorage.getItem("ChosenPortfolio");
+    }
+    else
+    {
+        console.log(SetDefaultPortfolio(portfolios))
+        return SetDefaultPortfolio(portfolios);
+    }
+}*/
 function existsInArray(array, portfolioId, currencyId) {
     for (let i = 0; i < array.length; i++) {
         if (parseInt(array[i].fk_crypto) === parseInt(currencyId) && parseInt(array[i].fk_portfolio) === parseInt(portfolioId)) {
@@ -251,6 +303,27 @@ function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencie
 function RedirectUser()
 {
     window.location.replace('/usersettings');
+}
+function SetDefaultPortfolio(portfolios)
+{
+    var portid;
+    var exists = false;
+    portfolios.forEach((el)=>{
+        if(el.name == "Default" && el.fk_user == localStorage.getItem("userID"))
+        {
+            portid = el.id;
+            exists=true;
+        }
+    })
+    console.log(portid);
+    localStorage.setItem("ChosenPortfolio", portid);
+    window.location.reload(false);
+}
+function ChangePortfolio(chosenportfolio)
+{
+    console.log(chosenportfolio);
+    localStorage.setItem("ChosenPortfolio", chosenportfolio);
+    window.location.reload(false);
 }
 //Visuose paages turi buti!
 function Redirect()

@@ -19,10 +19,20 @@ import more_logo from '../more.jpg';
 import { Button } from '@material-ui/core';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 function App() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [chosenportfolio, setChosen] = React.useState('');
+
+  const handleChange = (event) => {
+    setChosen(event.target.value);
+    ChangePortfolio(event.target.value)
+  };
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -55,7 +65,7 @@ function App() {
         })
       
       amounts.forEach(el => {
-        if(el.fk_portfolio == localStorage.getItem("UserPortfolio"))
+        if(el.fk_portfolio == localStorage.getItem("ChosenPortfolio"))
         {
           localStorage.setItem(GetCryptoNameById(cryptos, el.fk_crypto), el.amount.toFixed(2));
           localStorage.setItem(GetCryptoNameById(cryptos, el.fk_crypto)+"stake", el.staking_amount.toFixed(2));
@@ -77,7 +87,7 @@ function App() {
 
       const date=`${current.getFullYear()}-${month}-${day}`;
       amounts.forEach(el=>{
-        if(el.when_staked!="0000-00-00" && el.fk_portfolio==localStorage.getItem("UserPortfolio"))
+        if(el.when_staked!="0000-00-00" && el.fk_portfolio==localStorage.getItem("ChosenPortfolio"))
         {
           var today = new Date();
           var past=new Date(el.when_staked);
@@ -101,6 +111,25 @@ function App() {
     <div>
     <div className="header" id="head">
         <a href="/home" className="logo">Skete</a>
+        <p className="ChoosePortfolio"><Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Chosen portfolio</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={localStorage.getItem("ChosenPortfolio")}
+              label="Portfolio"
+              onChange={(handleChange)}
+            >
+              { portfolios.filter(portfolio => (portfolio.fk_user == localStorage.getItem("userID"))).map((portfolio) => (
+                
+                <MenuItem value={portfolio.id}>{portfolio.name}</MenuItem>
+
+                    )) }
+            </Select>
+          </FormControl>
+        </Box>
+        </p>
         <div className="header-right">
             <a href="/home">Home</a>
             <a href="/deposit">Deposit</a>
@@ -208,7 +237,7 @@ function Stake(amounts, symbol, cryptos)
     document.getElementById('stakingError').innerHTML = '';
     var newAmount=amount-transfer;
     amounts.forEach(el=>{
-      if(GetCryptoNameById(cryptos,el.fk_crypto)==symbol.toUpperCase() && el.fk_portfolio==localStorage.getItem("UserPortfolio"))
+      if(GetCryptoNameById(cryptos,el.fk_crypto)==symbol.toUpperCase() && el.fk_portfolio==localStorage.getItem("ChosenPortfolio"))
       {
         var date;
         if(el.when_staked=="0000-00-00")
@@ -256,7 +285,7 @@ function Unstake(amounts, symbol, cryptos)
     document.getElementById('stakingError').innerHTML ="";
     var newAmount=amount-transfer;
     amounts.forEach(el=>{
-      if(GetCryptoNameById(cryptos,el.fk_crypto)==symbol.toUpperCase() && el.fk_portfolio==localStorage.getItem("UserPortfolio"))
+      if(GetCryptoNameById(cryptos,el.fk_crypto)==symbol.toUpperCase() && el.fk_portfolio==localStorage.getItem("ChosenPortfolio"))
       {
         var first = el.amount+parseFloat(transfer);
         var second = (el.staking_amount*(parseFloat(amount)-parseFloat(transfer)))/parseFloat(amount);
@@ -292,7 +321,7 @@ function GetAmountBySymbol(amounts, symbol, cryptos)
 {
   var amount=0;
   amounts.forEach(el=>{
-    if(GetCryptoNameById(cryptos,el.fk_crypto)==symbol.toUpperCase() && el.fk_portfolio==localStorage.getItem("UserPortfolio"))
+    if(GetCryptoNameById(cryptos,el.fk_crypto)==symbol.toUpperCase() && el.fk_portfolio==localStorage.getItem("ChosenPortfolio"))
     {
       amount=el.amount;
     }
@@ -330,6 +359,12 @@ function GetCryptoNameById(cryptos, id)
 function RedirectUser()
 {
     window.location.replace('/usersettings');
+}
+function ChangePortfolio(chosenportfolio)
+{
+    console.log(chosenportfolio);
+    localStorage.setItem("ChosenPortfolio", chosenportfolio);
+    window.location.reload(false);
 }
 function Redirect()
 {

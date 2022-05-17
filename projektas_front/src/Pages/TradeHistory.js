@@ -16,10 +16,20 @@ import MenuItem from '@mui/material/MenuItem';
 import settings_logo from '../settingslogo.png';
 import logout_logo from '../logout.png';
 import more_logo from '../more.jpg';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 function App() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [chosenportfolio, setChosen] = React.useState('');
+
+  const handleChange = (event) => {
+    setChosen(event.target.value);
+    ChangePortfolio(event.target.value)
+  };
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -29,10 +39,12 @@ function App() {
 
   const [tradehistories, setTradeHistory] = useState([]);
   const [cryptos, setCryptos] = useState([]);
+  const [portfolios, setPortfolios] = useState([]);
 
     useEffect(() => {
         getTradeHistory();
         getCryptos();
+        getPortfolios();
     }, []);
 
     const getTradeHistory = async () => {
@@ -43,11 +55,34 @@ function App() {
       const response = await axios.get('http://localhost:5000/cryptos');
       setCryptos(response.data);
   }
+  const getPortfolios = async () => {
+    const response = await axios.get('http://localhost:5000/portfolios');
+    setPortfolios(response.data);
+}
 
     return (
         <div>
         <div className="header" id="head">
             <a href="/home" className="logo">Skete</a>
+            <p className="ChoosePortfolio"><Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Chosen portfolio</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={localStorage.getItem("ChosenPortfolio")}
+              label="Portfolio"
+              onChange={(handleChange)}
+            >
+              { portfolios.filter(portfolio => (portfolio.fk_user == localStorage.getItem("userID"))).map((portfolio) => (
+                
+                <MenuItem value={portfolio.id}>{portfolio.name}</MenuItem>
+
+                    )) }
+            </Select>
+          </FormControl>
+        </Box>
+        </p>
             <div className="header-right">
                 <a href="/home">Home</a>
                 <a href="/deposit">Deposit</a>
@@ -98,22 +133,20 @@ function App() {
           </TableRow>
         </TableHead>
         <TableBody>
-                  { tradehistories.map((tradehistory, index) => (
+                  { tradehistories.filter(tradehistory => (tradehistory.fk_Portfolio === parseInt(localStorage.getItem("ChosenPortfolio")))).map((tradehistory, index) => (
                         <TableRow key={ tradehistory.Id }>
                             <TableCell align="center" className='tableElement'>{ index + 1 }</TableCell>
                             <TableCell align="center" className='tableElement'> {GetCryptoById(tradehistory.fk_Bought_currency, cryptos)}</TableCell>
-                            <TableCell align="center" className='tableElement'>€{ tradehistory.Price_of_first }</TableCell>
+                            <TableCell align="center" className='tableElement'>€{ tradehistory.Price_of_first.toFixed(2) }</TableCell>
                             <TableCell align="center" className='tableElement'>{GetCryptoById(tradehistory.fk_Bought_with_currency, cryptos)}</TableCell>
-                            <TableCell align="center" className='tableElement'>€{ tradehistory.Price_of_second }</TableCell>
-                            <TableCell align="center" className='tableElement'>{ tradehistory.Amount }</TableCell>
+                            <TableCell align="center" className='tableElement'>€{ tradehistory.Price_of_second.toFixed(2) }</TableCell>
+                            <TableCell align="center" className='tableElement'>{ tradehistory.Amount.toFixed(2) }</TableCell>
                             <TableCell align="center" className='tableElement'>{ tradehistory.Date }</TableCell>
                         </TableRow>
                     )) }
         </TableBody>
       </Table>
           </TableContainer>
-          <br></br>
-        <Button variant="outlined" id="save" href="/trade">Back</Button>
       </header>
     </div>
         </div>
@@ -152,6 +185,12 @@ return finalcrypto;
     });
     return response.data.name;*/
 
+}
+function ChangePortfolio(chosenportfolio)
+{
+    console.log(chosenportfolio);
+    localStorage.setItem("ChosenPortfolio", chosenportfolio);
+    window.location.reload(false);
 }
 function RedirectUser()
 {

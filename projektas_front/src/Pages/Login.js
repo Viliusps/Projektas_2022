@@ -99,6 +99,7 @@ function CheckInfo(users){
   var id;
   var exists = false;
   var id;
+  console.log(users);
   users.forEach((el)=>{
     if(el.email == email && el.password==password)
     {

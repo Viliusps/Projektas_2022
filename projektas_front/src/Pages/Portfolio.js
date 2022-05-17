@@ -16,12 +16,23 @@ import MenuItem from '@mui/material/MenuItem';
 import settings_logo from '../settingslogo.png';
 import logout_logo from '../logout.png';
 import more_logo from '../more.jpg';
-
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { TextField } from '@material-ui/core';
 //const ariaLabel = { 'aria-label': 'description' };
 
 function App() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [chosenportfolio, setChosen] = React.useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleChange = (event) => {
+    setChosen(event.target.value);
+    ChangePortfolio(event.target.value)
+  };
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -35,7 +46,7 @@ function App() {
 
     useEffect(() => {
         getDatabaseData();
-    }, []);
+    },[]);
 
     const getDatabaseData = () => {
         let endpoints = [
@@ -46,13 +57,39 @@ function App() {
         ];
         
     axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: portfolios}, {data: cryptos}, {data: coins}] )=> {
+      var exists = false;
       amounts.forEach(el => {
 
-        if(el.fk_portfolio == localStorage.getItem("UserPortfolio"))
+        if(el.fk_portfolio == localStorage.getItem("ChosenPortfolio"))
         {
           localStorage.setItem(GetCryptoNameById(cryptos, el.fk_crypto), el.amount);
         }
+        if(el.fk_portfolio == portfolios[portfolios.length-1].id)
+        {
+          exists = true;
+          
+        }
+
       })
+      
+      if(!exists)
+      {
+        localStorage.setItem("ChosenPortfolio", portfolios[portfolios.length-1].id);
+        for (let j = 0; j < cryptos.length; j++) {
+          console.log("pries");
+          if (!existsInArray(amounts, localStorage.getItem("ChosenPortfolio"), cryptos[j].id)) {
+            console.log("in");
+              axios.post('http://localhost:5000/amounts', {
+                    amount: 0,
+                    staked_amount: 0,
+                    when_staked: "0000-00-00",
+                    fk_crypto: cryptos[j].id,
+                    fk_portfolio: localStorage.getItem("ChosenPortfolio")
+              }).then((response) => {
+                console.log(response)});
+            }
+        }
+      }
 
       setAmounts(amounts)
       setPortfolios(portfolios)
@@ -87,6 +124,25 @@ function App() {
     <div>
     <div className="header" id="head">
         <a href="/home" className="logo">Skete</a>
+        <p className="ChoosePortfolio"><Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Chosen portfolio</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={localStorage.getItem("ChosenPortfolio")}
+              label="Portfolio"
+              onChange={(handleChange)}
+            >
+              { portfolios.filter(portfolio => (portfolio.fk_user == localStorage.getItem("userID"))).map((portfolio) => (
+                
+                <MenuItem value={portfolio.id}>{portfolio.name}</MenuItem>
+
+                    )) }
+            </Select>
+          </FormControl>
+        </Box>
+        </p>
         <div className="header-right">
             <a href="/home">Home</a>
             <a href="/deposit">Deposit</a>
@@ -122,6 +178,15 @@ function App() {
     </div>
     </div>
       <header className="App-header">
+
+        <div className="toprightcorner">
+        <TextField id="portfolio" label="New portfolio name" variant="outlined" />
+        <br></br>
+        <Button onClick={()=>(NewPortfolio(portfolios, cryptos, amounts, setRefreshKey))}>Create</Button>
+        <br></br>
+        <label id="error"></label>
+        </div>
+        
         <h3>{portfolioString}</h3>
         {/*<form style={{marginLeft: '50%', marginBottom: '30px'}}>
          Useful if the user owns lots of cryptocurrencies 
@@ -141,21 +206,23 @@ function App() {
           </TableRow>
         </TableHead>
         { <TableBody>
+          {amounts.filter(coin => (coin.fk_portfolio == localStorage.getItem("ChosenPortfolio") && coin.fk_crypto == 6 && coin.amount > 0)).map(coin => (
           <TableRow id="euro-row"
             sx={{ '&:last-child td, &:last-child th': { border: 0 }}}
             hover
           >
             {/*Symbol link:  "https://cdn.icon-icons.com/icons2/1369/PNG/512/-euro-symbol_90430.png" */}
+            
            <TableCell align="center" className='tableHeader'><img src={logo} alt="Euro logo" className="cryptocurrency-logo"/></TableCell>
-           { console.log("table")}
             <TableCell align="center" className='tableHeader'>Euro</TableCell>
             <TableCell align="center" className='tableHeader'>EUR</TableCell>
-            <TableCell align="center" className='tableHeader'>{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</TableCell>
+            <TableCell align="center" className='tableHeader'>{parseFloat(coin.amount).toFixed(2)}</TableCell>
             <TableCell align="center" className='tableHeader'>1</TableCell>
-            <TableCell align="center" className='tableHeader'>€{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</TableCell>
+            <TableCell align="center" className='tableHeader'>€{parseFloat(coin.amount).toFixed(2)}</TableCell>
             <TableCell align="center" className='tableHeader'></TableCell>
           </TableRow>
-          {coins.filter(coin => (localStorage.getItem(coin.symbol.toUpperCase()) > 0)).map(coin => ( //Leaves only those cryptocurrencies that the user owns
+          ))}
+          {coins.filter(coin => (CheckIfOwns(coin.symbol.toUpperCase(), amounts, cryptos) > 0)).map(coin => ( //Leaves only those cryptocurrencies that the user owns
             <TableRow
               key={coin.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 }}}
@@ -173,7 +240,6 @@ function App() {
         </TableBody> }
       </Table>
           </TableContainer>
-      
       {displayTable(portfolioSum)}
     </header>
     </div>
@@ -202,6 +268,46 @@ function GetCryptoNameById(cryptos, id)
     return finalcrypto;
 
 }
+function CheckIfOwnsEuros(amounts, coin, cryptos)
+{
+  var result = -1;
+  var cryptoid = GetCryptoIdByName(coin, cryptos);
+  amounts.forEach((el)=>{
+    if(el.fk_portfolio == localStorage.getItem("ChosenPortfolio") && el.fk_crypto == cryptoid)
+    {
+      result = el.amount;
+    }
+  })
+  console.log(result);
+  return result;
+}
+function CheckIfOwns(crypto, amounts, cryptos)
+{
+    var result = -1;
+    var portfolioid = localStorage.getItem("ChosenPortfolio");
+    var cryptoid = GetCryptoIdByName(crypto, cryptos);
+    amounts.forEach((el)=>{
+      if(el.fk_crypto == cryptoid && el.fk_portfolio == portfolioid)
+      {
+        result=el.amount;
+      }
+    })
+    return result;
+}
+function GetCryptoIdByName(name, cryptos)
+{
+  var id = -1;
+  cryptos.forEach((el)=>{
+    if(el.name == name) id = el.id;
+  })
+  return id;
+}
+function ChangePortfolio(chosenportfolio)
+{
+    console.log(chosenportfolio);
+    localStorage.setItem("ChosenPortfolio", chosenportfolio);
+    window.location.reload(false);
+}
   //adds cryptocurrency prices to the local storage
 /*function updateCryptoCurrencyDatabase(coins) {
   for (let i = 0; i < coins.length; i++) {
@@ -216,6 +322,50 @@ function RedirectUser()
 {
     window.location.replace('/usersettings');
 }
+function NewPortfolio(portfolios, cryptos, amounts, setRefreshKey)
+{
+
+  document.getElementById('error').innerHTML = '';
+  var portfolio_name = document.getElementById("portfolio").value;
+  console.log(portfolio_name);
+  if(portfolio_name == "")
+  {
+    document.getElementById('error').innerHTML = 'Enter portfolio name';
+  }
+  else
+  {
+    var check = false;
+    portfolios.forEach(el => {
+      if(el.name == portfolio_name && el.fk_user == localStorage.getItem("userID"))
+      {
+        check = true;
+      }    
+    });
+    if(check)
+    {
+      document.getElementById('error').innerHTML = 'Portfolio name already exists';
+    }
+    else{
+        axios.post('http://localhost:5000/portfolios',{
+          name: portfolio_name,
+          fk_user: localStorage.getItem("userID"),
+        });
+        //setRefreshKey(oldKey => oldKey + 1);
+        //localStorage.setItem("ChosenPortfolio", portfolios[portfolios.length-1].id);
+      }
+        window.location.reload(false);
+    }
+
+  }
+  function existsInArray(array, portfolioId, currencyId) {
+    for (let i = 0; i < array.length; i++) {
+        if (parseInt(array[i].fk_crypto) === parseInt(currencyId) && parseInt(array[i].fk_portfolio) === parseInt(portfolioId)) {
+            return true;
+          }
+    }
+    return false;
+  }
+    
 function portfolioValuesSum(coins) {
   var filtered = coins.filter(coin => localStorage.getItem(coin.symbol.toUpperCase()) > 0);
   if (filtered.length === 0) {
