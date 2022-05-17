@@ -1,7 +1,7 @@
 import '../App.css';
 import axios from 'axios'
 import React, {useState, useEffect} from 'react';
-import { CollectionsBookmarkOutlined, ContactSupportOutlined, TramRounded } from '@material-ui/icons';
+import { TramRounded } from '@material-ui/icons';
 import AppTrade from './Trade.js';
 import logo from '../Bitcoin-Logo.png';
 import Button from '@mui/material/Button';
@@ -12,6 +12,7 @@ import logout_logo from '../logout.png';
 import more_logo from '../more.jpg';
 
 function App() {
+    
     const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -25,15 +26,17 @@ function App() {
     const [portfolios, setPortfolios] = useState([]);
     const [cryptos, setCryptos] = useState([]);
     const [prices, setPrices] = useState([]);
+
     useEffect(() => {
         getDatabaseData();
     }, []);
+
     const getDatabaseData = () => {
         let endpoints = [
         'http://localhost:5000/amounts',
         'http://localhost:5000/portfolios',
         'http://localhost:5000/cryptos',
-        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false%27'
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false'
         ];
 
     axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: portfolios}, {data: cryptos}, {data: prices}] )=> {
@@ -41,7 +44,7 @@ function App() {
         setPortfolios(portfolios)
         setCryptos(cryptos)
         setPrices(prices)
-        setAmountsToZero(amounts, portfolios, cryptos)
+        //setAmountsToZero(amounts, portfolios, cryptos)
 
         var userid=localStorage.getItem("userID");
         var portfolioid;
@@ -185,15 +188,18 @@ function App() {
                 <img className = "App-logo" src={logo}></img>
             </div> 
         </div>
-    ) 
+    )
 }
 window.onload = function()
 {
+    
     //Trade langui reikalinga
     localStorage.setItem("Market1", -1);
     localStorage.setItem("Market2", -1);
     //--------------------------------
-    const ALLcoins = axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false%27').then(input => input.data);
+    
+    
+    const ALLcoins = axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=10&page=1&sparkline=false%27').then(input => input.data);
     ALLcoins.then(function(coins) {
         var wallet=0;
         coins.forEach(coin => {
@@ -205,7 +211,22 @@ window.onload = function()
             wallet+=parseFloat(localStorage.getItem("EUR"));
         
         localStorage.setItem("AssetValue", wallet)
-        //document.getElementById('assets').innerHTML = "Your portfolio value: " + "€" + wallet.toFixed(2);
+        document.getElementById('assets').innerHTML = "Your portfolio value: " + "€" + wallet.toFixed(2);
+
+        var changeAvg=0;
+        var count=0;
+        coins.forEach(coin => {
+            if(localStorage.getItem(coin.symbol.toUpperCase()) > 0)
+            {
+                changeAvg+=parseFloat(coin.price_change_percentage_24h)*(parseFloat(localStorage.getItem(coin.symbol.toUpperCase()))*parseFloat(coin.current_price))
+                count+=parseFloat(localStorage.getItem(coin.symbol.toUpperCase()))*parseFloat(coin.current_price)
+            }      
+        });
+        var change=changeAvg/count;
+        if(count==0)
+            change=0;
+        document.getElementById('cryptoSum').innerHTML = "Assets value: " + "€" + count.toFixed(2);
+        document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
       });
 }
 function GetCryptoNameById(cryptos, id)
@@ -227,9 +248,9 @@ function existsInArray(array, portfolioId, currencyId) {
   }
 
 function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencies) {
+console.log("HA!");
   let userId = parseInt(localStorage.getItem("userID"));
   if (userId === null) return;
-
     for (let i = 0; i < databasePortfolios.length; i++) {
         if (parseInt(databasePortfolios[i].fk_user) === userId) {
             for (let j = 0; j < databaseCurrencies.length; j++) {

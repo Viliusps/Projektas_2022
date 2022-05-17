@@ -33,40 +33,24 @@ function App() {
     const [portfolios, setPortfolios] = useState([]);
     const [cryptos, setCryptos] = useState([]);
 
-    useEffect(() => {
-        getDatabaseData();
-    }, []);
 
-    const getDatabaseData = () => {
-        let endpoints = [
-        'http://localhost:5000/amounts',
-        'http://localhost:5000/portfolios',
-        'http://localhost:5000/cryptos',
-        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false%27'
-        ];
-        
-    axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: portfolios}, {data: cryptos}, {data: coins}] )=> {
-      amounts.forEach(el => {
+  //gets updated cryptocurrency prices from CoinGecko
+  useEffect(() => {
+    axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=50&page=1&sparkline=false')
+    .then(input => {
+      setCoins(input.data)
+    }).catch(ex => console.log('Price error!'));
+  });
 
-        if(el.fk_portfolio == localStorage.getItem("UserPortfolio"))
-        {
-          localStorage.setItem(GetCryptoNameById(cryptos, el.fk_crypto), el.amount);
-        }
-      })
 
-      setAmounts(amounts)
-      setPortfolios(portfolios)
-      setCryptos(cryptos)
-      setCoins(coins)
-    });
-  }
   //adds cryptocurrency prices to the local storage, may transfer this function to another file in the future
- // updateCryptoCurrencyDatabase(coins);
+  updateCryptoCurrencyDatabase(coins);
 
   /* //For (if) search implementation
   const handleChange = change => {
     setSearch(change.target.value) 
   }
+
   //For (if) search implementation
   const filteredCoins = coins.filter(coin => {
     coin.name.toLowerCase().includes(search.toLowerCase())
@@ -123,7 +107,7 @@ function App() {
     </div>
       <header className="App-header">
         <h3>{portfolioString}</h3>
-        {/*<form style={{marginLeft: '50%', marginBottom: '30px'}}>
+{/*       <form style={{marginLeft: '50%', marginBottom: '30px'}}>
          Useful if the user owns lots of cryptocurrencies 
         <Input placeholder="Search" inputProps={ariaLabel} onChange={handleChange} defaultValue=""/>
       </form> */}
@@ -147,7 +131,6 @@ function App() {
           >
             {/*Symbol link:  "https://cdn.icon-icons.com/icons2/1369/PNG/512/-euro-symbol_90430.png" */}
            <TableCell align="center" className='tableHeader'><img src={logo} alt="Euro logo" className="cryptocurrency-logo"/></TableCell>
-           { console.log("table")}
             <TableCell align="center" className='tableHeader'>Euro</TableCell>
             <TableCell align="center" className='tableHeader'>EUR</TableCell>
             <TableCell align="center" className='tableHeader'>{parseFloat(localStorage.getItem("EUR")).toFixed(2)}</TableCell>
@@ -169,11 +152,10 @@ function App() {
               <TableCell align="center" className='tableElement'>€{(parseFloat((coin.current_price * localStorage.getItem(coin.symbol.toUpperCase())))).toFixed(2)}</TableCell>
               <TableCell align="center" className='tableHeader'>{coin.price_change_percentage_24h.toFixed(2)}%</TableCell>
             </TableRow>
-        ))}
+          ))}
         </TableBody> }
       </Table>
           </TableContainer>
-      
       {displayTable(portfolioSum)}
     </header>
     </div>
@@ -192,25 +174,15 @@ function displayTable(portfolioSum) {
   }
 }
 
-function GetCryptoNameById(cryptos, id)
-{
-    var finalcrypto;
-    cryptos.forEach((el)=>{
-        if(el.id == id) finalcrypto = el.name;
-    })
-
-    return finalcrypto;
-
-}
   //adds cryptocurrency prices to the local storage
-/*function updateCryptoCurrencyDatabase(coins) {
+function updateCryptoCurrencyDatabase(coins) {
   for (let i = 0; i < coins.length; i++) {
     let currentItem = localStorage.getItem(coins[i].symbol.toUpperCase());
     if (currentItem === null) { //if the item does not exist
       localStorage.setItem(coins[i].symbol.toUpperCase(), 0)
     }
   }
-}*/
+}
 
 function RedirectUser()
 {
