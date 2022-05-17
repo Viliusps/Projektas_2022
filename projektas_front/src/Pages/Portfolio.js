@@ -97,6 +97,7 @@ function App() {
       setCoins(coins)
     });
   }
+  //del simono
   //adds cryptocurrency prices to the local storage, may transfer this function to another file in the future
  // updateCryptoCurrencyDatabase(coins);
 
