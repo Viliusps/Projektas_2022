@@ -16,11 +16,21 @@ import Row from 'react-bootstrap/Col'
 import Col from 'react-bootstrap/Row'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import euroLogo from '../euro-symbol.png';
-import { ContactSupportOutlined } from '@material-ui/icons';
+import Button1 from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import settings_logo from '../settingslogo.png';
 
 //Bugas 193 line
 
 export default function AppTrade() {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
     const [coins, setCoins] = useState([]);
     const [databaseCurrencies, setCurrencies] = useState([]);
     const [databaseAmounts, setAmounts] = useState([]);
@@ -93,7 +103,30 @@ export default function AppTrade() {
             <a className="active" href="/trade">Trade</a>
             <a href="/tradehistory">Trade History</a>
             <a href="/portfolio">Portfolio</a>
-            <a onClick={Redirect} href="#" >Logout</a>
+            <a><Button1
+                            id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClick}
+                            className = "Settings-button-container"
+                        >
+                             <img className = "Settings-button" src={settings_logo}></img>
+                        </Button1>
+                        <Menu
+                            className="Settings-menu"
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={handleClose}>Settings</MenuItem>
+                            <MenuItem onClick={Redirect}>Logout</MenuItem>
+                        </Menu>
+                    </a>  
         </div>
     </div>
     </div>
@@ -141,7 +174,7 @@ export default function AppTrade() {
                               <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
                               <th>{coin.name}</th>
                               <th>€{parseFloat(coin.current_price).toFixed(2)}</th>
-                              <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("loggedInUserPortfolio"), currency)).toFixed(2)}</th>
+                              <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol( databaseAmounts, localStorage.getItem("UserPortfolio"), currency)).toFixed(2)}</th>
                               <th>
                                 <InputGroup className="mb-3">
                                   <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
@@ -163,7 +196,7 @@ export default function AppTrade() {
                               <th><img src={euroLogo} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
                               <th>Euro</th>
                               <th>€1</th>
-                              <th>{findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("loggedInUserPortfolio"), currency).toFixed(2)}</th>
+                              <th>{findAmountByPortfolioAndCryptoSymbol( databaseAmounts, localStorage.getItem("UserPortfolio"), currency).toFixed(2)}</th>
                               <th>
                                 <InputGroup className="mb-3">
                                   <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
@@ -207,7 +240,7 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts){
   let isChecked = document.querySelector('input[id=flexCheckChecked]').checked;
   let paymentCurrencyId = document.getElementById('paymentCurrency').value;
   let paymentCurrencyAmount = parseFloat(findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, paymentCurrencyId));
-  let portfolioId = localStorage.getItem("loggedInUserPortfolio");
+  let portfolioId = localStorage.getItem("UserPortfolio");
   for (let i = 0; i < selections.length; i++) {
     let setBudget = parseFloat(getItemFromArrayById(amounts, selections[i].id).value);
     let currentAmount = parseFloat(findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, selections[i].id));
@@ -263,18 +296,9 @@ function findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, cryptoId
   return databaseAmounts.find(amount => amount.fk_portfolio === portfolioId && amount.fk_crypto === cryptoId);
 }
 
-function findAmountByPortfolioAndCryptoSymbol(databaseAmounts, portfolioId, currency) {
-  // let amount = databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(currency.id));
-  // return amount !== undefined ? amount.amount : 0;
-
-  console.log(currency.id);
-  for (let i = 0; i < databaseAmounts.length; i++) {
-    if (parseInt(databaseAmounts[i].fk_portfolio) === parseInt(portfolioId) && parseInt(databaseAmounts[i].fk_crypto) === currency.id) {
-      console.log(databaseAmounts[i].amount)
-      return databaseAmounts[i].amount;
-    }
-  }
-  return 0;
+function findAmountByPortfolioAndCryptoSymbol( databaseAmounts, portfolioId, currency) {
+  console.log(currency);
+  return databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(currency.id)).amount;
 }
 
 
@@ -303,7 +327,7 @@ function pushTradeHistory(boughtCurrency, boughtWithCurrency, boughtAmount, coin
     Date: today.getFullYear() + '-' + (today.getMonth() + 1) + ' ' + today.getDate(),
     Price_of_first: firstPrice,
     Price_of_second: secondPrice,
-    fk_portfolio: localStorage.getItem("loggedInUserPortfolio")
+    fk_portfolio: localStorage.getItem("UserPortfolio")
   });
 }
 
