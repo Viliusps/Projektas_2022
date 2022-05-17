@@ -14,6 +14,8 @@ import Button1 from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import settings_logo from '../settingslogo.png';
+import logout_logo from '../logout.png';
+import more_logo from '../more.jpg';
 
 function App() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -60,21 +62,21 @@ function App() {
                           onClick={handleClick}
                           className = "Settings-button-container"
                       >
-                            <img className = "Settings-button" src={settings_logo}></img>
+                            <img className = "Settings-button" src={more_logo}></img>
                       </Button1>
                       <Menu
-                          className="Settings-menu"
-                          id="basic-menu"
-                          anchorEl={anchorEl}
-                          open={open}
-                          onClose={handleClose}
-                          MenuListProps={{
-                          'aria-labelledby': 'basic-button',
-                          }}
-                      >
-                          <MenuItem onClick={handleClose}>Settings</MenuItem>
-                          <MenuItem onClick={Redirect}>Logout</MenuItem>
-                      </Menu>
+                            className="Settings-menu"
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
+                            <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
+                        </Menu>
                     </a>  
             </div>
         </div>
@@ -109,6 +111,7 @@ function App() {
         </TableBody>
       </Table>
           </TableContainer>
+          <br></br>
         <Button variant="outlined" id="save" href="/trade">Back</Button>
       </header>
     </div>
@@ -148,6 +151,10 @@ return finalcrypto;
     });
     return response.data.name;*/
 
+}
+function RedirectUser()
+{
+    window.location.replace('/usersettings');
 }
 function Redirect()
 {

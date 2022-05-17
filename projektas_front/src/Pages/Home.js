@@ -4,11 +4,12 @@ import React, {useState, useEffect} from 'react';
 import { CollectionsBookmarkOutlined, ContactSupportOutlined, TramRounded } from '@material-ui/icons';
 import AppTrade from './Trade.js';
 import logo from '../Bitcoin-Logo.png';
-import CryptoList from './dbtest';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import settings_logo from '../settingslogo.png';
+import logout_logo from '../logout.png';
+import more_logo from '../more.jpg';
 
 function App() {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -155,7 +156,7 @@ function App() {
                             onClick={handleClick}
                             className = "Settings-button-container"
                         >
-                             <img className = "Settings-button" src={settings_logo}></img>
+                             <img className = "Settings-button" src={more_logo}></img>
                         </Button>
                         <Menu
                             className="Settings-menu"
@@ -167,8 +168,8 @@ function App() {
                             'aria-labelledby': 'basic-button',
                             }}
                         >
-                            <MenuItem onClick={()=>RedirectUser()}>User Settings</MenuItem>
-                            <MenuItem onClick={Redirect}>Logout</MenuItem>
+                            <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
+                            <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
                         </Menu>
                     </a>    
                 </div>
