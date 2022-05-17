@@ -44,7 +44,6 @@ function App() {
         setPortfolios(portfolios)
         setCryptos(cryptos)
         setPrices(prices)
-        //setAmountsToZero(amounts, portfolios, cryptos)
 
         var userid=localStorage.getItem("userID");
         var portfolioid;

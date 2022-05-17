@@ -133,7 +133,7 @@ function Save(amounts, portfolios, cryptos){
       }
 })
 
-var currentvalue = previousvalue + value;
+var currentvalue = parseFloat(previousvalue) + parseFloat(value);
 if(currentvalue != previousvalue)
 {
   console.log(localStorage.getItem("UserPortfolio"));
