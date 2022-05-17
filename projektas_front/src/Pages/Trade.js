@@ -29,8 +29,6 @@ export default function AppTrade() {
       getDatabaseData();
     }, []);
 
-
-
     const getDatabaseData = () => {
       let endpoints = [
         'http://localhost:5000/amounts',
@@ -199,7 +197,6 @@ export default function AppTrade() {
   );
 }
 
-
 function CalculateValue(coins, databaseCurrencies, databaseAmounts){
   const elements = document.getElementsByClassName("remove custom-table-error");
     while(elements.length > 0){
@@ -269,14 +266,6 @@ function findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, cryptoId
 function findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, portfolioId, currency) {
   console.log(currency);
   return databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(currency.id)).amount;
-}
-
-function setLocalStorageAmounts(databaseCurrencies, databaseAmounts) {
-  databaseCurrencies.forEach(currency => {
-    console.log(currency);
-    let currentAmount = findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, localStorage.getItem("loggedInUserPortfolio"), currency.name.toUpperCase());
-    localStorage.setItem(currency.name.toUpperCase(), currentAmount);
-  })
 }
 
 function updateAmount(databaseAmounts, portfolioId, cryptoId, amountToUpdate) {
