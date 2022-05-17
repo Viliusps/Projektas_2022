@@ -6,6 +6,9 @@ const { DataTypes } = Sequelize;
 const Crypto = db.define('cryptos',{
     name:{
         type: DataTypes.STRING
+    },
+    staking_percentage:{
+        type: DataTypes.DOUBLE
     }
 },{
     freezeTableName: true

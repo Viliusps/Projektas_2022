@@ -43,8 +43,6 @@ function App() {
 console.log(localStorage.getItem("UserPortfolio"));
 
 
-
-
   return (
     <div>
     <div>
