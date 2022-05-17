@@ -8,6 +8,8 @@ import Trade from "./Pages/Trade";
 import Home from "./Pages/Home";
 import Portfolio from "./Pages/Portfolio";
 import TradeHistory from "./Pages/TradeHistory";
+import DbTest from "./Pages/dbtest";
+import Staking from "./Pages/Staking";
 import UserSettings from "./Pages/UserSettings";
 
 function App() {
@@ -24,6 +26,7 @@ function App() {
         <Route exact path="/registration" element={<Registration/>}/>
         <Route exact path="/deposit" element={<PrivateRoute auth={{isAuthenticated: authent }}><Deposit/></PrivateRoute>}/>
         <Route exact path="/trade" element={<PrivateRoute auth={{isAuthenticated: authent }}><Trade/></PrivateRoute>}/>
+        <Route exact path="/staking" element={<PrivateRoute auth={{isAuthenticated: authent }}><Staking/></PrivateRoute>}/>
         <Route exact path="/home" element={<PrivateRoute auth={{isAuthenticated: authent }}><Home/></PrivateRoute>}/>
         <Route exact path="/portfolio" element={<PrivateRoute auth={{isAuthenticated: authent }}><Portfolio/></PrivateRoute>}/>
         <Route exact path="/tradehistory" element={<PrivateRoute auth={{isAuthenticated: authent }}><TradeHistory/></PrivateRoute>}/>

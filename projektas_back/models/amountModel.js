@@ -7,6 +7,12 @@ const Amount = db.define('amounts',{
     amount:{
         type: DataTypes.DOUBLE
     },
+    staking_amount:{
+        type: DataTypes.DOUBLE
+    },
+    when_staked:{
+        type: DataTypes.DATE
+    },
     fk_crypto:{
         type: DataTypes.DOUBLE
     },

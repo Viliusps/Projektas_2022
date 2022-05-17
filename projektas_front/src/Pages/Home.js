@@ -62,17 +62,21 @@ function App() {
 
         if(!exist)
         {
-            var finalcrypto;
+            /*var finalcrypto;
             cryptos.forEach((el)=>{
                 if(el.name == "EUR") finalcrypto = el.id;
             })
             
             axios.post('http://localhost:5000/amounts',{
                 amount: 0,
+                staked_amount: 0,
+                when_staked: "0000-00-00",
                 fk_crypto: finalcrypto,
                 fk_portfolio: portfolioid
-            });
-            document.getElementById('assets').innerHTML = "Your portfolio value: " + "€" + 0;
+            });*/
+            document.getElementById('assets').innerHTML = "Your portfolio value: " + "€0.00";
+            document.getElementById('cryptoSum').innerHTML = "Assets value: " + "€0.00";
+            localStorage.setItem("UserPortfolio", portfolioid);
         }
         else{
             portfolios.forEach((el)=>{
@@ -91,22 +95,20 @@ function App() {
                     cryptoname = GetCryptoNameById(cryptos, el.fk_crypto).toLowerCase();
                     console.log("CRYPTONAME" + cryptoname);
                     prices.forEach((ell)=>{
-                        if(ell.symbol == cryptoname && cryptoname != "eur")
-                        {
-                            sum += el.amount * ell.current_price;
-                            assetsum += el.amount * ell.current_price;
-                        }
-                        
-
+                    if(ell.symbol == cryptoname && cryptoname != "eur")
+                    {
+                        sum += el.amount * ell.current_price;
+                        assetsum += el.amount * ell.current_price;
+                    }
                     })
                     if (el.fk_crypto == 6)
-                        {
-                            sum += el.amount;
-                            console.log(el.amount);
-                        }
+                    {
+                        sum += el.amount;
+                    }
 
                 }
             })
+            console.log(sum);
             document.getElementById('assets').innerHTML = "Your portfolio value: " + "€" + sum.toFixed(2);
             document.getElementById('cryptoSum').innerHTML = "Assets value: " + "€" + assetsum.toFixed(2);
             console.log(prices);
@@ -121,20 +123,17 @@ function App() {
                 
                 if(el.fk_portfolio == localStorage.getItem("UserPortfolio") && el.fk_crypto != 6 && GetCryptoNameById(cryptos,el.fk_crypto).toLowerCase()==coin.symbol)
                 {
-                    console.log("suveikia");
                     changeAvg+=parseFloat(coin.price_change_percentage_24h)*(parseFloat(el.amount)*parseFloat(coin.current_price));
                     count+=parseFloat(el.amount)*parseFloat(coin.current_price)
                 }
             })
         })
-        console.log(count);
         var change=0;
         if(count!=0)
             var change=changeAvg/count;
         
         document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
-        
-        
+        setAmountsToZero(amounts, portfolios, cryptos);
     });
 
   }
@@ -146,6 +145,7 @@ function App() {
                     <a className="active" href="/home">Home</a>
                     <a href="/deposit">Deposit</a>
                     <a href="/trade">Trade</a>
+                    <a href="/staking">Staking</a>
                     <a href="/tradehistory">Trade History</a>
                     <a href="/portfolio">Portfolio</a>
                     <a><Button
@@ -235,9 +235,11 @@ function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencie
             for (let j = 0; j < databaseCurrencies.length; j++) {
               if (!existsInArray(databaseAmounts, databasePortfolios[i].id, databaseCurrencies[j].id)) {
                   axios.post('http://localhost:5000/amounts', {
-                      amount: 0,
-                      fk_crypto: databaseCurrencies[j].id,
-                      fk_portfolio: databasePortfolios[i].id
+                        amount: 0,
+                        staked_amount: 0,
+                        when_staked: "0000-00-00",
+                        fk_crypto: databaseCurrencies[j].id,
+                        fk_portfolio: databasePortfolios[i].id
                   }).then((response) => {
                     console.log(response)});
                 }
