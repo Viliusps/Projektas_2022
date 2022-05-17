@@ -19,6 +19,8 @@ import euroLogo from '../euro-symbol.png';
 import Button1 from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import settings_logo from '../settingslogo.png';
+import logout_logo from '../logout.png';
+import more_logo from '../more.jpg';
 
 //Bugas 193 line
 
@@ -111,7 +113,7 @@ export default function AppTrade() {
                             onClick={handleClick}
                             className = "Settings-button-container"
                         >
-                             <img className = "Settings-button" src={settings_logo}></img>
+                             <img className = "Settings-button" src={more_logo}></img>
                         </Button1>
                         <Menu
                             className="Settings-menu"
@@ -123,8 +125,8 @@ export default function AppTrade() {
                             'aria-labelledby': 'basic-button',
                             }}
                         >
-                            <MenuItem onClick={handleClose}>Settings</MenuItem>
-                            <MenuItem onClick={Redirect}>Logout</MenuItem>
+                            <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
+                            <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
                         </Menu>
                     </a>  
         </div>
@@ -356,8 +358,9 @@ function Clear(){
   localStorage.setItem("ETH", 0);
   window.location.reload(false);
 }
-function SaveHistory(listofcurrencies, balances, prices){
-
+function RedirectUser()
+{
+    window.location.replace('/usersettings');
 }
 function Redirect()
 {

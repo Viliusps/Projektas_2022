@@ -7,6 +7,8 @@ import Button1 from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import settings_logo from '../settingslogo.png';
+import logout_logo from '../logout.png';
+import more_logo from '../more.jpg';
 
 function App() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -75,7 +77,7 @@ console.log(localStorage.getItem("UserPortfolio"));
                             onClick={handleClick}
                             className = "Settings-button-container"
                         >
-                             <img className = "Settings-button" src={settings_logo}></img>
+                             <img className = "Settings-button" src={more_logo}></img>
                         </Button1>
                         <Menu
                             className="Settings-menu"
@@ -87,8 +89,8 @@ console.log(localStorage.getItem("UserPortfolio"));
                             'aria-labelledby': 'basic-button',
                             }}
                         >
-                            <MenuItem onClick={handleClose}>Settings</MenuItem>
-                            <MenuItem onClick={Redirect}>Logout</MenuItem>
+                            <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
+                            <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
                         </Menu>
                     </a>  
         </div>
@@ -107,7 +109,9 @@ console.log(localStorage.getItem("UserPortfolio"));
             shrink: true,
           }}
         />
+        <br></br>
         <Button variant="outlined" id="save" onClick={()=>Save(amounts, portfolios, cryptos)}>Deposit</Button>
+        <br></br>
         <Button variant="outlined" id="clear" onClick={()=>Clear(amounts)}>Clear balance</Button>
       </header>
     </div>
@@ -166,6 +170,10 @@ function Clear(amounts){
     }
   })
   window.location.reload(false);
+}
+function RedirectUser()
+{
+    window.location.replace('/usersettings');
 }
 function Redirect()
 {

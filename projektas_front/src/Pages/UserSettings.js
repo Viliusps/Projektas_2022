@@ -4,7 +4,6 @@ import React, {useState, useEffect} from 'react';
 import { CollectionsBookmarkOutlined, ContactSupportOutlined, TramRounded } from '@material-ui/icons';
 import AppTrade from './Trade.js';
 import logo from '../Bitcoin-Logo.png';
-import CryptoList from './dbtest';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -62,8 +61,9 @@ function App() {
         />
         <br></br>
         <label id="error"></label>
-        <Button variant="outlined" onClick={()=>Validate(users)}>Save password</Button>
-        <Button variant="outlined" onClick={() => {navigate('/home')}}>Back</Button>
+        <Button variant="outlined" onClick={()=>Validate(users)}><a style={{ fontSize: '25px' }}>Save password</a></Button>
+        <br></br>
+        <Button variant="outlined" onClick={() => {navigate('/home')}}><a style={{ fontSize: '25px' }}>Back</a></Button>
         <br></br>
       </header>
     </div>

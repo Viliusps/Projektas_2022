@@ -58,6 +58,7 @@ function App() {
           <br></br>
           <label id="error"></label>
           <Button variant="outlined" onClick={()=>SaveValues(users)}>Sign-up</Button>
+          <br></br>
           <Button variant="outlined" onClick={() => {navigate('/')}}>Back</Button>
           <br></br>
         </header>
