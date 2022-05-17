@@ -113,6 +113,7 @@ export default function AppTrade() {
             <a href="/home">Home</a>
             <a href="/deposit">Deposit</a>
             <a className="active" href="/trade">Trade</a>
+            <a href="/staking">Staking</a>
             <a href="/tradehistory">Trade History</a>
             <a href="/portfolio">Portfolio</a>
             <a><Button1
@@ -187,7 +188,7 @@ export default function AppTrade() {
                               <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
                               <th>{coin.name}</th>
                               <th>€{parseFloat(coin.current_price).toFixed(2)}</th>
-                              <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol( databaseAmounts, localStorage.getItem("UserPortfolio"), currency)).toFixed(2)}</th>
+                              <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("UserPortfolio"), currency)).toFixed(2)}</th>
                               <th>
                                 <InputGroup className="mb-3">
                                   <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
@@ -209,7 +210,7 @@ export default function AppTrade() {
                               <th><img src={euroLogo} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
                               <th>Euro</th>
                               <th>€1</th>
-                              <th>{findAmountByPortfolioAndCryptoSymbol( databaseAmounts, localStorage.getItem("UserPortfolio"), currency).toFixed(2)}</th>
+                              <th>{findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("UserPortfolio"), currency).toFixed(2)}</th>
                               <th>
                                 <InputGroup className="mb-3">
                                   <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
@@ -323,7 +324,6 @@ function findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, cryptoId
 function findAmountByPortfolioAndCryptoSymbol( databaseAmounts, portfolioId, currency) {
   let amount = databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(currency.id));
   return amount !== undefined ? amount.amount : 0;
-}
 
 
 function updateAmount(databaseAmounts, portfolioId, cryptoId, amountToUpdate) {

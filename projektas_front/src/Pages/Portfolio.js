@@ -75,6 +75,7 @@ function App() {
             <a href="/home">Home</a>
             <a href="/deposit">Deposit</a>
             <a href="/trade">Trade</a>
+            <a href="/staking">Staking</a>
             <a href="/tradehistory">Trade History</a>
             <a className="active" href="/portfolio">Portfolio</a>
             <a><Button
