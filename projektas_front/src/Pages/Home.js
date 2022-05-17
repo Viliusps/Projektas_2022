@@ -4,10 +4,23 @@ import React, {useState, useEffect} from 'react';
 import { CollectionsBookmarkOutlined, ContactSupportOutlined, TramRounded } from '@material-ui/icons';
 import AppTrade from './Trade.js';
 import logo from '../Bitcoin-Logo.png';
-import CryptoList from './dbtest';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import settings_logo from '../settingslogo.png';
+import logout_logo from '../logout.png';
+import more_logo from '../more.jpg';
 
 function App() {
-    
+    const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
     const [amounts, setAmounts] = useState([]);
     const [portfolios, setPortfolios] = useState([]);
     const [cryptos, setCryptos] = useState([]);
@@ -28,6 +41,7 @@ function App() {
         setPortfolios(portfolios)
         setCryptos(cryptos)
         setPrices(prices)
+        setAmountsToZero(amounts, portfolios, cryptos)
 
         var userid=localStorage.getItem("userID");
         var portfolioid;
@@ -121,6 +135,7 @@ function App() {
         document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
         setAmountsToZero(amounts, portfolios, cryptos);
     });
+
   }
     return (
         <div>
@@ -133,7 +148,30 @@ function App() {
                     <a href="/staking">Staking</a>
                     <a href="/tradehistory">Trade History</a>
                     <a href="/portfolio">Portfolio</a>
-                    <a onClick={Redirect} href="#">Logout</a>
+                    <a><Button
+                            id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClick}
+                            className = "Settings-button-container"
+                        >
+                             <img className = "Settings-button" src={more_logo}></img>
+                        </Button>
+                        <Menu
+                            className="Settings-menu"
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
+                            <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
+                        </Menu>
+                    </a>    
                 </div>
             </div>
             <div className="App-header">
@@ -149,7 +187,6 @@ function App() {
         </div>
     ) 
 }
-
 window.onload = function()
 {
     //Trade langui reikalinga
@@ -170,10 +207,7 @@ window.onload = function()
         localStorage.setItem("AssetValue", wallet)
         //document.getElementById('assets').innerHTML = "Your portfolio value: " + "€" + wallet.toFixed(2);
       });
-
-      
 }
-
 function GetCryptoNameById(cryptos, id)
 {
     var finalcrypto;
@@ -200,7 +234,6 @@ function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencie
         if (parseInt(databasePortfolios[i].fk_user) === userId) {
             for (let j = 0; j < databaseCurrencies.length; j++) {
               if (!existsInArray(databaseAmounts, databasePortfolios[i].id, databaseCurrencies[j].id)) {
-                console.log(databaseCurrencies.length);
                   axios.post('http://localhost:5000/amounts', {
                         amount: 0,
                         staked_amount: 0,
@@ -215,6 +248,10 @@ function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencie
     }
 }
 
+function RedirectUser()
+{
+    window.location.replace('/usersettings');
+}
 //Visuose paages turi buti!
 function Redirect()
 {

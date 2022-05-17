@@ -16,11 +16,23 @@ import Row from 'react-bootstrap/Col'
 import Col from 'react-bootstrap/Row'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import euroLogo from '../euro-symbol.png';
-import { ContactSupportOutlined } from '@material-ui/icons';
+import Button1 from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import settings_logo from '../settingslogo.png';
+import logout_logo from '../logout.png';
+import more_logo from '../more.jpg';
 
 //Bugas 193 line
 
 export default function AppTrade() {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
     const [coins, setCoins] = useState([]);
     const [databaseCurrencies, setCurrencies] = useState([]);
     const [databaseAmounts, setAmounts] = useState([]);
@@ -94,7 +106,30 @@ export default function AppTrade() {
             <a href="/staking">Staking</a>
             <a href="/tradehistory">Trade History</a>
             <a href="/portfolio">Portfolio</a>
-            <a onClick={Redirect} href="#" >Logout</a>
+            <a><Button1
+                            id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClick}
+                            className = "Settings-button-container"
+                        >
+                             <img className = "Settings-button" src={more_logo}></img>
+                        </Button1>
+                        <Menu
+                            className="Settings-menu"
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
+                            <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
+                        </Menu>
+                    </a>  
         </div>
     </div>
     </div>
@@ -269,6 +304,7 @@ function findAmountByPortfolioAndCryptoSymbol(databaseAmounts, portfolioId, curr
   return databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(currency.id)).amount;
 }
 
+
 function updateAmount(databaseAmounts, portfolioId, cryptoId, amountToUpdate) {
   let amount = databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(cryptoId));
   axios.patch(`http://localhost:5000/amounts/${amount.id}`,
@@ -324,8 +360,9 @@ function Clear(){
   localStorage.setItem("ETH", 0);
   window.location.reload(false);
 }
-function SaveHistory(listofcurrencies, balances, prices){
-
+function RedirectUser()
+{
+    window.location.replace('/usersettings');
 }
 function Redirect()
 {
