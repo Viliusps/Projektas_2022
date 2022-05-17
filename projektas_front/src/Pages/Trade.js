@@ -37,6 +37,7 @@ export default function AppTrade() {
     
   };
 
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -373,6 +374,7 @@ function pushTradeHistory(boughtCurrency, boughtWithCurrency, boughtAmount, coin
   let firstPrice = findCoinPriceBySymbol(coins, boughtCurrency.name);
   let secondPrice = findCoinPriceBySymbol(coins, boughtWithCurrency.name);
   var today = new Date();
+
   console.log(parseInt(localStorage.getItem("ChosenPortfolio")));
   axios.post('http://localhost:5000/tradehistories', {
     fk_Bought_currency: boughtCurrency.id,
