@@ -13,6 +13,7 @@ function App() {
     const [cryptos, setCryptos] = useState([]);
     useEffect(() => {
         getDatabaseData();
+        setAmountsToZero(amounts, portfolios, cryptos);
     }, []);
     const getDatabaseData = () => {
         let endpoints = [
@@ -25,7 +26,6 @@ function App() {
             setPortfolios(portfolios)
             setCryptos(cryptos)
     });
-    setAmountsToZero(amounts, portfolios, cryptos);
   }
     return (
         <div>
@@ -98,34 +98,34 @@ window.onload = function()
 
 
   function existsInArray(array, portfolioId, currencyId) {
-    array.forEach(element => {
-      if (parseInt(element.fk_crypto) === parseInt(currencyId) && parseInt(element.fk_portfolio) === parseInt(portfolioId)) {
-        return true;
-      }
-    })
+    for (let i = 0; i < array.length; i++) {
+        if (parseInt(array[i].fk_crypto) === parseInt(currencyId) && parseInt(array[i].fk_portfolio) === parseInt(portfolioId)) {
+            return true;
+          }
+    }
     return false;
   }
 
 
 function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencies) {
   let userId = parseInt(localStorage.getItem("userID"));
-  if (userId === null || databaseAmounts.length > 0) return;
+  if (userId === null) return;
 
-
-  databasePortfolios.forEach(portfolio => {
-      if (parseInt(portfolio.fk_user) === userId) {
-          databaseCurrencies.forEach(currency => {
-            if (!existsInArray(databaseAmounts, portfolio.id, currency.id)) {
-              axios.post('http://localhost:5000/amounts', {
-                  amount: 0,
-                  fk_crypto: currency.id,
-                  fk_portfolio: portfolio.id
-              }).then((response) => {
-                console.log(response)});
+    for (let i = 0; i < databasePortfolios.length; i++) {
+        if (parseInt(databasePortfolios[i].fk_user) === userId) {
+            for (let j = 0; j < databaseCurrencies.length; j++) {
+              if (!existsInArray(databaseAmounts, databasePortfolios[i].id, databaseCurrencies[j].id)) {
+                console.log(databaseCurrencies.length);
+                  axios.post('http://localhost:5000/amounts', {
+                      amount: 0,
+                      fk_crypto: databaseCurrencies[j].id,
+                      fk_portfolio: databasePortfolios[i].id
+                  }).then((response) => {
+                    console.log(response)});
+                }
             }
-          });
-      }
-  });
+        }
+    }
 }
 
 //Visuose paages turi buti!
