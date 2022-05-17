@@ -21,11 +21,108 @@ function App() {
         'http://localhost:5000/portfolios',
         'http://localhost:5000/cryptos'
         ];
-        axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: portfolios}, {data: cryptos}] )=> {
-            setAmounts(amounts)
-            setPortfolios(portfolios)
-            setCryptos(cryptos)
+
+    axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: portfolios}, {data: cryptos}, {data: prices}] )=> {
+        setAmounts(amounts)
+        setPortfolios(portfolios)
+        setCryptos(cryptos)
+        setPrices(prices)
+        setAmountsToZero(amounts, portfolios, cryptos)
+
+        var userid=localStorage.getItem("userID");
+        var portfolioid;
+        portfolios.forEach((el)=>{
+            if(el.fk_user==userid)
+            {
+                portfolioid=el.id;
+            }
+        })
+
+        var exist=false;
+        amounts.forEach((el)=>{
+            if(el.fk_portfolio==portfolioid && el.fk_crypto == 6)
+            {
+                exist=true;
+            }
+        })
+
+        if(!exist)
+        {
+            var finalcrypto;
+            cryptos.forEach((el)=>{
+                if(el.name == "EUR") finalcrypto = el.id;
+            })
+            
+            axios.post('http://localhost:5000/amounts',{
+                amount: 0,
+                fk_crypto: finalcrypto,
+                fk_portfolio: portfolioid
+            });
+            document.getElementById('assets').innerHTML = "Your portfolio value: " + "€" + 0;
+        }
+        else{
+            portfolios.forEach((el)=>{
+                if(el.fk_user==localStorage.getItem("userID"))
+                {
+                    localStorage.setItem("UserPortfolio", el.id);
+                }
+            })
+            var connecteduserportfolio = localStorage.getItem("UserPortfolio");
+            var cryptoname;
+            var sum=0;
+            var assetsum=0;
+            amounts.forEach((el)=>{
+                if(el.fk_portfolio==connecteduserportfolio)
+                {
+                    cryptoname = GetCryptoNameById(cryptos, el.fk_crypto).toLowerCase();
+                    console.log("CRYPTONAME" + cryptoname);
+                    prices.forEach((ell)=>{
+                        if(ell.symbol == cryptoname && cryptoname != "eur")
+                        {
+                            sum += el.amount * ell.current_price;
+                            assetsum += el.amount * ell.current_price;
+                        }
+                        
+
+                    })
+                    if (el.fk_crypto == 6)
+                        {
+                            sum += el.amount;
+                            console.log(el.amount);
+                        }
+
+                }
+            })
+            document.getElementById('assets').innerHTML = "Your portfolio value: " + "€" + sum.toFixed(2);
+            document.getElementById('cryptoSum').innerHTML = "Assets value: " + "€" + assetsum.toFixed(2);
+            console.log(prices);
+        }
+
+
+        var changeAvg=0;
+        var count=0;
+
+        amounts.forEach(el => {
+            prices.forEach(coin=>{
+                
+                if(el.fk_portfolio == localStorage.getItem("UserPortfolio") && el.fk_crypto != 6 && GetCryptoNameById(cryptos,el.fk_crypto).toLowerCase()==coin.symbol)
+                {
+                    console.log("suveikia");
+                    changeAvg+=parseFloat(coin.price_change_percentage_24h)*(parseFloat(el.amount)*parseFloat(coin.current_price));
+                    count+=parseFloat(el.amount)*parseFloat(coin.current_price)
+                }
+            })
+        })
+        console.log(count);
+        var change=0;
+        if(count!=0)
+            var change=changeAvg/count;
+        
+        document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
+        
+        
     });
+
   }
     return (
         <div>
@@ -96,8 +193,16 @@ window.onload = function()
       
 }
 
+function GetCryptoNameById(cryptos, id)
+{
+    var finalcrypto;
+    cryptos.forEach((el)=>{
+        if(el.id == id) finalcrypto = el.name;
+    })
+    return finalcrypto;
+}
 
-  function existsInArray(array, portfolioId, currencyId) {
+function existsInArray(array, portfolioId, currencyId) {
     for (let i = 0; i < array.length; i++) {
         if (parseInt(array[i].fk_crypto) === parseInt(currencyId) && parseInt(array[i].fk_portfolio) === parseInt(portfolioId)) {
             return true;
@@ -105,7 +210,6 @@ window.onload = function()
     }
     return false;
   }
-
 
 function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencies) {
   let userId = parseInt(localStorage.getItem("userID"));
@@ -115,7 +219,6 @@ function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencie
         if (parseInt(databasePortfolios[i].fk_user) === userId) {
             for (let j = 0; j < databaseCurrencies.length; j++) {
               if (!existsInArray(databaseAmounts, databasePortfolios[i].id, databaseCurrencies[j].id)) {
-                console.log(databaseCurrencies.length);
                   axios.post('http://localhost:5000/amounts', {
                       amount: 0,
                       fk_crypto: databaseCurrencies[j].id,
