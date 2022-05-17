@@ -128,6 +128,13 @@ body{
   text-align: right;
 }
 
+.sticky-top {
+  position:sticky;
+}
+
+.margin-top-buying-options {
+  margin-top: 3%;
+}
 
 
 /* Style the header with a grey background and some padding */

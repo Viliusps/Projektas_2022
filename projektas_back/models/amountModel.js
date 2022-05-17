@@ -5,7 +5,7 @@ const { DataTypes } = Sequelize;
  
 const Amount = db.define('amounts',{
     amount:{
-        type: DataTypes.DOUBLE
+        type: DataTypes.FLOAT
     },
     fk_crypto:{
         type: DataTypes.DOUBLE

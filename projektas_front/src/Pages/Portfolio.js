@@ -33,7 +33,6 @@ function App() {
     const [portfolios, setPortfolios] = useState([]);
     const [cryptos, setCryptos] = useState([]);
 
-  const [coins, setCoins] = useState([]);
 
   //gets updated cryptocurrency prices from CoinGecko
   useEffect(() => {
