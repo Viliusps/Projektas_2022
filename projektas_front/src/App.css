@@ -88,7 +88,7 @@ body{
   font-size: 30px;
 }
 .MuiButtonBase-root{
-  margin-top: 2em !important;
+  margin-top: 0em !important;
   width: 18em;
   height: 7em;
   border-width: 6px !important;
@@ -198,3 +198,20 @@ body{
   .custom-table-error {
     color: red;
   }
+.Settings-button{
+  color:white !important;
+  height: 2em !important;
+  vertical-align: middle !important;
+}
+.Settings-button-container{
+  color:white !important;
+  height: 1.5em !important;
+  width: 5em !important;
+  margin-top: 50 !important;
+}
+.{
+  width: 7em !important;
+}
+.Settings-menu-item{
+  width: 7em !important;
+}

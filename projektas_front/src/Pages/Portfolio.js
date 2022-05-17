@@ -10,11 +10,23 @@ import axios from 'axios'
 import React, {useState, useEffect} from 'react';
 import logo from '../euro-symbol.png';
 import { ReplayOutlined, SignalCellularConnectedNoInternet0BarSharp } from '@material-ui/icons';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import settings_logo from '../settingslogo.png';
 //import Input from '@mui/material/Input';
 
 //const ariaLabel = { 'aria-label': 'description' };
 
 function App() {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
     const [coins, setCoins] = useState([]);
     const [amounts, setAmounts] = useState([]);
     const [portfolios, setPortfolios] = useState([]);
@@ -80,7 +92,30 @@ function App() {
             <a href="/trade">Trade</a>
             <a href="/tradehistory">Trade History</a>
             <a className="active" href="/portfolio">Portfolio</a>
-            <a onClick={Redirect} href="#" >Logout</a>
+            <a><Button
+                            id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClick}
+                            className = "Settings-button-container"
+                        >
+                             <img className = "Settings-button" src={settings_logo}></img>
+                        </Button>
+                        <Menu
+                            className="Settings-menu"
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={handleClose}>Settings</MenuItem>
+                            <MenuItem onClick={Redirect}>Logout</MenuItem>
+                        </Menu>
+                    </a>  
         </div>
     </div>
     </div>
