@@ -3,9 +3,22 @@ import { TextField } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import { ContactSupportOutlined } from '@material-ui/icons';
+import Button1 from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import settings_logo from '../settingslogo.png';
+import logout_logo from '../logout.png';
+import more_logo from '../more.jpg';
 
 function App() {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const [amounts, setAmounts] = useState([]);
   const [portfolios, setPortfolios] = useState([]);
   const [cryptos, setCryptos] = useState([]);
@@ -56,7 +69,30 @@ console.log(localStorage.getItem("UserPortfolio"));
             <a href="/trade">Trade</a>
             <a href="/tradehistory">Trade History</a>
             <a href="/portfolio">Portfolio</a>
-            <a onClick={Redirect} href="#">Logout</a>
+            <a><Button1
+                            id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClick}
+                            className = "Settings-button-container"
+                        >
+                             <img className = "Settings-button" src={more_logo}></img>
+                        </Button1>
+                        <Menu
+                            className="Settings-menu"
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
+                            <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
+                        </Menu>
+                    </a>  
         </div>
     </div>
     </div>
@@ -73,7 +109,9 @@ console.log(localStorage.getItem("UserPortfolio"));
             shrink: true,
           }}
         />
+        <br></br>
         <Button variant="outlined" id="save" onClick={()=>Save(amounts, portfolios, cryptos)}>Deposit</Button>
+        <br></br>
         <Button variant="outlined" id="clear" onClick={()=>Clear(amounts)}>Clear balance</Button>
       </header>
     </div>
@@ -132,6 +170,10 @@ function Clear(amounts){
     }
   })
   window.location.reload(false);
+}
+function RedirectUser()
+{
+    window.location.replace('/usersettings');
 }
 function Redirect()
 {
