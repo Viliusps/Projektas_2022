@@ -43,7 +43,6 @@ function App() {
     const [amounts, setAmounts] = useState([]);
     const [portfolios, setPortfolios] = useState([]);
     const [cryptos, setCryptos] = useState([]);
-
     useEffect(() => {
         getDatabaseData();
     },[]);
@@ -91,19 +90,14 @@ function App() {
         }
       }
 
-      setAmounts(amounts)
-      setPortfolios(portfolios)
-      setCryptos(cryptos)
-      setCoins(coins)
-    });
-  }
   //adds cryptocurrency prices to the local storage, may transfer this function to another file in the future
- // updateCryptoCurrencyDatabase(coins);
+  updateCryptoCurrencyDatabase(coins);
 
   /* //For (if) search implementation
   const handleChange = change => {
     setSearch(change.target.value) 
   }
+
   //For (if) search implementation
   const filteredCoins = coins.filter(coin => {
     coin.name.toLowerCase().includes(search.toLowerCase())
@@ -188,7 +182,7 @@ function App() {
         </div>
         
         <h3>{portfolioString}</h3>
-        {/*<form style={{marginLeft: '50%', marginBottom: '30px'}}>
+{/*       <form style={{marginLeft: '50%', marginBottom: '30px'}}>
          Useful if the user owns lots of cryptocurrencies 
         <Input placeholder="Search" inputProps={ariaLabel} onChange={handleChange} defaultValue=""/>
       </form> */}
@@ -236,7 +230,7 @@ function App() {
               <TableCell align="center" className='tableElement'>€{(parseFloat((coin.current_price * localStorage.getItem(coin.symbol.toUpperCase())))).toFixed(2)}</TableCell>
               <TableCell align="center" className='tableHeader'>{coin.price_change_percentage_24h.toFixed(2)}%</TableCell>
             </TableRow>
-        ))}
+          ))}
         </TableBody> }
       </Table>
           </TableContainer>
@@ -309,14 +303,14 @@ function ChangePortfolio(chosenportfolio)
     window.location.reload(false);
 }
   //adds cryptocurrency prices to the local storage
-/*function updateCryptoCurrencyDatabase(coins) {
+function updateCryptoCurrencyDatabase(coins) {
   for (let i = 0; i < coins.length; i++) {
     let currentItem = localStorage.getItem(coins[i].symbol.toUpperCase());
     if (currentItem === null) { //if the item does not exist
       localStorage.setItem(coins[i].symbol.toUpperCase(), 0)
     }
   }
-}*/
+}
 
 function RedirectUser()
 {
