@@ -181,8 +181,10 @@ function GetCryptoNameById(cryptos, id)
     cryptos.forEach((el)=>{
         if(el.id == id) finalcrypto = el.name;
     })
+    return finalcrypto;
+}
 
-  function existsInArray(array, portfolioId, currencyId) {
+function existsInArray(array, portfolioId, currencyId) {
     for (let i = 0; i < array.length; i++) {
         if (parseInt(array[i].fk_crypto) === parseInt(currencyId) && parseInt(array[i].fk_portfolio) === parseInt(portfolioId)) {
             return true;
@@ -190,19 +192,6 @@ function GetCryptoNameById(cryptos, id)
     }
     return false;
   }
-
-    return finalcrypto;
-
-}
-
-function existsInArray(array, portfolioId, currencyId) {
-  array.forEach(element => {
-    if (parseInt(element.fk_crypto) === parseInt(currencyId) && parseInt(element.fk_portfolio) === parseInt(portfolioId)) {
-      return true;
-    }
-  })
-  return false;
-}
 
 function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencies) {
   let userId = parseInt(localStorage.getItem("userID"));
