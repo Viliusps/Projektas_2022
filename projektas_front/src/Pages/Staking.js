@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Button } from '@material-ui/core';
+import Button1 from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import axios from 'axios'
 import InputGroup from 'react-bootstrap/InputGroup'
@@ -13,8 +13,22 @@ import Form from 'react-bootstrap/Form'
 import React, {useState, useEffect} from 'react';
 import logo from '../euro-symbol.png';
 import { ReplayOutlined, SignalCellularConnectedNoInternet0BarSharp } from '@material-ui/icons';
+import settings_logo from '../settingslogo.png';
+import logout_logo from '../logout.png';
+import more_logo from '../more.jpg';
+import { Button } from '@material-ui/core';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 function App() {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
     const [coins, setCoins] = useState([]);
     const [amounts, setAmounts] = useState([]);
     const [portfolios, setPortfolios] = useState([]);
@@ -94,7 +108,30 @@ function App() {
             <a className="active" href="/staking">Staking</a>
             <a href="/tradehistory">Trade History</a>
             <a href="/portfolio">Portfolio</a>
-            <a onClick={Redirect} href="#" >Logout</a>
+            <a><Button1
+                            id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClick}
+                            className = "Settings-button-container"
+                        >
+                             <img className = "Settings-button" src={more_logo}></img>
+                        </Button1>
+                        <Menu
+                            className="Settings-menu"
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
+                            <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
+                        </Menu>
+                    </a>  
         </div>
     </div>
     </div>
@@ -290,7 +327,10 @@ function GetCryptoNameById(cryptos, id)
     return finalcrypto;
 
 }
-
+function RedirectUser()
+{
+    window.location.replace('/usersettings');
+}
 function Redirect()
 {
     localStorage.setItem("auth", false);

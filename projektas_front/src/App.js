@@ -8,7 +8,6 @@ import Trade from "./Pages/Trade";
 import Home from "./Pages/Home";
 import Portfolio from "./Pages/Portfolio";
 import TradeHistory from "./Pages/TradeHistory";
-import DbTest from "./Pages/dbtest";
 import Staking from "./Pages/Staking";
 import UserSettings from "./Pages/UserSettings";
 
