@@ -7,6 +7,16 @@
   pointer-events: none;
 }
 
+#stake{
+  width: 6em !important;
+  height: 4em !important;
+  font-size: 16px;
+  background-color: #282c34;
+  color: white;
+  border-width: 3px !important;
+  border-radius: 2em !important;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -32,6 +42,11 @@ body{
   font-size: 15px;
   color: red;
 }
+
+#stakingError {
+  color: red;
+}
+
 .MuiMenuItem-root{
   color: white !important;
 }
@@ -74,7 +89,6 @@ body{
 .App-link {
   color: #61dafb;
 }
-
 .MuiInputBase-input{
   color:white !important;
   text-align: center;
@@ -188,7 +202,6 @@ body{
     max-width: 30%;
     height: auto;
   }
-
   #select-buy-form {
     margin-bottom: 2%;
     margin-left: 58%;

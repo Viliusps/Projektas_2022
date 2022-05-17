@@ -12,7 +12,9 @@ function App() {
   const [portfolios, setPortfolios] = useState([]);
   const [cryptos, setCryptos] = useState([]);
   const [databaseAmounts, setAmounts] = useState([]);
+
   localStorage.setItem("auth",false);
+
     useEffect(() => {
       getDatabaseData();
     }, []);
@@ -68,8 +70,6 @@ function App() {
 
 function CheckPortfolio(portfolios, cryptos)
 {
-
-    console.log("as");
       var userid = localStorage.getItem("userID");
       var portfolioid;
       var exists = false;

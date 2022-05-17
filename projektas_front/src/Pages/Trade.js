@@ -91,6 +91,7 @@ export default function AppTrade() {
             <a href="/home">Home</a>
             <a href="/deposit">Deposit</a>
             <a className="active" href="/trade">Trade</a>
+            <a href="/staking">Staking</a>
             <a href="/tradehistory">Trade History</a>
             <a href="/portfolio">Portfolio</a>
             <a onClick={Redirect} href="#" >Logout</a>
@@ -141,7 +142,7 @@ export default function AppTrade() {
                               <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
                               <th>{coin.name}</th>
                               <th>€{parseFloat(coin.current_price).toFixed(2)}</th>
-                              <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, localStorage.getItem("loggedInUserPortfolio"), currency)).toFixed(2)}</th>
+                              <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("UserPortfolio"), currency)).toFixed(2)}</th>
                               <th>
                                 <InputGroup className="mb-3">
                                   <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
@@ -163,7 +164,7 @@ export default function AppTrade() {
                               <th><img src={euroLogo} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
                               <th>Euro</th>
                               <th>€1</th>
-                              <th>{findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, localStorage.getItem("loggedInUserPortfolio"), currency).toFixed(2)}</th>
+                              <th>{findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("UserPortfolio"), currency).toFixed(2)}</th>
                               <th>
                                 <InputGroup className="mb-3">
                                   <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
@@ -206,8 +207,8 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts){
   let amounts = document.getElementsByClassName('payment-amount');
   let isChecked = document.querySelector('input[id=flexCheckChecked]').checked;
   let paymentCurrencyId = document.getElementById('paymentCurrency').value;
+  let portfolioId = localStorage.getItem("UserPortfolio");
   let paymentCurrencyAmount = parseFloat(findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, paymentCurrencyId));
-  let portfolioId = localStorage.getItem("loggedInUserPortfolio");
   for (let i = 0; i < selections.length; i++) {
     let setBudget = parseFloat(getItemFromArrayById(amounts, selections[i].id).value);
     let currentAmount = parseFloat(findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, selections[i].id));
@@ -263,7 +264,7 @@ function findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, cryptoId
   return databaseAmounts.find(amount => amount.fk_portfolio === portfolioId && amount.fk_crypto === cryptoId);
 }
 
-function findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, portfolioId, currency) {
+function findAmountByPortfolioAndCryptoSymbol(databaseAmounts, portfolioId, currency) {
   console.log(currency);
   return databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(currency.id)).amount;
 }
@@ -293,7 +294,7 @@ function pushTradeHistory(boughtCurrency, boughtWithCurrency, boughtAmount, coin
     Date: today.getFullYear() + '-' + (today.getMonth() + 1) + ' ' + today.getDate(),
     Price_of_first: firstPrice,
     Price_of_second: secondPrice,
-    fk_portfolio: localStorage.getItem("loggedInUserPortfolio")
+    fk_portfolio: localStorage.getItem("UserPortfolio")
   });
 }
 

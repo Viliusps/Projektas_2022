@@ -33,13 +33,11 @@ function App() {
   //localStorage.clear();
   var currentvalue=0;
   amounts.forEach((el)=>{
-    cryptos.forEach((ell)=>{
-      if(ell.name=="EUR" && el.fk_crypto == ell.id && el.fk_portfolio == localStorage.getItem("UserPortfolio"))
+      if(el.fk_crypto == 6 && el.fk_portfolio == localStorage.getItem("UserPortfolio"))
       {
         currentvalue += el.amount;
       }
-    })
-})
+  })
 console.log(localStorage.getItem("UserPortfolio"));
 
 
@@ -52,6 +50,7 @@ console.log(localStorage.getItem("UserPortfolio"));
             <a href="/home">Home</a>
             <a className="active" href="/deposit">Deposit</a>
             <a href="/trade">Trade</a>
+            <a href="/staking">Staking</a>
             <a href="/tradehistory">Trade History</a>
             <a href="/portfolio">Portfolio</a>
             <a onClick={Redirect} href="#">Logout</a>
@@ -90,12 +89,10 @@ function Save(amounts, portfolios, cryptos){
   }
   var previousvalue = 0;
   amounts.forEach((el)=>{
-    cryptos.forEach((ell)=>{
-      if(ell.name=="EUR" && el.fk_crypto==6 && el.fk_portfolio == localStorage.getItem("UserPortfolio"))
+      if(el.fk_crypto==6 && el.fk_portfolio == localStorage.getItem("UserPortfolio"))
       {
           previousvalue += el.amount;
       }
-    })
 })
 
 var currentvalue = previousvalue + value;
@@ -103,7 +100,7 @@ if(currentvalue != previousvalue)
 {
   console.log(localStorage.getItem("UserPortfolio"));
   amounts.forEach((el)=>{
-    if(el.fk_portfolio == localStorage.getItem("UserPortfolio") && el.fk_crypto == 6.0)
+    if(el.fk_portfolio == localStorage.getItem("UserPortfolio") && el.fk_crypto == 6)
     {
         axios.patch('http://localhost:5000/amounts/' + el.id,{
           amount: currentvalue

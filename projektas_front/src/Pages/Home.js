@@ -14,7 +14,6 @@ function App() {
     const [prices, setPrices] = useState([]);
     useEffect(() => {
         getDatabaseData();
-        setAmountsToZero(amounts, portfolios, cryptos);
     }, []);
     const getDatabaseData = () => {
         let endpoints = [
@@ -49,7 +48,7 @@ function App() {
 
         if(!exist)
         {
-            var finalcrypto;
+            /*var finalcrypto;
             cryptos.forEach((el)=>{
                 if(el.name == "EUR") finalcrypto = el.id;
             })
@@ -60,7 +59,7 @@ function App() {
                 when_staked: "0000-00-00",
                 fk_crypto: finalcrypto,
                 fk_portfolio: portfolioid
-            });
+            });*/
             document.getElementById('assets').innerHTML = "Your portfolio value: " + "€0.00";
             document.getElementById('cryptoSum').innerHTML = "Assets value: " + "€0.00";
             localStorage.setItem("UserPortfolio", portfolioid);
@@ -120,6 +119,7 @@ function App() {
             var change=changeAvg/count;
         
         document.getElementById('change').innerHTML = "24h Price Change: " + change.toFixed(2) + "%";
+        setAmountsToZero(amounts, portfolios, cryptos);
     });
   }
     return (
