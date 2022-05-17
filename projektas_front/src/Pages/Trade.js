@@ -29,8 +29,6 @@ export default function AppTrade() {
       getDatabaseData();
     }, []);
 
-
-
     const getDatabaseData = () => {
       let endpoints = [
         'http://localhost:5000/amounts',
@@ -199,98 +197,6 @@ export default function AppTrade() {
   );
 }
 
-{/* <div className='Balance'>
-        <label id="marketdisplay1"></label>
-        <br></br>
-        <label id="marketdisplay2"></label>
-      </div>
-
-       <h1>Trade</h1>
-       <div className='Market-choice'>
-       <FormControl className='FormControl' required sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="market-choice1">Buy</InputLabel>
-        <Select
-          labelId="market-choice1"
-          id="market-choice1"
-          label="Buy *"
-          value={market1}
-          onChange={handleChange}
-        >
-        <MenuItem value={0}>{"EUR"}</MenuItem>
-          {
-            coins.map(currency => {
-              return <MenuItem value={coins.lastIndexOf(currency) + 1}>{currency.symbol.toUpperCase()}</MenuItem>
-            })
-          }
-          </Select>
-      </FormControl>
-
-      <FormControl className='FormControl' required sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="market-choice2">With</InputLabel>
-        <Select
-          labelId="market-choice2"
-          id="market-choice2"
-          label="Buy with *"
-          value={market2}
-          onChange={handleChange2}
-        >
-          <MenuItem value={0}>{"EUR"}</MenuItem>
-          {
-            coins.map(currency => {
-              return <MenuItem value={coins.lastIndexOf(currency) + 1}>{currency.symbol.toUpperCase()}</MenuItem>
-            })
-          }
-          </Select>
-      </FormControl>
-      </div>
-      <a>Select how much you want to buy</a>
-       <TextField
-          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-          className="TextField"
-          id="outlined-number"
-          type="number"
-          InputLabelProps={{
-          shrink: true,
-          }}
-        />
-        <label id="error"></label>
-      <Button variant="outlined" id="trade" onClick={callFunction}>Trade</Button>
-      <Button variant="outlined" id="clear" onClick={Clear}>Clear crypto</Button>
-      <Button variant="outlined" id="history" style={{position: 'absolute', bottom: 70, right: 10}} href="/tradehistory">History</Button>
-      </header>
-    </div>
-    </div>
-  );
-}
-
-function CalculateValue(listofcurrencies, balances, prices){
-  if(parseInt(localStorage.getItem("Market1")) >= 0 && parseInt(localStorage.getItem("Market2")) >= 0)
-  {
-    const market1 = parseInt(localStorage.getItem("Market1"));
-    const market2 = parseInt(localStorage.getItem("Market2"));
-    var howmuch = parseFloat(document.getElementById("outlined-number").value);
-    if(parseFloat(prices[market1]) * howmuch <= parseFloat(balances[market2]) * parseFloat(prices[market2])){
-      balances[market1] = parseFloat(balances[market1]) + howmuch;
-      balances[market2] = parseFloat(balances[market2]) - (parseFloat(prices[market1])/parseFloat(prices[market2]) * howmuch);
-      localStorage.setItem(listofcurrencies[market1], balances[market1]);
-      localStorage.setItem(listofcurrencies[market2], balances[market2]);
-      document.getElementById('error').innerHTML = '';
-      console.log(parseFloat(balances[market2]));
-      document.getElementById('marketdisplay1').innerHTML = ("Current " + String(listofcurrencies[market1]) +  " balance: " + String(parseFloat(balances[market1]).toFixed(2)));
-      document.getElementById('marketdisplay2').innerHTML = ("Current " + String(listofcurrencies[market2]) +  " balance: " + String(parseFloat(balances[market2]).toFixed(2)));
-    }
-    else{
-      document.getElementById('error').innerHTML = 'Insufficient balance';
-    }
-  }
-
-    else{
-      document.getElementById('error').innerHTML = 'You have not selected a currency';
-    }
-
-} */}
-
-
 function CalculateValue(coins, databaseCurrencies, databaseAmounts){
   const elements = document.getElementsByClassName("remove custom-table-error");
     while(elements.length > 0){
@@ -360,14 +266,6 @@ function findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, cryptoId
 function findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, portfolioId, currency) {
   console.log(currency);
   return databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(currency.id)).amount;
-}
-
-function setLocalStorageAmounts(databaseCurrencies, databaseAmounts) {
-  databaseCurrencies.forEach(currency => {
-    console.log(currency);
-    let currentAmount = findAmountByPortfolioAndCryptoSymbol(databaseCurrencies, databaseAmounts, localStorage.getItem("loggedInUserPortfolio"), currency.name.toUpperCase());
-    localStorage.setItem(currency.name.toUpperCase(), currentAmount);
-  })
 }
 
 function updateAmount(databaseAmounts, portfolioId, cryptoId, amountToUpdate) {
