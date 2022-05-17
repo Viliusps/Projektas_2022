@@ -26,7 +26,6 @@ function App() {
     const [prices, setPrices] = useState([]);
     useEffect(() => {
         getDatabaseData();
-        setAmountsToZero(amounts, portfolios, cryptos);
     }, []);
     const getDatabaseData = () => {
         let endpoints = [
@@ -41,6 +40,7 @@ function App() {
         setPortfolios(portfolios)
         setCryptos(cryptos)
         setPrices(prices)
+        setAmountsToZero(amounts, portfolios, cryptos)
 
         var userid=localStorage.getItem("userID");
         var portfolioid;
@@ -135,6 +135,7 @@ function App() {
         
         
     });
+
   }
     return (
         <div>
@@ -232,7 +233,6 @@ function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencie
         if (parseInt(databasePortfolios[i].fk_user) === userId) {
             for (let j = 0; j < databaseCurrencies.length; j++) {
               if (!existsInArray(databaseAmounts, databasePortfolios[i].id, databaseCurrencies[j].id)) {
-                console.log(databaseCurrencies.length);
                   axios.post('http://localhost:5000/amounts', {
                       amount: 0,
                       fk_crypto: databaseCurrencies[j].id,

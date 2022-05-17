@@ -301,6 +301,7 @@ function findAmountByPortfolioAndCryptoSymbol( databaseAmounts, portfolioId, cur
   return databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(currency.id)).amount;
 }
 
+
 function updateAmount(databaseAmounts, portfolioId, cryptoId, amountToUpdate) {
   let amount = databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(cryptoId));
   axios.patch(`http://localhost:5000/amounts/${amount.id}`,
