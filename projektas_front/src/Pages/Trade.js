@@ -388,10 +388,6 @@ function pushTradeHistory(boughtCurrency, boughtWithCurrency, boughtAmount, coin
     console.log(response)});
 }
 
-
-
-
-
 function findCoinPriceBySymbol(coins, symbol) {
   for (let i = 0; i < coins.length; i++) {
     if (coins[i].symbol.toUpperCase() === symbol.toUpperCase()) {

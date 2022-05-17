@@ -90,15 +90,12 @@ function App() {
         }
       }
 
-      setAmounts(amounts)
-      setPortfolios(portfolios)
-      setCryptos(cryptos)
-      setCoins(coins)
+      setAmounts(amounts);
+      setPortfolios(portfolios);
+      setCryptos(cryptos);
+      setCoins(coins);
     });
   }
-  //del simono
-  //adds cryptocurrency prices to the local storage, may transfer this function to another file in the future
-  updateCryptoCurrencyDatabase(coins);
 
   /* //For (if) search implementation
   const handleChange = change => {
@@ -189,10 +186,6 @@ function App() {
         </div>
         
         <h3>{portfolioString}</h3>
-{/*       <form style={{marginLeft: '50%', marginBottom: '30px'}}>
-         Useful if the user owns lots of cryptocurrencies 
-        <Input placeholder="Search" inputProps={ariaLabel} onChange={handleChange} defaultValue=""/>
-      </form> */}
       <TableContainer id="table" component={Paper} className="Table">
       <Table sx={{ minWidth: 700}} aria-label="simple table">
         <TableHead>

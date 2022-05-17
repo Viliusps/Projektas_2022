@@ -163,7 +163,6 @@ function Save(amounts, portfolios, cryptos){
 })
 
 var currentvalue = parseFloat(previousvalue) + parseFloat(value);
-console.log(currentvalue);
 if(currentvalue != previousvalue)
 {
   var exists = false;

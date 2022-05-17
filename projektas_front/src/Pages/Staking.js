@@ -138,29 +138,29 @@ function App() {
             <a href="/tradehistory">Trade History</a>
             <a href="/portfolio">Portfolio</a>
             <a><Button1
-                            id="basic-button"
-                            aria-controls={open ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick}
-                            className = "Settings-button-container"
-                        >
-                             <img className = "Settings-button" src={more_logo}></img>
-                        </Button1>
-                        <Menu
-                            className="Settings-menu"
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            MenuListProps={{
-                            'aria-labelledby': 'basic-button',
-                            }}
-                        >
-                            <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
-                            <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
-                        </Menu>
-                    </a>  
+                    id="basic-button"
+                    aria-controls={open ? 'basic-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleClick}
+                    className = "Settings-button-container"
+                >
+                      <img className = "Settings-button" src={more_logo}></img>
+                </Button1>
+                <Menu
+                    className="Settings-menu"
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                    }}
+                >
+                    <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
+                    <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
+                </Menu>
+            </a>  
         </div>
     </div>
     </div>
@@ -222,12 +222,12 @@ function Stake(amounts, symbol, cryptos)
   var transfer=transfers[index].value;
 
   var amount=GetAmountBySymbol(amounts,symbol,cryptos);
-  if(transfer=="" || transfer==0)
+  if(parseFloat(transfer)=="" || parseFloat(transfer)<=0)
   {
     document.getElementById('stakingError').innerHTML = 'Missing transfer amount';
     //error for empty
   }
-  else if(amount<transfer)
+  else if(amount<parseFloat(transfer))
   {
     document.getElementById('stakingError').innerHTML = 'Not enough amount';
     //error for not enough
@@ -235,7 +235,6 @@ function Stake(amounts, symbol, cryptos)
   else
   {
     document.getElementById('stakingError').innerHTML = '';
-    var newAmount=amount-transfer;
     amounts.forEach(el=>{
       if(GetCryptoNameById(cryptos,el.fk_crypto)==symbol.toUpperCase() && el.fk_portfolio==localStorage.getItem("ChosenPortfolio"))
       {
@@ -270,12 +269,12 @@ function Unstake(amounts, symbol, cryptos)
   var transfer=transfers[index].value;
 
   var amount=localStorage.getItem(symbol.toUpperCase()+"stake");
-  if(transfer=="" || transfer==0)
+  if(parseFloat(transfer)=="" || parseFloat(transfer)<=0)
   {
     document.getElementById('stakingError').innerHTML = 'Missing transfer amount';
     //error for empty
   }
-  else if(amount<transfer)
+  else if(parseFloat(amount)<parseFloat(transfer))
   {
     document.getElementById('stakingError').innerHTML = 'Not enough staked amount';
     //error for not enough
@@ -283,7 +282,6 @@ function Unstake(amounts, symbol, cryptos)
   else
   {
     document.getElementById('stakingError').innerHTML ="";
-    var newAmount=amount-transfer;
     amounts.forEach(el=>{
       if(GetCryptoNameById(cryptos,el.fk_crypto)==symbol.toUpperCase() && el.fk_portfolio==localStorage.getItem("ChosenPortfolio"))
       {
