@@ -75,6 +75,14 @@ body{
   right: 0px;
   text-align: right;
 }
+.MuiInputBase-input{
+
+  width: 20px !important;
+}
+.MuiInput-input
+{
+  right: 0px !important;
+}
 .MuiButton-root{
   border-color: black !important;
   color: white !important;
@@ -100,6 +108,8 @@ body{
   font-size: 40px !important;
   position: absolute;
   top: 30%;
+  right: 0px !important;
+  width: 8em !important;
 
 }
 .MuiButton-label{
@@ -173,7 +183,22 @@ body{
   line-height: 25px;
   border-radius: 4px;
   }
-  
+  .header p {
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
+    border-radius: 4px;
+    }
+.MuiOutlinedInput-input{
+  top: 0% !important;
+  right: 0% !important;
+  width: 7em !important;
+
+}
   /* Style the logo link (notice that we set the same value of line-height and font-size to prevent the header to increase when the font gets bigger */
   .header a.logo {
   font-size: 25px;
@@ -183,7 +208,7 @@ body{
   /* Change the background color on mouse-over */
   .header a:hover {
   background-color: #ddd;
-  color: black;
+  color: rgb(0, 0, 0);
   }
   
   /* Style the active/current link*/
@@ -195,6 +220,10 @@ body{
   /* Float the link section to the right */
   .header-right {
   float: right;
+  }
+  .ChoosePortfolio:hover{
+      color: black !important;
+     text-decoration: none !important;
   }
   
   /* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */
