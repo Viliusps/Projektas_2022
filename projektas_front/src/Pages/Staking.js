@@ -360,7 +360,6 @@ function RedirectUser()
 }
 function ChangePortfolio(chosenportfolio)
 {
-    console.log(chosenportfolio);
     localStorage.setItem("ChosenPortfolio", chosenportfolio);
     window.location.reload(false);
 }

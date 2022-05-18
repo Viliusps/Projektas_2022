@@ -155,47 +155,25 @@ function App() {
 }
 function GetCryptoById(fk, cryptos)
 {
-  console.log(fk);
   var finalcrypto = '';
   cryptos.forEach((el)=>{
-    console.log(el.id);
     if(el.id == fk) finalcrypto = el.name;
-})
-  //cryptos.map((crypto) => {if(crypto.Id == fk) {finalcrypto = crypto;}})
+  })
   
-return finalcrypto;
-
-
-  /*console.log("suveikia metodas");
-    console.log(fk);
-    const response = axios.get('http://localhost:5000/cryptos/' + fk).then(input => input.data);
-    response.then(function(cryptos){
-      //document.getElementById('Isskirtinis').innerHTML=cryptos.name;
-      /*console.log("Kas issaugota" + localStorage.getItem("FirstMarket"));
-        console.log("Kas dedama " + cryptos.name);
-      if(localStorage.getItem("FirstMarket") != "" && localStorage.getItem("FirstMarket" != (cryptos.name).toString())) 
-      {
-        console.log("Kas issaugota" + localStorage.getItem("FirstMarket"));
-        console.log("Kas dedama " + cryptos.name);
-        localStorage.setItem("FirstMarket", cryptos.name);
-      }
-      console.log(cryptos.name);
-      console.log(fk);
-      return cryptos.name;
-    });
-    return response.data.name;*/
-
+  return finalcrypto;
 }
+
 function ChangePortfolio(chosenportfolio)
 {
-    console.log(chosenportfolio);
     localStorage.setItem("ChosenPortfolio", chosenportfolio);
     window.location.reload(false);
 }
+
 function RedirectUser()
 {
     window.location.replace('/usersettings');
 }
+
 function Redirect()
 {
     localStorage.setItem("auth", false);

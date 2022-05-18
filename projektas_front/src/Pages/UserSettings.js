@@ -79,7 +79,6 @@ function Validate(users)
     var found = false;
     var userid = -1;
     users.forEach((el)=>{
-      console.log(el.email);
       if(el.password == oldpass)
       {
         found=true;

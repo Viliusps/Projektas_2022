@@ -328,8 +328,6 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts){
         boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)) / parseFloat(findCoinPriceBySymbol(coins, currentCurrency.name));
         updateAmount(databaseAmounts, portfolioId, selections[i].id, parseFloat(currentAmount + boughtAmount));
         updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, parseFloat(paymentCurrencyAmount - setBudget));
-        console.log("budget: " + setBudget);
-        console.log(typeof(paymentCurrencyAmount - setBudget));
         pushTradeHistory(databaseCurrencies[selections[i].value - 1], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
       }
       else {
@@ -375,7 +373,6 @@ function pushTradeHistory(boughtCurrency, boughtWithCurrency, boughtAmount, coin
   let secondPrice = findCoinPriceBySymbol(coins, boughtWithCurrency.name);
   var today = new Date();
 
-  console.log(parseInt(localStorage.getItem("ChosenPortfolio")));
   axios.post('http://localhost:5000/tradehistories', {
     fk_Bought_currency: boughtCurrency.id,
     fk_Bought_with_currency: boughtWithCurrency.id,
@@ -384,8 +381,7 @@ function pushTradeHistory(boughtCurrency, boughtWithCurrency, boughtAmount, coin
     Price_of_first: firstPrice,
     Price_of_second: secondPrice,
     fk_Portfolio: parseInt(localStorage.getItem("ChosenPortfolio"))
-  }).then((response) => {
-    console.log(response)});
+  });
 }
 
 function findCoinPriceBySymbol(coins, symbol) {
@@ -411,7 +407,6 @@ function RedirectUser()
 }
 function ChangePortfolio(chosenportfolio)
 {
-    console.log(chosenportfolio);
     localStorage.setItem("ChosenPortfolio", chosenportfolio);
     window.location.reload(false);
 }
