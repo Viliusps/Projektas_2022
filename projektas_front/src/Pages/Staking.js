@@ -99,7 +99,7 @@ function App() {
           localStorage.setItem(GetCryptoNameById(cryptos, el.fk_crypto)+"stake", staking_amount);
         }
       })
-
+      
       setAmounts(amounts)
       setPortfolios(portfolios)
       setCryptos(cryptos)

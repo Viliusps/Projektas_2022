@@ -70,17 +70,17 @@ function App() {
 
 function CheckPortfolio(portfolios, cryptos)
 {
-      var userid = localStorage.getItem("userID");
-      var portfolioid;
-      var exists = false;
-      portfolios.forEach((el)=>{
+    var userid = localStorage.getItem("userID");
+    var portfolioid;
+    var exists = false;
+    portfolios.forEach((el)=>{
         if(el.fk_user == userid && !exists) 
         {
             portfolioid = el.id;
             exists = true;
         }
     })
-    localStorage.setItem("loggedInUserPortfolio", portfolioid);
+    localStorage.setItem("ChosenPortfolio", portfolioid);
     if(exists == false && portfolioid == undefined)
     {
         var name = "Default";
@@ -106,7 +106,8 @@ function GetCryptoByName(name, cryptos)
 return finalcrypto;
 }
 function CheckInfo(users){
-
+  localStorage.clear();
+  localStorage.setItem("auth",false);
   var email=document.getElementById("email").value;
   var password=document.getElementById("password").value;
   var id;
