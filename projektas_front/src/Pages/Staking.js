@@ -221,7 +221,7 @@ function Stake(amounts, symbol, cryptos)
   var transfer=transfers[index].value;
 
   var amount=GetAmountBySymbol(amounts,symbol,cryptos);
-  if(parseFloat(transfer)=="" || parseFloat(transfer)<=0)
+  if(transfer=="" || parseFloat(transfer)<=0)
   {
     document.getElementById('stakingError').innerHTML = 'Missing transfer amount';
     //error for empty
@@ -237,9 +237,10 @@ function Stake(amounts, symbol, cryptos)
     amounts.forEach(el=>{
       if(GetCryptoNameById(cryptos,el.fk_crypto)==symbol.toUpperCase() && el.fk_portfolio==localStorage.getItem("ChosenPortfolio"))
       {
-        var date;
-        if(el.when_staked=="0000-00-00")
-          date=new Date();
+        var date=new Date();
+        /*if(el.when_staked=="0000-00-00")
+          date=new Date();*/
+
         var first = el.amount-parseFloat(transfer);
 
         var shownAmount=localStorage.getItem(symbol.toUpperCase()+"stake");
@@ -247,7 +248,8 @@ function Stake(amounts, symbol, cryptos)
         if(el.staking_amount==0)
           second=transfer;
         else
-          var second = (el.staking_amount*(parseFloat(shownAmount)+parseFloat(transfer)))/parseFloat(shownAmount);
+          second=parseFloat(shownAmount)+parseFloat(transfer);
+          //var second = (el.staking_amount*(parseFloat(shownAmount)+parseFloat(transfer)))/parseFloat(shownAmount);
 
         axios.patch('http://localhost:5000/amounts/' + el.id,{
           amount: first,
@@ -268,7 +270,7 @@ function Unstake(amounts, symbol, cryptos)
   var transfer=transfers[index].value;
 
   var amount=localStorage.getItem(symbol.toUpperCase()+"stake");
-  if(parseFloat(transfer)=="" || parseFloat(transfer)<=0)
+  if(transfer=="" || parseFloat(transfer)<=0)
   {
     document.getElementById('stakingError').innerHTML = 'Missing transfer amount';
     //error for empty
@@ -285,11 +287,16 @@ function Unstake(amounts, symbol, cryptos)
       if(GetCryptoNameById(cryptos,el.fk_crypto)==symbol.toUpperCase() && el.fk_portfolio==localStorage.getItem("ChosenPortfolio"))
       {
         var first = el.amount+parseFloat(transfer);
-        var second = (el.staking_amount*(parseFloat(amount)-parseFloat(transfer)))/parseFloat(amount);
-        var date=el.when_staked;
-        if(second==0)
+        var second = el.staking_amount-parseFloat(transfer);
+        //var second = (el.staking_amount*(parseFloat(amount)-parseFloat(transfer)))/parseFloat(amount);
+        //var date=el.when_staked;
+        var date = new Date();
+        if(second<=0.001)
+        {
           date="0000-00-00";
-
+          second=0;
+        }
+        
         axios.patch('http://localhost:5000/amounts/' + el.id,{
           amount: first,
           staking_amount: second,
