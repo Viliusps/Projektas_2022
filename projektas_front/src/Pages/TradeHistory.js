@@ -102,7 +102,7 @@ function App() {
                 <a href="/staking">Staking</a>
                 <a className="active" href="/tradehistory">Trade History</a>
                 <a href="/portfolio">Portfolio</a>
-                <a><Button1
+                <Button1
                           id="basic-button"
                           aria-controls={open ? 'basic-menu' : undefined}
                           aria-haspopup="true"
@@ -124,8 +124,7 @@ function App() {
                         >
                             <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
                             <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
-                        </Menu>
-                    </a>  
+                        </Menu> 
             </div>
         </div>
         <div>

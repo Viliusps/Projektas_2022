@@ -2,6 +2,10 @@
   position: relative;
 }
 
+#demo-simple-select{
+  height: 50px !important;
+}
+
 .App {
   text-align: center;
 }
@@ -95,9 +99,9 @@ body{
 }
 .Balance{
   position: absolute !important;
-  top: 70px;
-  right: 0px;
+  top: 0%;
   text-align: right;
+  right:0%;
 }
 .MuiInputBase-input{
 
