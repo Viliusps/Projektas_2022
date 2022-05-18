@@ -21,6 +21,8 @@ import Menu from '@mui/material/Menu';
 import settings_logo from '../settingslogo.png';
 import logout_logo from '../logout.png';
 import more_logo from '../more.jpg';
+import Pagination from "./Components/Pagination.js";
+import Coins from "./Components/Coins.js";
 import Box from '@mui/material/Box';
 
 
@@ -28,7 +30,15 @@ export default function AppTrade() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [checked, setChecked] = useState(true);
+  const [search, setSearch] = useState('');
+  const [coins, setCoins] = useState([]);
+  const [databaseCurrencies, setCurrencies] = useState([]);
+  const [databaseAmounts, setAmounts] = useState([]);
+  const [selectionsChecked, setSelectionsChecked] = useState(new Array(51).fill(false));
+  const [currentPage, setCurrentPage] = useState(1);
+  const [coinsPerPage] = useState(10);
   const [chosenportfolio, setChosen] = React.useState('');
+  const [portfolios, setPortfolios] = useState([]);
 
   const handleChangee = (event) => {
 
@@ -45,17 +55,13 @@ export default function AppTrade() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-    const [coins, setCoins] = useState([]);
-    const [databaseCurrencies, setCurrencies] = useState([]);
-    const [databaseAmounts, setAmounts] = useState([]);
-    const [portfolios, setPortfolios] = useState([]);
 
     useEffect(() => {
       getDatabaseData();
-    }, [refreshKey]);
+    }, [refreshKey, selectionsChecked]);
 
-    const handleBuyButton = (event) => {
-      CalculateValue(coins, databaseCurrencies, databaseAmounts);
+    const handleBuyButton = () => {
+      CalculateValue(coins, databaseCurrencies, databaseAmounts, selectionsChecked, setSelectionsChecked, setRefreshKey);
       setRefreshKey(oldKey => oldKey + 1);
   };
 
@@ -88,7 +94,6 @@ export default function AppTrade() {
             values[i].innerHTML = databaseCurrencies[parseInt(event.target.value) - 1].name;
           }
         }
-        //document.getElementsByClassName('form-check-input')[0].checked = false;
     };
 
     const handleCheckbox = (event) => {
@@ -113,10 +118,19 @@ export default function AppTrade() {
       if (last_th.className == "remove custom-table-error") {
         last_th.parentNode.removeChild(last_th);
       }
-     
+      const updatedSelectionsState = selectionsChecked.map((element, index) => 
+      index === (parseInt(event.target.value) - 1)  ? !element : element );
+      setSelectionsChecked(updatedSelectionsState);
+      console.log(updatedSelectionsState);
     };
+
+    const indexOfLastCoin = currentPage * coinsPerPage;
+    const indexOfFirstCoin = indexOfLastCoin - coinsPerPage;
+    const currentCoins = databaseCurrencies.slice(indexOfFirstCoin, indexOfLastCoin);
+
+    const paginate = pageNumber => setCurrentPage(pageNumber);
     
-    return (
+  return (
     <div>
     <div>
     <div className="header" id="head">
@@ -171,110 +185,50 @@ export default function AppTrade() {
                             <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
                         </Menu>
         </div>
-    </div>
-    </div>
-    <div className="App">
-      <header className="App-header">
-    <div>
-    <Form>
-      <Container className="margin-top-buying-options">
-        <Row md={5} id="select-buy-form">
-        <div>
-          <h5>Pay with</h5>
-          <Form.Select
-          onChange={handleChange}
-          id="paymentCurrency"
-          >
-            <option value={6}>EUR</option>
-            {
-            databaseCurrencies.filter(currency => currency.id !== 6).map(currency => ( 
-              <option value={currency.id}>{currency.name}</option>)
-              )
-            }
-          </Form.Select>
-          <h5>Write the trading budget in the selected currency <input defaultChecked={checked}  class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onClick={ (e) => {handleCheckbox(e); setChecked(!checked)}}/></h5>
-          <Button variant="primary" size="lg" onClick={handleBuyButton}>Buy</Button>
       </div>
-        </Row>
-      </Container>
-    <Container fluid="md">
-        <Row>
-      <Table hover responsive variant="dark">
-        <thead>
-          <tr>
-            <th>Logo</th>
-            <th>Cryptocurrency</th>
-            <th>Current Price</th>
-            <th>Current Holdings</th>
-            <th>Buying Budget</th>
-            <th>Selection</th>
-          </tr>
-        </thead>
-    <tbody>
-                        {databaseCurrencies.map(function (currency, index) {
-                          if (currency.name !== "EUR") {
-                            let coin = coins.find(coin => coin.symbol.toUpperCase() === currency.name.toUpperCase());
-                            return (<tr className="row1" id={'row' + currency.id}>
-                              <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
-                              <th>{coin.name}</th>
-                              <th>€{parseFloat(coin.current_price).toFixed(2)}</th>
-                              <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("ChosenPortfolio"), currency)).toFixed(2)}</th>
-                              <th>
-                                <InputGroup className="mb-3">
-                                  <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
-                                  <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
-                                </InputGroup>
-                              </th>
-                              <th>
-                                <Form.Check
-                                  type="switch"
-                                  id={currency.id}
-                                  value={currency.id}
-                                  className="check"
-                                  onChange={handleCheckmarkChange} />
-                              </th>
-                            </tr>)
-                          }
-                          else {
-                            return (<tr className="row1" id={'row' + currency.id}>
-                              <th><img src={euroLogo} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
-                              <th>Euro</th>
-                              <th>€1</th>
-                              <th>{findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("ChosenPortfolio"), currency).toFixed(2)}</th>
-                              <th>
-                                <InputGroup className="mb-3">
-                                  <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
-                                  <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
-                                </InputGroup>
-                              </th>
-                              <th>
-                                <Form.Check
-                                  type="switch"
-                                  id={currency.id}
-                                  value={currency.id}
-                                  className="check"
-                                  onChange={handleCheckmarkChange}
-                                />
-                              </th>
-                            </tr>)
-                          }
-                        }
-                        )}
-      <tr>
-      </tr>
-    </tbody>
-      </Table>
-      </Row>
-      </Container>
-      </Form>
+      <div className="App">
+        <header className="App-header">
+          <div>
+            <Form>
+              <Container className="margin-top-buying-options">
+                <Row md={5} id="select-buy-form">
+                  <div>
+                    <h5>Pay with</h5>
+                    <Form.Select
+                      onChange={handleChange}
+                      id="paymentCurrency"
+                    >
+                      <option value={6}>EUR</option>
+                      {
+                        databaseCurrencies.filter(currency => currency.id !== 6).map(currency => (
+                          <option value={currency.id}>{currency.name}</option>)
+                        )
+                      }
+                    </Form.Select>
+                  </div>
+                  <h5>Write the trading budget in the selected currency <input defaultChecked={checked} class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onClick={(e) => { handleCheckbox(e); setChecked(!checked) }} /></h5>
+                  <Button variant="primary" size="lg" onClick={handleBuyButton}>Buy</Button>
+
+                  <div className="Search-Button">
+                    <input className="form-control w-90" type="text" placeholder="Search" variant="link" id="select-buy-form" onChange={event => { setSearch(event.target.value) }} />
+                  </div>
+                </Row>
+              </Container>
+              <Container fluid="md">
+                <Row>
+                  <Coins currentCoins={currentCoins} coins={coins} selectionsChecked={selectionsChecked} handleCheckmarkChange={handleCheckmarkChange} search={search} databaseAmounts={databaseAmounts} databaseCurrencies={databaseCurrencies} />
+                </Row>
+              </Container>
+            </Form>
+            <Pagination coinsPerPage={coinsPerPage} totalCoins={databaseCurrencies.length} paginate={paginate}></Pagination>
+          </div>
+        </header>
       </div>
-       </header>
-    </div>
     </div>
   );
 }
 
-function CalculateValue(coins, databaseCurrencies, databaseAmounts){
+function CalculateValue(coins, databaseCurrencies, databaseAmounts, selectionsChecked, setSelectionsChecked, setRefreshKey){
   const elements = document.getElementsByClassName("remove custom-table-error");
     while(elements.length > 0){
         elements[0].parentNode.removeChild(elements[0]);
@@ -293,7 +247,8 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts){
       if ((isChecked && paymentCurrencyAmount >= setBudget && setBudget !== -1) || (!isChecked && paymentCurrencyAmount * parseFloat(findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)) >= setBudget && setBudget !== -1)) {
         let boughtAmount;
         if (currentCurrency.id == paymentCurrencyId) {
-          selections[i].checked = false;
+          selectionsChecked = selectionsChecked.map((selection, index) => index === parseInt(selections[i].value) - 1 ? !selection : selection);
+          setSelectionsChecked(selectionsChecked);
           document.querySelector(`input.payment-amount.form-control[id='${selections[i].id}']`).value = "";
           continue;
         }
@@ -309,7 +264,8 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts){
           updateAmount(databaseAmounts, portfolioId, selections[i].value, currentAmount - (setBudget / findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)));
           pushTradeHistory(databaseCurrencies[selections[i].value - 1], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
         }
-        selections[i].checked = false;
+        selectionsChecked = selectionsChecked.map((selection, index) => index === parseInt(selections[i].value) - 1 ? !selection : selection);
+        setSelectionsChecked(selectionsChecked);
         document.querySelector(`input.payment-amount.form-control[id='${selections[i].id}']`).value = "";
       }
       else {
@@ -319,7 +275,8 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts){
     else if((isChecked && paymentCurrencyAmount >= setBudget && setBudget !== -1) || (!isChecked && paymentCurrencyAmount >= setBudget)) {
       let boughtAmount;
       if (currentCurrency.id == paymentCurrencyId) {
-        selections[i].checked = false;
+        selectionsChecked = selectionsChecked.map((selection, index) => index === parseInt(selections[i].value) - 1 ? !selection : selection);
+        setSelectionsChecked(selectionsChecked);
         document.querySelector(`input.payment-amount.form-control[id='${selections[i].id}']`).value = "";
         continue;
       }
@@ -335,7 +292,8 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts){
         updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, paymentCurrencyAmount - parseFloat(setBudget / findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)));
         pushTradeHistory(databaseCurrencies[selections[i].value - 1], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
       }
-      selections[i].checked = false;
+      selectionsChecked = selectionsChecked.map((selection, index) => index === parseInt(selections[i].value) - 1 ? !selection : selection);
+      setSelectionsChecked(selectionsChecked);
       document.querySelector(`input.payment-amount.form-control[id='${selections[i].id}']`).value = "";
     }
     else {
