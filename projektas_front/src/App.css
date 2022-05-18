@@ -241,3 +241,10 @@ body{
 .Settings-menu-item{
   width: 7em !important;
 }
+
+.Search-Button {
+  margin-top: 5%;
+  margin-right: 36.5%;
+  margin-bottom: 2%;
+  text-align: left;
+}
