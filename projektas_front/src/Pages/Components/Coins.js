@@ -30,7 +30,6 @@ const Coins = ({currentCoins, coins, selectionsChecked, handleCheckmarkChange, s
                             return element;
                           }
                           let coinFromGecko = coins.find(coin => coin.symbol.toUpperCase() === element.name.toUpperCase());
-                          console.log(element.name);
                           if (element.name.toUpperCase() !== "EUR" && (element.name.toLowerCase().includes(search.toLowerCase()) || coinFromGecko.name.toLowerCase().includes(search.toLowerCase()))) {
                             return element;
                           }
@@ -44,7 +43,7 @@ const Coins = ({currentCoins, coins, selectionsChecked, handleCheckmarkChange, s
                               <th><img src={coin.image} alt="cryptocurrency logo" className="cryptocurrency-logo" /></th>
                               <th>{coin.name}</th>
                               <th>€{parseFloat(coin.current_price) < 0 ? parseFloat(coin.current_price).toFixed(4) : parseFloat(coin.current_price).toFixed(2)}</th>
-                              <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("UserPortfolio"), currency)).toFixed(2)}</th>
+                              <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("ChosenPortfolio"), currency)).toFixed(2)}</th>
                               <th>
                                 <InputGroup className="mb-3">
                                   <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
