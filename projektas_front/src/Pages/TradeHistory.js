@@ -59,7 +59,19 @@ function App() {
     const response = await axios.get('http://localhost:5000/portfolios');
     setPortfolios(response.data);
 }
-
+  var tradeHistorySum = 0;
+  var tradeHistoryLabel="Trade history";
+  tradehistories.forEach(el=>{
+    if(el.fk_Portfolio==localStorage.getItem("ChosenPortfolio"))
+    {
+      tradeHistorySum=1;
+    }
+  })
+  var tradeHistoryString=""
+  if (tradeHistorySum === 0) {
+    tradeHistoryLabel="";
+    tradeHistoryString = "You have no trades yet";
+  }
     return (
         <div>
         <div className="header" id="head">
@@ -118,7 +130,8 @@ function App() {
         </div>
         <div>
         <header className="App-header">
-        <h1>Trade history</h1>
+        <h1>{tradeHistoryLabel}</h1>
+        <h3>{tradeHistoryString}</h3>
         <TableContainer id="table" component={Paper} className="Table">
       <Table sx={{ minWidth: 700}} aria-label="simple table">
         <TableHead>
@@ -133,26 +146,40 @@ function App() {
           </TableRow>
         </TableHead>
         <TableBody>
-                  { tradehistories.filter(tradehistory => (tradehistory.fk_Portfolio === parseInt(localStorage.getItem("ChosenPortfolio")))).map((tradehistory, index) => (
-                        <TableRow key={ tradehistory.Id }>
-                            <TableCell align="center" className='tableElement'>{ index + 1 }</TableCell>
-                            <TableCell align="center" className='tableElement'> {GetCryptoById(tradehistory.fk_Bought_currency, cryptos)}</TableCell>
-                            <TableCell align="center" className='tableElement'>€{ tradehistory.Price_of_first.toFixed(2) }</TableCell>
-                            <TableCell align="center" className='tableElement'>{GetCryptoById(tradehistory.fk_Bought_with_currency, cryptos)}</TableCell>
-                            <TableCell align="center" className='tableElement'>€{ tradehistory.Price_of_second.toFixed(2) }</TableCell>
-                            <TableCell align="center" className='tableElement'>{ tradehistory.Amount.toFixed(2) }</TableCell>
-                            <TableCell align="center" className='tableElement'>{ tradehistory.Date }</TableCell>
-                        </TableRow>
-                    )) }
+        { tradehistories.filter(tradehistory => (tradehistory.fk_Portfolio === parseInt(localStorage.getItem("ChosenPortfolio")))).map((tradehistory, index) => (
+              <TableRow key={ tradehistory.Id }>
+                  <TableCell align="center" className='tableElement'>{ index + 1 }</TableCell>
+                  <TableCell align="center" className='tableElement'> {GetCryptoById(tradehistory.fk_Bought_currency, cryptos)}</TableCell>
+                  <TableCell align="center" className='tableElement'>€{ tradehistory.Price_of_first.toFixed(2) }</TableCell>
+                  <TableCell align="center" className='tableElement'>{GetCryptoById(tradehistory.fk_Bought_with_currency, cryptos)}</TableCell>
+                  <TableCell align="center" className='tableElement'>€{ tradehistory.Price_of_second.toFixed(2) }</TableCell>
+                  <TableCell align="center" className='tableElement'>{ tradehistory.Amount.toFixed(2) }</TableCell>
+                  <TableCell align="center" className='tableElement'>{ tradehistory.Date }</TableCell>
+              </TableRow>
+          )) }
         </TableBody>
       </Table>
           </TableContainer>
+          {displayTable(tradeHistorySum)}
       </header>
     </div>
         </div>
         
     );
 }
+
+function displayTable(portfolioSum) {
+  if (parseInt(portfolioSum) === 0) {
+    if (document.getElementById("table") != null)
+      document.getElementById("table").style.display = "none";
+  }
+
+  if (parseFloat(localStorage.getItem("EUR")) === 0) {
+    if (document.getElementById("euro-row") != null)
+      document.getElementById("euro-row").style.display = "none";
+  }
+}
+
 function GetCryptoById(fk, cryptos)
 {
   var finalcrypto = '';
