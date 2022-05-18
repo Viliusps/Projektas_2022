@@ -225,6 +225,7 @@ export default function AppTrade() {
         </header>
       </div>
     </div>
+  </div>
   );
 }
 
