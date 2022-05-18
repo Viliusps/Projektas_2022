@@ -92,11 +92,11 @@ body{
   background-color: #282c34 !important;
   text-decoration: white !important;
   min-width: 9em !important;
-  min-height: 45em !important;
+  min-height: 15em !important;
 }
 .MuiPopover-paper
 {
-  margin-top: 5em !important;
+  margin-top: 3em !important;
   width: 6em !important;
   height: 45em !important;
   background-color: #282c34 !important;
@@ -141,7 +141,7 @@ body{
 .MuiInputBase-input{
   color:white !important;
   text-align: center;
-  font-size: 23px !important;
+  font-size: 24px !important;
   position: absolute;
   margin: auto !important;
   right: 0 !important;
@@ -150,6 +150,12 @@ body{
   bottom: 0 !important;
   width: 8em !important;
 
+}
+#email{
+  font-size: 35px !important;
+}
+#password{
+  font-size: 35px !important;
 }
 .MuiButton-label{
   color: white;
@@ -339,4 +345,7 @@ body{
 .PortfolioButton
 {
   margin: auto !important;
+}
+#basicmenu2{
+  height: 70px !important;
 }
