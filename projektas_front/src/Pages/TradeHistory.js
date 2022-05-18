@@ -145,8 +145,22 @@ function App() {
           </TableRow>
         </TableHead>
         <TableBody>
-        { tradehistories.filter(tradehistory => (tradehistory.fk_Portfolio === parseInt(localStorage.getItem("ChosenPortfolio")))).map((tradehistory, index) => (
-              <TableRow key={ tradehistory.Id }>
+        { tradehistories.filter(tradehistory => (tradehistory.fk_Portfolio === parseInt(localStorage.getItem("ChosenPortfolio")))).sort((tradeA, tradeB) =>{
+          let dateA = new Date(tradeA.Date);
+          let dateB = new Date(tradeB.Date);
+          if (dateA.getDay() === dateB.getDay()) {
+            if (dateA.getMonth() === dateB.getMonth()) {
+                return dateB.getYear() - dateA.getYear();
+            }
+            else {
+              return dateB.getMonth() - dateA.getMonth();
+            }
+          }
+          else {
+            return dateB.getDay() - dateA.getDay();
+          }
+        }).map((tradehistory, index) => (
+              <TableRow key={ tradehistory.Id } hover>
                   <TableCell align="center" className='tableElement'>{ index + 1 }</TableCell>
                   <TableCell align="center" className='tableElement'> {GetCryptoById(tradehistory.fk_Bought_currency, cryptos)}</TableCell>
                   <TableCell align="center" className='tableElement'>€{ tradehistory.Price_of_first.toFixed(2) }</TableCell>
@@ -166,6 +180,7 @@ function App() {
         
     );
 }
+
 
 function displayTable(portfolioSum) {
   if (parseInt(portfolioSum) === 0) {
