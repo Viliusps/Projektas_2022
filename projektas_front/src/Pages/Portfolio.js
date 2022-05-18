@@ -112,6 +112,7 @@ function App() {
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Chosen portfolio</InputLabel>
             <Select
+            className="ChoosePortfolio"
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={localStorage.getItem("ChosenPortfolio")}
@@ -164,9 +165,9 @@ function App() {
       <header className="App-header">
 
         <div className="toprightcorner">
-        <TextField id="portfolio" label="New portfolio name" variant="outlined" />
+        <TextField className="PortfolioTextField" id="portfolio" label="New portfolio name" variant="outlined" />
         <br></br>
-        <Button onClick={()=>(NewPortfolio(portfolios, cryptos, amounts, setRefreshKey))}>Create</Button>
+        <Button className="PortfolioButton"onClick={()=>(NewPortfolio(portfolios, cryptos, amounts, setRefreshKey))}>Create</Button>
         <br></br>
         <label id="error"></label>
         </div>
