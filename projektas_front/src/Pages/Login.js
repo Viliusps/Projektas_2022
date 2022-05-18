@@ -60,7 +60,7 @@ function App() {
           />
           <br></br>
           <label id="error"></label>
-        <Button variant="outlined" onClick={()=> (CheckInfo(users), CheckPortfolio(portfolios, cryptos))}>Login</Button>
+        <Button variant="outlined" onClick={()=> (CheckInfo(users, portfolios, cryptos))}>Login</Button>
         <br></br>
         <Button variant="outlined" onClick={() => {navigate('/registration')}}>Registration</Button>
       </header>
@@ -105,7 +105,7 @@ function GetCryptoByName(name, cryptos)
   
 return finalcrypto;
 }
-function CheckInfo(users){
+function CheckInfo(users, portfolios, cryptos){
   localStorage.clear();
   localStorage.setItem("auth",false);
   var email=document.getElementById("email").value;
@@ -124,6 +124,31 @@ function CheckInfo(users){
   {
     localStorage.setItem("auth", true);
     localStorage.setItem("userID", id);
+    var userid = localStorage.getItem("userID");
+    var portfolioid;
+    var exists = false;
+    portfolios.forEach((el)=>{
+        if(el.fk_user == userid && !exists) 
+        {
+            portfolioid = el.id;
+            exists = true;
+        }
+    })
+    localStorage.setItem("ChosenPortfolio", portfolioid);
+    if(exists == false && portfolioid == undefined)
+    {
+        var name = "Default";
+        axios.post('http://localhost:5000/portfolios',{
+            name: name,
+            fk_user: userid
+        });
+        var cryptoId = GetCryptoByName("EUR", cryptos);
+        axios.post('http://localhost:5000/amounts',{
+            amount: 0,
+            fk_crypto: cryptoId,
+            fk_portfolio: portfolioid 
+        });
+    }
     window.location.href=('/home');
   }
   else
