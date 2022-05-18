@@ -149,7 +149,7 @@ function App() {
                 </Button1>
                 <Menu
                     className="Settings-menu"
-                    id="basic-menu"
+                    id="basicmenu2"
                     anchorEl={anchorEl}
                     open={open}
                     onClose={handleClose}
