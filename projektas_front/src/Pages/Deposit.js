@@ -61,7 +61,6 @@ function App() {
         currentvalue += el.amount;
       }
   })
-console.log("Portfolio: " + localStorage.getItem("ChosenPortfolio") + "Verte: " + currentvalue);
 
 
   return (
@@ -145,7 +144,6 @@ console.log("Portfolio: " + localStorage.getItem("ChosenPortfolio") + "Verte: " 
 }
 function Save(amounts, portfolios, cryptos){
 
-  console.log(document.getElementById("outlined-number").value);
   if(document.getElementById("outlined-number").value > 0)
   {
       var value = parseFloat(document.getElementById("outlined-number").value);
@@ -166,14 +164,10 @@ var currentvalue = parseFloat(previousvalue) + parseFloat(value);
 if(currentvalue != previousvalue)
 {
   var exists = false;
-  console.log(localStorage.getItem("ChosenPortfolio"));
   amounts.forEach((el)=>{
-    console.log("ciklo: " + el.fk_portfolio + "storage: " + localStorage.getItem("ChosenPortfolio"))
     if(el.fk_portfolio == localStorage.getItem("ChosenPortfolio") && el.fk_crypto == 6)
     {
       exists = true;
-      console.log("suveikia");
-      console.log(typeof(currentvalue));
         axios.patch('http://localhost:5000/amounts/' + el.id,{
           amount: currentvalue
       })
@@ -192,15 +186,12 @@ if(currentvalue != previousvalue)
 
 }
   var currentvalue = parseFloat(previousvalue) + parseFloat(value);
-  console.log(currentvalue);
 
   if(parseFloat(value) < 0 || value == 0) localStorage.setItem("EUR", previousvalue.toFixed(2));
   else localStorage.setItem("EUR", currentvalue.toFixed(2));
   window.location.reload(false);
 }
-console.log("Portfolio" + localStorage.getItem("ChosenPortfolio"))
 function Clear(amounts){
-console.log(localStorage.getItem("ChosenPortfolio"));
   amounts.forEach((el)=>{
     if(el.fk_portfolio == localStorage.getItem("ChosenPortfolio") && el.fk_crypto == 6)
     {
@@ -217,7 +208,6 @@ function RedirectUser()
 }
 function ChangePortfolio(chosenportfolio)
 {
-    console.log(chosenportfolio);
     localStorage.setItem("ChosenPortfolio", chosenportfolio);
     window.location.reload(false);
 }

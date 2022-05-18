@@ -106,13 +106,10 @@ function App() {
             var cryptoname;
             var sum=0;
             var assetsum=0;
-            console.log("Kumpis pumpis:" + connectedChosenPortfolio);
             amounts.forEach((el)=>{
                 if(el.fk_portfolio==connectedChosenPortfolio)
                 {
-                    console.log("bananas");
                     cryptoname = GetCryptoNameById(cryptos, el.fk_crypto).toLowerCase();
-                    console.log("CRYPTONAME" + cryptoname);
                     prices.forEach((ell)=>{
                     if(ell.symbol == cryptoname && cryptoname != "eur")
                     {
@@ -127,10 +124,8 @@ function App() {
 
                 }
             })
-            console.log(sum);
             document.getElementById('assets').innerHTML = "Your portfolio value: " + "€" + sum.toFixed(2);
             document.getElementById('cryptoSum').innerHTML = "Assets value: " + "€" + assetsum.toFixed(2);
-            console.log(prices);
         }
 
 
@@ -271,21 +266,7 @@ function GetCryptoNameById(cryptos, id)
         if(el.id == id) finalcrypto = el.name;
     })
     return finalcrypto;
-}/*
-function GetPortfolio(portfolios)
-{
-    console.log("veikia gaidys");
-    if(localStorage.getItem("ChosenPortfolio") != null && localStorage.getItem("ChosenPortfolio").value != undefined)
-    {
-        console.log("veikia sabaka" + localStorage.getItem("ChosenPortfolio").value);
-        return localStorage.getItem("ChosenPortfolio");
-    }
-    else
-    {
-        console.log(SetDefaultPortfolio(portfolios))
-        return SetDefaultPortfolio(portfolios);
-    }
-}*/
+}
 function existsInArray(array, portfolioId, currencyId) {
     for (let i = 0; i < array.length; i++) {
         if (parseInt(array[i].fk_crypto) === parseInt(currencyId) && parseInt(array[i].fk_portfolio) === parseInt(portfolioId)) {
@@ -296,7 +277,6 @@ function existsInArray(array, portfolioId, currencyId) {
   }
 
 function setAmountsToZero(databaseAmounts, databasePortfolios, databaseCurrencies) {
-console.log("HA!");
   let userId = parseInt(localStorage.getItem("userID"));
   if (userId === null) return;
     for (let i = 0; i < databasePortfolios.length; i++) {
@@ -309,8 +289,7 @@ console.log("HA!");
                         when_staked: "0000-00-00",
                         fk_crypto: databaseCurrencies[j].id,
                         fk_portfolio: databasePortfolios[i].id
-                  }).then((response) => {
-                    console.log(response)});
+                  });
                 }
             }
         }
@@ -332,13 +311,11 @@ function SetDefaultPortfolio(portfolios)
             exists=true;
         }
     })
-    console.log(portid);
     localStorage.setItem("ChosenPortfolio", portid);
     window.location.reload(false);
 }
 function ChangePortfolio(chosenportfolio)
 {
-    console.log(chosenportfolio);
     localStorage.setItem("ChosenPortfolio", chosenportfolio);
     window.location.reload(false);
 }

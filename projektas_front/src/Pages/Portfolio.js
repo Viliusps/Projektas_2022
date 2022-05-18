@@ -75,17 +75,14 @@ function App() {
       {
         localStorage.setItem("ChosenPortfolio", portfolios[portfolios.length-1].id);
         for (let j = 0; j < cryptos.length; j++) {
-          console.log("pries");
           if (!existsInArray(amounts, localStorage.getItem("ChosenPortfolio"), cryptos[j].id)) {
-            console.log("in");
               axios.post('http://localhost:5000/amounts', {
                     amount: 0,
                     staked_amount: 0,
                     when_staked: "0000-00-00",
                     fk_crypto: cryptos[j].id,
                     fk_portfolio: localStorage.getItem("ChosenPortfolio")
-              }).then((response) => {
-                console.log(response)});
+              });
             }
         }
       }
@@ -272,7 +269,6 @@ function CheckIfOwnsEuros(amounts, coin, cryptos)
       result = el.amount;
     }
   })
-  console.log(result);
   return result;
 }
 function CheckIfOwns(crypto, amounts, cryptos)
@@ -298,7 +294,6 @@ function GetCryptoIdByName(name, cryptos)
 }
 function ChangePortfolio(chosenportfolio)
 {
-    console.log(chosenportfolio);
     localStorage.setItem("ChosenPortfolio", chosenportfolio);
     window.location.reload(false);
 }
@@ -321,7 +316,6 @@ function NewPortfolio(portfolios, cryptos, amounts, setRefreshKey)
 
   document.getElementById('error').innerHTML = '';
   var portfolio_name = document.getElementById("portfolio").value;
-  console.log(portfolio_name);
   if(portfolio_name == "")
   {
     document.getElementById('error').innerHTML = 'Enter portfolio name';
