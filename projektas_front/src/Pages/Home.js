@@ -196,7 +196,6 @@ function App() {
         </div>
     )
 }
-
 function GetCryptoNameById(cryptos, id)
 {
     var finalcrypto;

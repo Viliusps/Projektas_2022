@@ -94,18 +94,8 @@ function App() {
     });
   }
 
-  /* //For (if) search implementation
-  const handleChange = change => {
-    setSearch(change.target.value) 
-  }
-
-  //For (if) search implementation
-  const filteredCoins = coins.filter(coin => {
-    coin.name.toLowerCase().includes(search.toLowerCase())
-  }) */
-
-  const portfolioSum = portfolioValuesSum(coins);
-  var portfolioString=""
+  const portfolioSum = portfolioValuesSum(coins, amounts, cryptos);
+  var portfolioString="";
   if (portfolioSum === 0) {
     portfolioString = "Your portfolio is empty";
   }
@@ -258,18 +248,6 @@ function GetCryptoNameById(cryptos, id)
     return finalcrypto;
 
 }
-function CheckIfOwnsEuros(amounts, coin, cryptos)
-{
-  var result = -1;
-  var cryptoid = GetCryptoIdByName(coin, cryptos);
-  amounts.forEach((el)=>{
-    if(el.fk_portfolio == localStorage.getItem("ChosenPortfolio") && el.fk_crypto == cryptoid)
-    {
-      result = el.amount;
-    }
-  })
-  return result;
-}
 function CheckIfOwns(crypto, amounts, cryptos)
 {
     var result = -1;
@@ -295,15 +273,6 @@ function ChangePortfolio(chosenportfolio)
 {
     localStorage.setItem("ChosenPortfolio", chosenportfolio);
     window.location.reload(false);
-}
-  //adds cryptocurrency prices to the local storage
-function updateCryptoCurrencyDatabase(coins) {
-  for (let i = 0; i < coins.length; i++) {
-    let currentItem = localStorage.getItem(coins[i].symbol.toUpperCase());
-    if (currentItem === null) { //if the item does not exist
-      localStorage.setItem(coins[i].symbol.toUpperCase(), 0)
-    }
-  }
 }
 
 function RedirectUser()
@@ -337,8 +306,6 @@ function NewPortfolio(portfolios, cryptos, amounts, setRefreshKey)
           name: portfolio_name,
           fk_user: localStorage.getItem("userID"),
         });
-        //setRefreshKey(oldKey => oldKey + 1);
-        //localStorage.setItem("ChosenPortfolio", portfolios[portfolios.length-1].id);
       }
         window.location.reload(false);
     }
@@ -353,21 +320,25 @@ function NewPortfolio(portfolios, cryptos, amounts, setRefreshKey)
     return false;
   }
     
-function portfolioValuesSum(coins) {
-  var filtered = coins.filter(coin => localStorage.getItem(coin.symbol.toUpperCase()) > 0);
-  if (filtered.length === 0) {
-    if (localStorage.getItem("EUR") !== null)
-      return localStorage.getItem("EUR");
-    else return 0;
-  }
-  else {
-    let sum = 0;
-    for (let i = 0; i < filtered.length; i++) {
-      sum += parseFloat(filtered[i].current_price * localStorage.getItem(filtered[i].symbol.toUpperCase()));
+function portfolioValuesSum(coins, amounts, cryptos) {
+
+  console.log(localStorage.getItem("ChosenPortfolio"));
+  var values = 0;
+  amounts.forEach((el)=>{
+    coins.forEach((ell)=>{
+      if(el.fk_portfolio == parseFloat(localStorage.getItem("ChosenPortfolio")) && GetCryptoNameById(cryptos, el.fk_crypto).toLowerCase() == ell.symbol)
+      {
+        console.log("veikia pirmas");
+        values += el.amount * ell.current_price;
+      }
+    })
+    if(el.fk_portfolio == localStorage.getItem("ChosenPortfolio") && el.fk_crypto == 6)
+    {
+      console.log("veikia antras");
+      values += el.amount;
     }
-    sum += parseFloat(localStorage.getItem("EUR"));
-    return sum;
-  }
+  })
+  return values;
 
 }
 function Redirect()
