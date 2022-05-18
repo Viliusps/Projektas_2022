@@ -147,7 +147,7 @@ export default function AppTrade() {
             <a href="/staking">Staking</a>
             <a href="/tradehistory">Trade History</a>
             <a href="/portfolio">Portfolio</a>
-            <a><Button1
+            <Button1
                             id="basic-button"
                             aria-controls={open ? 'basic-menu' : undefined}
                             aria-haspopup="true"
@@ -170,7 +170,6 @@ export default function AppTrade() {
                             <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
                             <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
                         </Menu>
-                    </a>  
         </div>
     </div>
     </div>
