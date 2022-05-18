@@ -2,6 +2,14 @@
   position: relative;
 }
 
+#email{
+  font-size: 35px !important;
+}
+
+#password{
+  font-size: 35px !important;
+}
+
 #demo-simple-select{
   height: 50px !important;
 }
