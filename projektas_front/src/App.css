@@ -1,3 +1,19 @@
+#root{
+  position: relative;
+}
+
+#email{
+  font-size: 35px !important;
+}
+
+#password{
+  font-size: 35px !important;
+}
+
+#demo-simple-select{
+  height: 50px !important;
+}
+
 .App {
   text-align: center;
 }
@@ -36,6 +52,8 @@ body{
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+
+  position: relative;
 }
 
 #error {
@@ -50,6 +68,11 @@ body{
 .MuiMenuItem-root{
   color: white !important;
 }
+
+.MuiMenuItem-root:hover{
+  background-color: dodgerblue !important;
+}
+
 .tableHeader{
   font-size: 40px !important;
 }
@@ -68,12 +91,33 @@ body{
   width: 40em !important;
   background-color: #282c34 !important;
   text-decoration: white !important;
+  min-width: 9em !important;
+  min-height: 15em !important;
+}
+.MuiPopover-paper
+{
+  margin-top: 3em !important;
+  width: 6em !important;
+  height: 45em !important;
+  background-color: #282c34 !important;
+  text-decoration: white !important;
+}
+.MuiBox-root{
+  width: 1px !important;
 }
 .Balance{
   position: absolute !important;
-  top: 70px;
-  right: 0px;
+  top: 0%;
   text-align: right;
+  right:0%;
+}
+.MuiInputBase-input{
+
+  width: 20px !important;
+}
+.MuiInput-input
+{
+  right: 0px !important;
 }
 .MuiButton-root{
   border-color: black !important;
@@ -97,10 +141,21 @@ body{
 .MuiInputBase-input{
   color:white !important;
   text-align: center;
-  font-size: 40px !important;
+  font-size: 24px !important;
   position: absolute;
-  top: 30%;
+  margin: auto !important;
+  right: 0 !important;
+  left: 0 !important;
+  margin-bottom: auto !important;
+  bottom: 0 !important;
+  width: 8em !important;
 
+}
+#email{
+  font-size: 35px !important;
+}
+#password{
+  font-size: 35px !important;
 }
 .MuiButton-label{
   color: white;
@@ -117,8 +172,16 @@ body{
   width: 20em;
   height: 5em;
 }
+.MuiSelect-nativeInput{
+  bottom: 0% !important;
+}
 .MuiFormLabel-root{
   color: white !important;
+}
+.MuiMenu-list{
+  width: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 .MuiInputBase-root{
   border-width: 6px !important;
@@ -135,11 +198,10 @@ body{
 
 .toprightcorner{
   position: absolute;
-  top:70px;
-  right: 10px;
   height: 200px;
-  width: 800px;
+  width: 100%;
   text-align: right;
+  top: 0%;
 }
 
 .sticky-top {
@@ -158,7 +220,6 @@ body{
   padding: 20px 10px;
   }
   #head{
-    border: 1px solid;
     padding: 10px;
     box-shadow: 0px 3px #888888;
   }
@@ -173,17 +234,43 @@ body{
   line-height: 25px;
   border-radius: 4px;
   }
-  
+  .header p {
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
+    border-radius: 4px;
+    }
+.MuiOutlinedInput-input{
+  bottom: 0 !important;
+  right: 0% !important;
+  width: 8em !important;
+
+}
+.ChoosePortfolio{
+  height: 5em !important;
+  bottom: 0!important;
+}
+.MuiOutlinedInput-input{
+  padding: 0 !important;
+}
+.MuiInputBase-input{
+  margin-bottom: 0 !important;
+  height: 70px !important;
+}
   /* Style the logo link (notice that we set the same value of line-height and font-size to prevent the header to increase when the font gets bigger */
   .header a.logo {
   font-size: 25px;
-  font-weight: bold;
+  font-weight: bold; 
   }
   
   /* Change the background color on mouse-over */
   .header a:hover {
   background-color: #ddd;
-  color: black;
+  color: rgb(0, 0, 0);
   }
   
   /* Style the active/current link*/
@@ -195,6 +282,10 @@ body{
   /* Float the link section to the right */
   .header-right {
   float: right;
+  }
+  .ChoosePortfolio:hover{
+      color: black !important;
+     text-decoration: none !important;
   }
   
   /* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */
@@ -227,24 +318,40 @@ body{
   color:white !important;
   height: 1.5em !important;
 }
-.Settings-button-container{
+
+#basic-button{
   color:white !important;
-  width: 3em !important;
-  height: 1.5em !important;
+  width: 5.5em !important;
+  height: 3.5em !important;
 }
+
+#basic-button:hover{
+  background-color: dodgerblue;
+}
+
 .MuiMenuItem-root{
   width: 7em !important;
 }
 .MuiPopover-paper{
-  width: 7em !important;
+  width: 0px !important;
 }
 .Settings-menu-item{
   width: 7em !important;
 }
-
 .Search-Button {
   margin-top: 5%;
   margin-right: 36.5%;
   margin-bottom: 2%;
   text-align: left;
+}
+.PortfolioTextField
+{
+  margin: auto !important;
+}
+.PortfolioButton
+{
+  margin: auto !important;
+}
+#basicmenu2{
+  height: 70px !important;
 }

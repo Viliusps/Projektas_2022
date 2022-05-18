@@ -70,24 +70,19 @@ function App() {
 
 function CheckPortfolio(portfolios, cryptos)
 {
-      var userid = localStorage.getItem("userID");
-      var portfolioid;
-      var exists = false;
-      portfolios.forEach((el)=>{
+    var userid = localStorage.getItem("userID");
+    var portfolioid;
+    var exists = false;
+    portfolios.forEach((el)=>{
         if(el.fk_user == userid && !exists) 
         {
-            //console.log(el.id);
-            //console.log(el.fk_user, userid);
             portfolioid = el.id;
             exists = true;
         }
     })
-    localStorage.setItem("loggedInUserPortfolio", portfolioid);
-    console.log(exists);
-    console.log(portfolioid);
+    localStorage.setItem("ChosenPortfolio", portfolioid);
     if(exists == false && portfolioid == undefined)
     {
-        console.log('a');
         var name = "Default";
         axios.post('http://localhost:5000/portfolios',{
             name: name,
@@ -105,21 +100,20 @@ function GetCryptoByName(name, cryptos)
 {
   var finalcrypto = '';
   cryptos.forEach((el)=>{
-    console.log(el.id);
     if(el.name == name) finalcrypto = el.id;
 })
   
 return finalcrypto;
 }
 function CheckInfo(users){
-
+  localStorage.clear();
+  localStorage.setItem("auth",false);
   var email=document.getElementById("email").value;
   var password=document.getElementById("password").value;
   var id;
   var exists = false;
   var id;
   users.forEach((el)=>{
-    console.log(el.id);
     if(el.email == email && el.password==password)
     {
       exists=true;
@@ -130,7 +124,6 @@ function CheckInfo(users){
   {
     localStorage.setItem("auth", true);
     localStorage.setItem("userID", id);
-    console.log(localStorage.getItem("auth"));
     window.location.href=('/home');
   }
   else

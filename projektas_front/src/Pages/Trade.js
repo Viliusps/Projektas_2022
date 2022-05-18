@@ -23,8 +23,8 @@ import logout_logo from '../logout.png';
 import more_logo from '../more.jpg';
 import Pagination from "./Components/Pagination.js";
 import Coins from "./Components/Coins.js";
+import Box from '@mui/material/Box';
 
-//Bugas 193 line
 
 export default function AppTrade() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -37,7 +37,16 @@ export default function AppTrade() {
   const [selectionsChecked, setSelectionsChecked] = useState(new Array(51).fill(false));
   const [currentPage, setCurrentPage] = useState(1);
   const [coinsPerPage] = useState(10);
-  
+  const [chosenportfolio, setChosen] = React.useState('');
+  const [portfolios, setPortfolios] = useState([]);
+
+  const handleChangee = (event) => {
+
+    setChosen(event.target.value);
+    ChangePortfolio(event.target.value);
+    
+  };
+
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -46,7 +55,6 @@ export default function AppTrade() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-    
 
     useEffect(() => {
       getDatabaseData();
@@ -61,13 +69,15 @@ export default function AppTrade() {
       let endpoints = [
         'http://localhost:5000/amounts',
         'http://localhost:5000/cryptos',
-        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=80&page=1&sparkline=false'
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=80&page=1&sparkline=false',
+        'http://localhost:5000/portfolios'
       ];
 
-    axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: currencies}, {data: coins}]) => {
+    axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(([{data: amounts}, {data: currencies}, {data: coins}, {data: portfolios}]) => {
       setCoins(coins);
       setAmounts(amounts);
       setCurrencies(currencies);
+      setPortfolios(portfolios);
     })
   };
 
@@ -122,41 +132,58 @@ export default function AppTrade() {
     
   return (
     <div>
-      <div>
-        <div className="header" id="head">
-          <a href="/home" className="logo">Skete</a>
-          <div className="header-right">
+    <div>
+    <div className="header" id="head">
+        <a href="/home" className="logo">Skete</a>
+        <p className="ChoosePortfolio"><Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Chosen portfolio</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={ localStorage.getItem("ChosenPortfolio")}
+              label="Portfolio"
+              onChange={(handleChangee)}
+            >
+              { portfolios.filter(portfolio => (portfolio.fk_user == localStorage.getItem("userID"))).map((portfolio) => (
+                
+                <MenuItem value={portfolio.id}>{portfolio.name}</MenuItem>
+
+                    )) }
+            </Select>
+          </FormControl>
+        </Box>
+        </p>
+        <div className="header-right">
             <a href="/home">Home</a>
             <a href="/deposit">Deposit</a>
             <a className="active" href="/trade">Trade</a>
             <a href="/staking">Staking</a>
             <a href="/tradehistory">Trade History</a>
             <a href="/portfolio">Portfolio</a>
-            <a><Button1
-              id="basic-button"
-              aria-controls={open ? 'basic-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleClick}
-              className="Settings-button-container"
-            >
-              <img className="Settings-button" src={more_logo}></img>
-            </Button1>
-              <Menu
-                className="Settings-menu"
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                  'aria-labelledby': 'basic-button',
-                }}
-              >
-                <MenuItem onClick={() => RedirectUser()}><img className="Settings-button" src={settings_logo}></img> Settings</MenuItem>
-                <MenuItem onClick={Redirect}><img className="Settings-button" src={logout_logo}></img> Logout</MenuItem>
-              </Menu>
-            </a>
-          </div>
+            <Button1
+                            id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClick}
+                            className = "Settings-button-container"
+                        >
+                             <img className = "Settings-button" src={more_logo}></img>
+                        </Button1>
+                        <Menu
+                            className="Settings-menu"
+                            id="basicmenu2"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={()=>RedirectUser()}><img className = "Settings-button" src={settings_logo}></img> Settings</MenuItem>
+                            <MenuItem onClick={Redirect}><img className = "Settings-button" src={logout_logo}></img> Logout</MenuItem>
+                        </Menu>
         </div>
       </div>
       <div className="App">
@@ -210,7 +237,7 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts, selectionsCh
   let amounts = document.getElementsByClassName('payment-amount');
   let isChecked = document.querySelector('input[id=flexCheckChecked]').checked;
   let paymentCurrencyId = document.getElementById('paymentCurrency').value;
-  let portfolioId = localStorage.getItem("UserPortfolio");
+  let portfolioId = localStorage.getItem("ChosenPortfolio");
   let paymentCurrencyAmount = parseFloat(findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, paymentCurrencyId).amount);
   for (let i = 0; i < selections.length; i++) {
     let setBudget = parseFloat(getItemFromArrayById(amounts, selections[i].id).value);
@@ -302,7 +329,7 @@ function pushTradeHistory(boughtCurrency, boughtWithCurrency, boughtAmount, coin
   let firstPrice = findCoinPriceBySymbol(coins, boughtCurrency.name);
   let secondPrice = findCoinPriceBySymbol(coins, boughtWithCurrency.name);
   var today = new Date();
-  console.log(parseInt(localStorage.getItem("UserPortfolio")));
+
   axios.post('http://localhost:5000/tradehistories', {
     fk_Bought_currency: boughtCurrency.id,
     fk_Bought_with_currency: boughtWithCurrency.id,
@@ -310,14 +337,9 @@ function pushTradeHistory(boughtCurrency, boughtWithCurrency, boughtAmount, coin
     Date: today.getFullYear() + '-' + (today.getMonth() + 1) + ' ' + today.getDate(),
     Price_of_first: firstPrice,
     Price_of_second: secondPrice,
-    fk_Portfolio: parseInt(localStorage.getItem("UserPortfolio"))
-  }).then((response) => {
-    console.log(response)});
+    fk_Portfolio: parseInt(localStorage.getItem("ChosenPortfolio"))
+  });
 }
-
-
-
-
 
 function findCoinPriceBySymbol(coins, symbol) {
   for (let i = 0; i < coins.length; i++) {
@@ -339,6 +361,11 @@ function getItemFromArrayById(array, id) {
 function RedirectUser()
 {
     window.location.replace('/usersettings');
+}
+function ChangePortfolio(chosenportfolio)
+{
+    localStorage.setItem("ChosenPortfolio", chosenportfolio);
+    window.location.reload(false);
 }
 function Redirect()
 {

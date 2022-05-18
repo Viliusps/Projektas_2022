@@ -74,7 +74,6 @@ function SaveValues(users){
   document.getElementById('error').innerHTML = '';
   var exists=false;
   users.forEach((el)=>{
-    console.log(el.email);
     if(el.email == email)
     exists=true;
   })
