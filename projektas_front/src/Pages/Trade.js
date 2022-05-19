@@ -36,6 +36,7 @@ export default function AppTrade() {
   const [coinsPerPage, setCoinsPerPage] = useState(15);
   const [chosenportfolio, setChosen] = React.useState('');
   const [portfolios, setPortfolios] = useState([]);
+  const [amountsValues, setAmountsValues] = useState(new Array(51).fill("0"));
 
   const handleChangee = (event) => {
 
@@ -55,12 +56,16 @@ export default function AppTrade() {
 
     useEffect(() => {
       getDatabaseData();
-    }, [refreshKey, selectionsChecked]);
+    }, [refreshKey, selectionsChecked, coinsPerPage, amountsValues]);
 
     const handleBuyButton = () => {
-      CalculateValue(coins, databaseCurrencies, databaseAmounts, selectionsChecked, setSelectionsChecked, setRefreshKey);
+      CalculateValue(coins, databaseCurrencies, databaseAmounts, selectionsChecked, setSelectionsChecked, amountsValues, setAmountsValues);
       setRefreshKey(oldKey => oldKey + 1);
-  };
+      const selections = [...selectionsChecked.map((element, index) => {
+        return (element === true ? !element : element);
+      })];
+      setSelectionsChecked(selectionsChecked);
+    }
 
     const getDatabaseData = () => {
       let endpoints = [
@@ -118,7 +123,6 @@ export default function AppTrade() {
       const updatedSelectionsState = selectionsChecked.map((element, index) => 
       index === (parseInt(event.target.value) - 1)  ? !element : element );
       setSelectionsChecked(updatedSelectionsState);
-      console.log(updatedSelectionsState);
     };
 
     const continuousScroll = (event) => {
@@ -128,6 +132,15 @@ export default function AppTrade() {
       else {
         setCoinsPerPage(15);
       }
+    }
+
+    const onAmountUpdate = (event) => {
+      console.log(amountsValues);
+      const updatedAmounts = amountsValues.map((element, index) => {
+        return (parseInt(event.target.id) === (index + 1)) ? `${event.target.value}` : element;
+      });
+      console.log(updatedAmounts);
+      setAmountsValues(updatedAmounts);
     }
 
     const indexOfLastCoin = currentPage * coinsPerPage;
@@ -229,7 +242,7 @@ export default function AppTrade() {
                 </Container>
                 <Container fluid="md">
                 <h5 className="text-align-left">Continuous scroll <input class="form-check-input" type="checkbox" value="" id="continuousScroll" onClick={continuousScroll}/></h5>
-                    <Coins currentCoins={currentCoins} coins={coins} selectionsChecked={selectionsChecked} handleCheckmarkChange={handleCheckmarkChange} search={search} databaseAmounts={databaseAmounts} databaseCurrencies={databaseCurrencies} />
+                    <Coins currentCoins={currentCoins} coins={coins} selectionsChecked={selectionsChecked} handleCheckmarkChange={handleCheckmarkChange} search={search} databaseAmounts={databaseAmounts} databaseCurrencies={databaseCurrencies} onAmountUpdate={onAmountUpdate} amountsValues={amountsValues}/>
                 </Container>
               </Form>
               <Pagination coinsPerPage={coinsPerPage} totalCoins={databaseCurrencies.length} paginate={paginate} currentPage={currentPage}></Pagination>
@@ -241,7 +254,89 @@ export default function AppTrade() {
   );
 }
 
-function CalculateValue(coins, databaseCurrencies, databaseAmounts, selectionsChecked, setSelectionsChecked, setRefreshKey){
+function CalculateValue(coins, databaseCurrencies, databaseAmounts, selectionsChecked, setSelectionsChecked, amountsValues, setAmountsValues){
+  const elements = document.getElementsByClassName("remove custom-table-error");
+    while(elements.length > 0){
+        elements[0].parentNode.removeChild(elements[0]);
+    }
+  let selections = [...selectionsChecked];
+  console.log(selections);
+  let amounts = [...amountsValues];//document.getElementsByClassName('payment-amount');
+  let isChecked = document.querySelector('input[id=flexCheckChecked]').checked;
+  let paymentCurrencyId = document.getElementById('paymentCurrency').value;
+  let portfolioId = localStorage.getItem("ChosenPortfolio");
+  let paymentCurrencyAmount = parseFloat(findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, paymentCurrencyId).amount);
+  for (let i = 0; i < selections.length; i++) {
+    if (selections[i] === false) continue;
+    let setBudget = isNaN(parseFloat(amounts[i])) ? 0 : parseFloat(amounts[i]);
+    if (setBudget < 0) {
+      document.querySelector(`[id=row${i + 1}]`).insertAdjacentHTML("beforeend", `<h5 class="remove custom-table-error">Error! Negative numbers are not allowed.</h5>`);
+      continue;
+    }
+    let currentAmount = parseFloat(findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, i + 1).amount);
+    let currentCurrency = databaseCurrencies[i];
+    if (currentCurrency.name == "EUR") {
+      if ((isChecked && paymentCurrencyAmount >= setBudget && setBudget !== -1) || (!isChecked && paymentCurrencyAmount * parseFloat(findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)) >= setBudget && setBudget !== -1)) {
+        let boughtAmount;
+        if (currentCurrency.id == paymentCurrencyId) {
+          selectionsChecked = [...selectionsChecked.map((selection, index) => selection === true && index === i ? !selection : selection)];
+          setSelectionsChecked(selectionsChecked);
+          amounts[i] = '';
+          continue;
+        }
+        if (isChecked) {
+          boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)) / 1;
+          updateAmount(databaseAmounts, portfolioId, i + 1, currentAmount + boughtAmount);
+          updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, paymentCurrencyAmount - setBudget);
+          pushTradeHistory(databaseCurrencies[i], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
+        }
+        else {
+          boughtAmount = setBudget;
+          updateAmount(databaseAmounts, portfolioId, i + 1, currentAmount + boughtAmount);
+          updateAmount(databaseAmounts, portfolioId, i + 1, currentAmount - (setBudget / findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)));
+          pushTradeHistory(databaseCurrencies[i], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
+        }
+        selectionsChecked = [...selectionsChecked.map((selection, index) => selection === true && index === i ? !selection : selection)];
+        setSelectionsChecked(selectionsChecked);
+        amounts[i] = '';
+      }
+      else {
+        document.querySelector(`[id=row${i + 1}]`).insertAdjacentHTML("beforeend", `<h5 class="remove custom-table-error">Error! Not enough money.</h5>`);
+      }
+    }
+    else if((isChecked && paymentCurrencyAmount >= setBudget && setBudget !== -1) || (!isChecked && paymentCurrencyAmount >= setBudget)) {
+      let boughtAmount;
+      if (currentCurrency.id == paymentCurrencyId) {
+        selectionsChecked = [...selectionsChecked.map((selection, index) => selection === true && index === i  ? !selection : selection)];
+        setSelectionsChecked(selectionsChecked);
+        amounts[i] = '';
+        continue;
+      }
+      if (isChecked) {
+        boughtAmount = setBudget * parseFloat(findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)) / parseFloat(findCoinPriceBySymbol(coins, currentCurrency.name));
+        updateAmount(databaseAmounts, portfolioId, i + 1, parseFloat(currentAmount + boughtAmount));
+        updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, parseFloat(paymentCurrencyAmount - setBudget));
+        pushTradeHistory(databaseCurrencies[i], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
+      }
+      else {
+        boughtAmount = setBudget / parseFloat(findCoinPriceBySymbol(coins, currentCurrency.name));
+        updateAmount(databaseAmounts, portfolioId, i + 1, currentAmount + boughtAmount);
+        updateAmount(databaseAmounts, portfolioId, paymentCurrencyId, paymentCurrencyAmount - parseFloat(setBudget / findCoinPriceBySymbol(coins, databaseCurrencies[paymentCurrencyId - 1].name)));
+        pushTradeHistory(databaseCurrencies[i], databaseCurrencies[paymentCurrencyId - 1], boughtAmount, coins);
+      }
+      selectionsChecked = [...selectionsChecked.map((selection, index) => selection === index  ? !selection : selection)];
+      setSelectionsChecked(selectionsChecked);
+      amounts[i] = '';
+    }
+    else {
+      document.querySelector(`[id=row${i + 1}]`).insertAdjacentHTML("beforeend", `<h5 class="remove custom-table-error">Error! Not enough money.</h5>`);
+    }
+  }
+  setAmountsValues(amounts);
+}
+
+//real 
+/* function CalculateValue(coins, databaseCurrencies, databaseAmounts, selectionsChecked, setSelectionsChecked){
   const elements = document.getElementsByClassName("remove custom-table-error");
     while(elements.length > 0){
         elements[0].parentNode.removeChild(elements[0]);
@@ -317,8 +412,7 @@ function CalculateValue(coins, databaseCurrencies, databaseAmounts, selectionsCh
       document.querySelector(`[id=row${selections[i].id}]`).insertAdjacentHTML("beforeend", `<h5 class="remove custom-table-error">Error! Not enough money.</h5>`);
     }
   }
-}
-
+} */
 
 function findAmountByPortfolioAndCryptoId(databaseAmounts, portfolioId, cryptoId) {
   return databaseAmounts.find(amount => parseInt(amount.fk_portfolio) === parseInt(portfolioId) && parseInt(amount.fk_crypto) === parseInt(cryptoId));
@@ -344,7 +438,7 @@ function pushTradeHistory(boughtCurrency, boughtWithCurrency, boughtAmount, coin
     fk_Bought_currency: boughtCurrency.id,
     fk_Bought_with_currency: boughtWithCurrency.id,
     Amount: boughtAmount,
-    Date: today.getFullYear() + '-' + (today.getMonth() + 1) + ' ' + (today.getDate() + 1),
+    Date: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate() + 1),
     Price_of_first: firstPrice,
     Price_of_second: secondPrice,
     fk_Portfolio: parseInt(localStorage.getItem("ChosenPortfolio"))
@@ -362,7 +456,7 @@ function findCoinPriceBySymbol(coins, symbol) {
 
 function getItemFromArrayById(array, id) {
   for (let i = 0; i < array.length; i++) {
-    if (array[i].id === id) {
+    if (parseInt(array[i].id) === parseInt(id)) {
       return array[i];
     }
   }
