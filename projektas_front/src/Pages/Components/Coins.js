@@ -11,7 +11,7 @@ function findAmountByPortfolioAndCryptoSymbol( databaseAmounts, portfolioId, cur
     return amount !== undefined ? amount.amount : 0;
   }
 
-const Coins = ({currentCoins, coins, selectionsChecked, handleCheckmarkChange, search, databaseAmounts, databaseCurrencies}) => {
+const Coins = ({currentCoins, coins, selectionsChecked, handleCheckmarkChange, search, databaseAmounts, databaseCurrencies, onAmountUpdate, amountsValues}) => {
   return (
         <Table hover responsive variant="dark">
         <thead>
@@ -47,7 +47,7 @@ const Coins = ({currentCoins, coins, selectionsChecked, handleCheckmarkChange, s
                               <th>{parseFloat(findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("ChosenPortfolio"), currency)).toFixed(2)}</th>
                               <th>
                                 <InputGroup className="mb-3">
-                                  <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
+                                  <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" onChange={(event) => onAmountUpdate(event)} value={parseInt(amountsValues[currency.id - 1]) === 0 ? '' : amountsValues[currency.id - 1]} />
                                   <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
                                 </InputGroup>
                               </th>
@@ -70,7 +70,7 @@ const Coins = ({currentCoins, coins, selectionsChecked, handleCheckmarkChange, s
                               <th>{findAmountByPortfolioAndCryptoSymbol(databaseAmounts, localStorage.getItem("ChosenPortfolio"), currency).toFixed(2)}</th>
                               <th>
                                 <InputGroup className="mb-3">
-                                  <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" />
+                                  <Form.Control aria-label="amount" id={currency.id} className="payment-amount" type="number" value={parseInt(amountsValues[currency.id - 1]) === 0 ? '' : amountsValues[currency.id - 1]} />
                                   <InputGroup.Text className="payment-currency-input">EUR</InputGroup.Text>
                                 </InputGroup>
                               </th>
