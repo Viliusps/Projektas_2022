@@ -87,7 +87,7 @@ function SaveValues(users){
   }
   else if(!password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/))
   {
-    document.getElementById('error').innerHTML = 'Password is not in the correct format. There has to be at least one uppercase letter, lowercase letter, and number';
+    document.getElementById('error').innerHTML = 'Password is not in the correct format. There has to be at least one uppercase letter, lowercase letter, number, and 8 symbols';
   }
   else if(password!=Repassword)
   {
