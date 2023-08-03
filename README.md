@@ -1,2 +1,2 @@
 # Projektas_2022
-Programų sistemų inžinerijos projekto repozitorija
+Project is outdated and needs a lot of refactoring
